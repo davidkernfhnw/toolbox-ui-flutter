@@ -1,4 +1,5 @@
 import 'package:geiger_toolbox/bindings/compare_risk_binding.dart';
+import 'package:geiger_toolbox/bindings/recommendation_binding.dart';
 import 'package:geiger_toolbox/bindings/scan_risk_binding.dart';
 import 'package:geiger_toolbox/views/screens/compare_risk.dart';
 import 'package:geiger_toolbox/views/screens/recommendation.dart';
@@ -20,6 +21,7 @@ class Routes {
     GetPage(
       name: '/recommendationScreen/:recommendations',
       page: () => Recommendation(),
+      binding: RecommendationBinding(),
     )
   ];
 }
