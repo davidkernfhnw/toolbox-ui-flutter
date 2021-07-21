@@ -8,10 +8,12 @@ class ThreatsCard extends StatelessWidget {
   final double? indicatorScore;
   final String? routeName;
   ThreatsCard(
-      {@required this.label,
+      {Key? key,
+      @required this.label,
       @required this.icon,
       @required this.indicatorScore,
-      @required this.routeName});
+      @required this.routeName})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

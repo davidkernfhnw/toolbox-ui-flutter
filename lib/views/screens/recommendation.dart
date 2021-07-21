@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/controllers/recommendation_controller.dart';
-import 'package:geiger_toolbox/model/recommendations.dart';
+import 'package:geiger_toolbox/model/recommendations_models.dart';
 import 'package:geiger_toolbox/views/widgets/indicator_guage.dart';
 import 'package:get/get.dart';
 
@@ -46,6 +46,7 @@ class Recommendation extends StatelessWidget {
   }
 }
 
+//purely getx
 /*class UserRecommendation extends StatelessWidget {
   RecommendationController? controller;
   UserRecommendation({this.controller});
@@ -90,61 +91,65 @@ class Recommendation extends StatelessWidget {
                 Text("Personal Recommendations"),
               ],
             ),
-            ExpansionPanelList(
-              expansionCallback: (index, isOpen) {
-                controller!.isExpanding(index, isOpen);
-              },
-              // animationDuration: Duration(seconds: 2),
-              children: controller!.recommendations
-                  .map<ExpansionPanel>((RecommendationModel e) {
-                return ExpansionPanel(
-                    headerBuilder: (context, isOpen) {
-                      return ListTile(
-                        leading: Checkbox(
-                          onChanged: (bool? value) {},
-                          value: true,
-                        ),
-                        title: Text(
-                          e.header.toString(),
-                          softWrap: true,
-                          style: TextStyle(),
-                        ),
-                        trailing: Text("high"),
-                      );
-                    },
-                    body: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            e.body.toString(),
-                            softWrap: true,
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            "Required Tool:",
-                            style: TextStyle(color: Colors.black45),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+            Obx(
+              () {
+                return ExpansionPanelList(
+                  expansionCallback: (index, isOpen) {
+                    controller!.isExpanding(index, isOpen);
+                  },
+                  // animationDuration: Duration(seconds: 2),
+                  children: controller!.recommendations
+                      .map<ExpansionPanel>((RecommendationModel e) {
+                    return ExpansionPanel(
+                        headerBuilder: (context, isOpen) {
+                          return ListTile(
+                            leading: Checkbox(
+                              onChanged: (bool? value) {},
+                              value: true,
+                            ),
+                            title: Text(
+                              e.header.toString(),
+                              softWrap: true,
+                              style: TextStyle(),
+                            ),
+                            trailing: Text("high"),
+                          );
+                        },
+                        body: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              OutlinedButton(
-                                onPressed: null,
-                                child: Text("Get Help"),
+                              Text(
+                                e.body.toString(),
+                                softWrap: true,
                               ),
-                              SizedBox(width: 10),
-                              OutlinedButton(
-                                onPressed: null,
-                                child: Text("Get Tool"),
+                              SizedBox(height: 5),
+                              Text(
+                                "Required Tool:",
+                                style: TextStyle(color: Colors.black45),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  OutlinedButton(
+                                    onPressed: null,
+                                    child: Text("Get Help"),
+                                  ),
+                                  SizedBox(width: 10),
+                                  OutlinedButton(
+                                    onPressed: null,
+                                    child: Text("Get Tool"),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                    isExpanded: e.isExpanded);
-              }).toList(),
+                        ),
+                        isExpanded: controller!.press.value);
+                  }).toList(),
+                );
+              },
             ),
           ],
         ),
@@ -153,6 +158,7 @@ class Recommendation extends StatelessWidget {
   }
 }*/
 
+//getx and stateful
 class UserRecommendation extends StatefulWidget {
   RecommendationController? controller;
   UserRecommendation({this.controller});

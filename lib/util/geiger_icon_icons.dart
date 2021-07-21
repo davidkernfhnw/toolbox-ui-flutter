@@ -21,9 +21,16 @@ class GeigerIcon {
   static const _kFontFam = 'GeigerIcon';
   static const String? _kFontPkg = null;
 
+  static Map<String, IconData> iconsMap = {
+    "malware": malware,
+    "web attacks": webAttacks,
+    "phishing": phishing,
+    "spam": spam
+  };
+
   static const IconData malware =
       IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData webattacks =
+  static const IconData webAttacks =
       IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData phishing =
       IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);

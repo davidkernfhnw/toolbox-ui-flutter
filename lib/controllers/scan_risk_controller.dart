@@ -1,15 +1,6 @@
 import 'package:get/get.dart';
+import 'package:geiger_toolbox/model/threats_model.dart';
 
 class ScanRiskController extends GetxController {
-  @override
-  void onInit() {
-    print('>>> ScanRiskController init');
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    print('>>> ScanRiskController  ready');
-    super.onReady();
-  }
+  List<ThreatsModel> threatList = ThreatsModel.threatList();
 }
