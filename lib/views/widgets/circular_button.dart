@@ -3,6 +3,12 @@ import 'package:flutter/widgets.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class CircularButton extends StatelessWidget {
+  final void Function()? onScanPressed;
+  final Color? scanColor;
+
+  const CircularButton({Key? key, @required this.onScanPressed, this.scanColor})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -10,17 +16,23 @@ class CircularButton extends StatelessWidget {
         CircularPercentIndicator(
           animation: true,
           radius: 100.0,
-          lineWidth: 2.0,
+          lineWidth: 3.0,
           percent: 1.0,
-          center: TextButton(
-            onPressed: null,
-            child: Card(
-              color: Colors.green,
-              elevation: 4.0,
+          progressColor: scanColor == null ? Colors.green : scanColor,
+          center: ElevatedButton(
+            style: ElevatedButton.styleFrom(
               shape: CircleBorder(),
+              primary: scanColor,
+            ),
+            onPressed: onScanPressed,
+            child: Container(
+              height: 80,
+              width: 80,
+              decoration: BoxDecoration(shape: BoxShape.circle),
               child: Center(
                 child: Text(
                   'Scan Threat',
+                  softWrap: true,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),
@@ -28,7 +40,6 @@ class CircularButton extends StatelessWidget {
               ),
             ),
           ),
-          progressColor: Colors.green,
         ),
         Positioned(
           right: -12,

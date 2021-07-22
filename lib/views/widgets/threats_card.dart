@@ -7,7 +7,7 @@ class ThreatsCard extends StatelessWidget {
   final IconData? icon;
   final double? indicatorScore;
   final String? routeName;
-  ThreatsCard(
+  const ThreatsCard(
       {Key? key,
       @required this.label,
       @required this.icon,

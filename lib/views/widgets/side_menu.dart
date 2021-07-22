@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geiger_toolbox/routes/routes.dart';
 import 'package:get/get.dart';
 
 class SideMenuBar extends StatelessWidget {
@@ -17,18 +18,18 @@ class SideMenuBar extends StatelessWidget {
           ListTile(
             title: Text('Home'),
             tileColor:
-                Get.currentRoute == '/scanRiskScreen' ? Colors.grey[300] : null,
+                Get.currentRoute == Routes.SCAN_RISK ? Colors.grey[300] : null,
             onTap: () {
-              Get.toNamed('/scanRiskScreen');
+              Get.toNamed(Routes.SCAN_RISK);
             },
           ),
           ListTile(
             title: Text('Compare Risk '),
-            tileColor: Get.currentRoute == '/compareRiskScreen'
+            tileColor: Get.currentRoute == Routes.COMPARE_RISK
                 ? Colors.grey[300]
                 : null,
             onTap: () {
-              Get.offNamed('/compareRiskScreen');
+              Get.offNamed(Routes.COMPARE_RISK);
             },
           ),
         ],
