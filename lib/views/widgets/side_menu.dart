@@ -10,9 +10,15 @@ class SideMenuBar extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: Text('Geiger Toolbox'),
+            child: Center(
+              child: Text(
+                'Geiger Toolbox',
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.w800),
+                softWrap: true,
+              ),
+            ),
             decoration: BoxDecoration(
-              color: Colors.grey,
+              color: Colors.white30,
             ),
           ),
           ListTile(

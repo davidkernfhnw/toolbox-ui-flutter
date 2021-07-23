@@ -4,13 +4,16 @@ import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'circular_button.dart';
 
 class TopScreen extends StatelessWidget {
-  /*final String? aggregratedScore;
+  final String? aggregratedScore;
   final void Function()? onScanPressed;
+  final bool? warming;
 
   const TopScreen(
-      {Key? key, @required this.aggregratedScore, @required this.onScanPressed})
+      {Key? key,
+      @required this.aggregratedScore,
+      @required this.onScanPressed,
+      @required this.warming})
       : super(key: key);
-*/
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -21,7 +24,7 @@ class TopScreen extends StatelessWidget {
         ),
         SizedBox(height: 5.0),
         GradientText(
-          "69",
+          aggregratedScore!,
           style: TextStyle(
             fontSize: 34.0,
             fontWeight: FontWeight.w700,
@@ -33,7 +36,8 @@ class TopScreen extends StatelessWidget {
         ),
         SizedBox(height: 5.0),
         CircularButton(
-          onScanPressed: () => print("working"),
+          onScanPressed: onScanPressed,
+          warming: warming,
         ),
         SizedBox(height: 10.0),
         Row(

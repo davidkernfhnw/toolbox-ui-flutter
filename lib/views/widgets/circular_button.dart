@@ -4,9 +4,10 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class CircularButton extends StatelessWidget {
   final void Function()? onScanPressed;
-  final Color? scanColor;
+  final bool? warming;
 
-  const CircularButton({Key? key, @required this.onScanPressed, this.scanColor})
+  const CircularButton(
+      {Key? key, @required this.onScanPressed, @required this.warming})
       : super(key: key);
 
   @override
@@ -18,11 +19,11 @@ class CircularButton extends StatelessWidget {
           radius: 100.0,
           lineWidth: 3.0,
           percent: 1.0,
-          progressColor: scanColor == null ? Colors.green : scanColor,
+          progressColor: warming == false ? Colors.green : null,
           center: ElevatedButton(
             style: ElevatedButton.styleFrom(
               shape: CircleBorder(),
-              primary: scanColor,
+              primary: warming == false ? Colors.green : Colors.red,
             ),
             onPressed: onScanPressed,
             child: Container(
@@ -49,11 +50,13 @@ class CircularButton extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.rectangle,
             ),
-            child: Icon(
-              Icons.warning_sharp,
-              size: 30,
-              color: Colors.redAccent,
-            ),
+            child: warming == true
+                ? Icon(
+                    Icons.warning_sharp,
+                    size: 30,
+                    color: Colors.redAccent,
+                  )
+                : Container(),
           ),
         ),
       ],
