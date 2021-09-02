@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
-import 'circular_button.dart';
+import 'scan_risk_button.dart';
 
 class TopScreen extends StatelessWidget {
   final String? aggregratedScore;
@@ -35,7 +35,7 @@ class TopScreen extends StatelessWidget {
           ],
         ),
         SizedBox(height: 5.0),
-        CircularButton(
+        ScanRiskButton(
           onScanPressed: onScanPressed,
           warming: warming,
         ),

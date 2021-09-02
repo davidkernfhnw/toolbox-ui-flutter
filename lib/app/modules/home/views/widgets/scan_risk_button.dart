@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
-class CircularButton extends StatelessWidget {
+class ScanRiskButton extends StatelessWidget {
   final void Function()? onScanPressed;
   final bool? warming;
 
-  const CircularButton(
+  const ScanRiskButton(
       {Key? key, @required this.onScanPressed, @required this.warming})
       : super(key: key);
 

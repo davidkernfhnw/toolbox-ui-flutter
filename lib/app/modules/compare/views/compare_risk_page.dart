@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/views/widgets/side_menu.dart';
-import 'package:geiger_toolbox/controllers/compare_risk_controller.dart';
+import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
+import 'package:geiger_toolbox/app/modules/compare/controller/compare_risk_controller.dart';
+
 import 'package:get/get.dart';
 
-class CompareRisk extends StatelessWidget {
+class CompareRiskPage extends StatelessWidget {
   final CompareRiskController controller = Get.find<CompareRiskController>();
   @override
   Widget build(BuildContext context) {

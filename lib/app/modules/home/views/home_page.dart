@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/controllers/scan_risk_controller.dart';
-import 'package:geiger_toolbox/model/threats_model.dart';
-import 'package:geiger_toolbox/routes/routes.dart';
-import 'package:geiger_toolbox/views/widgets/side_menu.dart';
-import 'package:geiger_toolbox/views/widgets/threats_card.dart';
-import 'package:geiger_toolbox/views/widgets/topScreen.dart';
-import 'package:get/get.dart';
-import 'package:geiger_toolbox/util/geiger_icon_icons.dart';
+import 'package:geiger_toolbox/app/data/model/threats_model.dart';
+import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
+import 'package:geiger_toolbox/app/shared_widgets/threats_card.dart';
+import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
+import 'package:geiger_toolbox/app/modules/home/views/widgets/topScreen.dart';
+import 'package:geiger_toolbox/app/routes/app_routes.dart';
+import 'package:geiger_toolbox/app/util/geiger_icons.dart';
 
-class ScanRiskScreen extends StatelessWidget {
-  final ScanRiskController controller = Get.find();
+import 'package:get/get.dart';
+
+class HomePage extends StatelessWidget {
+  final HomeController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class ScanRiskScreen extends StatelessWidget {
                       label: e.title,
                       icon: GeigerIcon.iconsMap[e.title!.toLowerCase()],
                       indicatorScore: double.parse(e.score.toString()),
-                      routeName: Routes.RECOMMENDATION +
+                      routeName: Routes.RECOMMENDATION_PAGE +
                           '/userId?threatTitle=${e.title}');
                 }).toList(),
               ),

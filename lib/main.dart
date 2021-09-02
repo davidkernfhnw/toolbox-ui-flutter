@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:geiger_toolbox/routes/pages.dart';
-import 'package:geiger_toolbox/routes/routes.dart';
 import 'package:get/get.dart';
+
+import 'app/routes/app_pages.dart';
+import 'app/routes/app_routes.dart';
 
 void main() {
   runApp(GeigerApp());
@@ -14,8 +15,8 @@ class GeigerApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       navigatorKey: Get.key,
-      initialRoute: Routes.SCAN_RISK,
-      getPages: Pages.screens,
+      initialRoute: Routes.HOME_PAGE,
+      getPages: Pages.pages,
       theme: customThemeData(),
     );
   }

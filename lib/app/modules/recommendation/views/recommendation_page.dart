@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/controllers/recommendation_controller.dart';
-import 'package:geiger_toolbox/views/widgets/user_recommendation.dart';
+import 'package:geiger_toolbox/app/modules/recommendation/controller/recommendation_controller.dart';
+import 'package:geiger_toolbox/app/modules/recommendation/views/widgets/user_recommendation.dart';
 import 'package:get/get.dart';
 
 class Recommendation extends StatelessWidget {
