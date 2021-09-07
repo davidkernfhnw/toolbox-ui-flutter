@@ -1,0 +1,27 @@
+import 'package:geiger_toolbox/app/data/model/user.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'role.g.dart';
+
+@JsonSerializable()
+class Role {
+  final String id;
+
+  @JsonKey(defaultValue: "employee")
+  final String? name;
+
+  Role({required this.id, this.name});
+
+  factory Role.fromJson(Map<String, dynamic> json) {
+    return _$RoleFromJson(json);
+  }
+
+  Map<String, dynamic> toJson() {
+    return _$RoleToJson(this);
+  }
+
+  @override
+  String toString() {
+    return "Role{id : $id, name : $name}";
+  }
+}

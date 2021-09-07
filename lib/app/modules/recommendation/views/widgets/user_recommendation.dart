@@ -2,7 +2,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/data/model/recommendations_models.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/views/widgets/recommendation_tab.dart';
-import 'package:geiger_toolbox/app/shared_widgets/indicator_guage.dart';
+import 'package:geiger_toolbox/app/shared_widgets/indicator_gauge.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/controller/recommendation_controller.dart';
 
 import 'package:get/get.dart';

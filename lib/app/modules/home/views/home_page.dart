@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:geiger_toolbox/app/data/model/role.dart';
 import 'package:geiger_toolbox/app/data/model/threats_model.dart';
+import 'package:geiger_toolbox/app/data/model/user.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
-import 'package:geiger_toolbox/app/shared_widgets/threats_card.dart';
+import 'package:geiger_toolbox/app/modules/home/views/widgets/threats_card.dart';
 import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
 import 'package:geiger_toolbox/app/modules/home/views/widgets/topScreen.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
@@ -25,7 +27,14 @@ class HomePage extends StatelessWidget {
           child: Column(
             children: [
               TopScreen(
-                onScanPressed: () => print("working"),
+                onScanPressed: () {
+                  User user = User(
+                    userId: "12345",
+                    role: Role(id: "12345", name: "testing2"),
+                  );
+
+                  print(user.toJson());
+                },
                 aggregratedScore: '77',
                 warming: false,
               ),

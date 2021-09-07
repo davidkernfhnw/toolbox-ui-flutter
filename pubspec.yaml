@@ -40,12 +40,16 @@ dependencies:
   expandable: ^5.0.1
   #google fonts
   google_fonts: ^2.1.0
+  json_annotation: ^4.0.1
 
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  json_serializable: ^4.1.4
+  #runner for generating json
+  build_runner: ^2.1.2
 
 
 # For information on the generic Dart part of this file, see the
@@ -62,10 +66,7 @@ flutter:
     - assets/images/
 
   fonts:
-     - family: Nunito
-       fonts:
-         - asset: assets/fonts/Nunito-Regular.ttf
-           weight: 400
+
      - family:  GeigerIcon
        fonts:
          - asset: assets/fonts/GeigerIcon.ttf

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'indicator_guage.dart';
+import '../../../../shared_widgets/indicator_gauge.dart';
 
 class ThreatsCard extends StatelessWidget {
   final String? label;
