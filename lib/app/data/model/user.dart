@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class User {
   final String userId;
 
@@ -29,11 +29,5 @@ class User {
   }
   Map<String, dynamic> toJson() {
     return _$UserToJson(this);
-  }
-
-  @override
-  String toString() {
-    return "User{userId : $userId, firstName : $firstName, lastName : $lastname, "
-        "knowledgeLevel : $knowledgeLevel, role: $role}";
   }
 }

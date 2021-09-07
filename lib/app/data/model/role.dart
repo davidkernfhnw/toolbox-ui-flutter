@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'role.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Role {
   final String id;
 
@@ -18,10 +18,5 @@ class Role {
 
   Map<String, dynamic> toJson() {
     return _$RoleToJson(this);
-  }
-
-  @override
-  String toString() {
-    return "Role{id : $id, name : $name}";
   }
 }

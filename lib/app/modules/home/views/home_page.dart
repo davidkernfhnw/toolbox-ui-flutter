@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:geiger_toolbox/app/data/model/geiger_score.dart';
 import 'package:geiger_toolbox/app/data/model/role.dart';
+import 'package:geiger_toolbox/app/data/model/threat.dart';
 import 'package:geiger_toolbox/app/data/model/threats_model.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
@@ -28,12 +30,22 @@ class HomePage extends StatelessWidget {
             children: [
               TopScreen(
                 onScanPressed: () {
+                  //testing User Model
                   User user = User(
                     userId: "12345",
                     role: Role(id: "12345", name: "testing2"),
                   );
 
                   print(user.toJson());
+                  //testing GeigerScore Model
+                  GeigerScore geigerScore = GeigerScore(
+                      user,
+                      {
+                        "22": Threat("wwwph", "phishing"),
+                        "35": Threat("223wl", "malware")
+                      },
+                      "100");
+                  print(geigerScore.toJson());
                 },
                 aggregratedScore: '77',
                 warming: false,

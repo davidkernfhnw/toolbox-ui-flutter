@@ -23,5 +23,5 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'firstName': instance.firstName,
       'lastname': instance.lastname,
       'knowledgeLevel': instance.knowledgeLevel,
-      'role': instance.role,
+      'role': instance.role?.toJson(),
     };

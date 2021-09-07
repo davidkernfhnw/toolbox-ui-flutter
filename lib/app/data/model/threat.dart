@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'threat.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Threat {
   final String threatId;
   final String name;
@@ -18,10 +18,5 @@ class Threat {
 
   Map<String, dynamic> toJson() {
     return _$ThreatToJson(this);
-  }
-
-  @override
-  String toString() {
-    return "Threat{threatId: $threatId, name: $name }";
   }
 }
