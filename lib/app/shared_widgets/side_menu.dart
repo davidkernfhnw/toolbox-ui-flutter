@@ -21,22 +21,20 @@ class SideMenuBar extends StatelessWidget {
               color: Colors.white30,
             ),
           ),
-          ListTile(
-            title: Text('Home'),
-            tileColor:
-                Get.currentRoute == Routes.HOME_PAGE ? Colors.grey[300] : null,
-            onTap: () {
-              Get.toNamed(Routes.HOME_PAGE);
-            },
-          ),
-          ListTile(
-            title: Text('Compare Risk '),
-            tileColor: Get.currentRoute == Routes.COMPARE_RISK_PAGE
-                ? Colors.grey[300]
-                : null,
-            onTap: () {
-              Get.offNamed(Routes.COMPARE_RISK_PAGE);
-            },
+          Column(
+            children: Routes.sideMenuRoutes
+                .map(
+                  (item) => ListTile(
+                    title: Text(item.name),
+                    tileColor: Get.currentRoute == item.route
+                        ? Colors.grey[300]
+                        : null,
+                    onTap: () {
+                      Get.toNamed(item.route);
+                    },
+                  ),
+                )
+                .toList(),
           ),
         ],
       ),
