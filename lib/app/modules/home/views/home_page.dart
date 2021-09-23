@@ -14,7 +14,8 @@ import 'package:geiger_toolbox/app/util/geiger_icons.dart';
 import 'package:get/get.dart';
 
 class HomePage extends StatelessWidget {
-  final HomeController controller = Get.find();
+  // getting an instance of HomeController
+  final HomeController controller = HomeController.to;
 
   @override
   Widget build(BuildContext context) {
