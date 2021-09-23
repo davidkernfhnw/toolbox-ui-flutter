@@ -1,6 +1,9 @@
 import 'package:get/get.dart';
 
 class CompareRiskController extends GetxController {
+  //an instance of CompareRiskController
+  static CompareRiskController get to => Get.find();
+
   final title = 'CompareRisk screen';
 
   @override

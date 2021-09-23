@@ -5,7 +5,7 @@ import 'package:geiger_toolbox/app/modules/compare/controller/compare_risk_contr
 import 'package:get/get.dart';
 
 class CompareRiskPage extends StatelessWidget {
-  final CompareRiskController controller = Get.find<CompareRiskController>();
+  final CompareRiskController controller = CompareRiskController.to;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

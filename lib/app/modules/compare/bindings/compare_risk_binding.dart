@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 class CompareRiskBinding extends Bindings {
   @override
   void dependencies() {
+    //only called when someone use Get.find<CompareRiskController>()
     Get.lazyPut(() => CompareRiskController());
   }
 }

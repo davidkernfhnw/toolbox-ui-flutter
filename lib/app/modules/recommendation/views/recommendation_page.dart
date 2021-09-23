@@ -6,7 +6,7 @@ import 'package:geiger_toolbox/app/modules/recommendation/views/widgets/user_rec
 import 'package:get/get.dart';
 
 class Recommendation extends StatelessWidget {
-  final RecommendationController controller = Get.find();
+  final RecommendationController controller = RecommendationController.to;
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
