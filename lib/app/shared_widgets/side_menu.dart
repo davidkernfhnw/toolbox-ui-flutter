@@ -30,7 +30,8 @@ class SideMenuBar extends StatelessWidget {
                         ? Colors.grey[300]
                         : null,
                     onTap: () {
-                      Get.toNamed(item.route);
+                      //navigate and remove previous screen from the tree
+                      Get.offNamed(item.route);
                     },
                   ),
                 )
