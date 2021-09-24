@@ -48,6 +48,9 @@ dev_dependencies:
   #runner for generating json
   build_runner: ^2.1.2
   flutter_lints: ^1.0.4
+  #for generating folder structure
+  get_cli: ^1.6.0
+
 
 # The following section is specific to Flutter.
 flutter:
