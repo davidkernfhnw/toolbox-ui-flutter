@@ -50,3 +50,8 @@ class HomeController extends GetxController {
     return _threatsScore;
   }
 }
+
+//Todo
+//refactor fetchGeigerAggregateScore() to return a Future
+//so that you can delay the loading process
+// in other to see the CircularProgressIndicator in homePage
