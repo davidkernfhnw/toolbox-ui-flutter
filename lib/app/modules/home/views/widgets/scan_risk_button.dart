@@ -22,15 +22,15 @@ class ScanRiskButton extends StatelessWidget {
           progressColor: warming == false ? Colors.green : null,
           center: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
               primary: warming == false ? Colors.green : Colors.red,
             ),
             onPressed: onScanPressed,
             child: Container(
               height: 80,
               width: 80,
-              decoration: BoxDecoration(shape: BoxShape.circle),
-              child: Center(
+              decoration: const BoxDecoration(shape: BoxShape.circle),
+              child: const Center(
                 child: Text(
                   'Scan Threat',
                   softWrap: true,

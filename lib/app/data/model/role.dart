@@ -1,4 +1,3 @@
-import 'package:geiger_toolbox/app/data/model/user.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'role.g.dart';

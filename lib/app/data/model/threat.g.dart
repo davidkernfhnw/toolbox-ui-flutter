@@ -10,10 +10,12 @@ Threat _$ThreatFromJson(Map<String, dynamic> json) {
   return Threat(
     json['threatId'] as String,
     json['name'] as String,
+    ThreatScore.fromJson(json['score'] as Map<String, dynamic>),
   );
 }
 
 Map<String, dynamic> _$ThreatToJson(Threat instance) => <String, dynamic>{
       'threatId': instance.threatId,
       'name': instance.name,
+      'score': instance.score.toJson(),
     };

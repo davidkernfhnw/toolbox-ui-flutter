@@ -1,7 +1,6 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/data/model/recommendations_models.dart';
-import 'package:geiger_toolbox/app/modules/recommendation/views/recommendation_page.dart';
 
 class ExpansionCard extends StatelessWidget {
   final RecommendationModel recommendationData;
