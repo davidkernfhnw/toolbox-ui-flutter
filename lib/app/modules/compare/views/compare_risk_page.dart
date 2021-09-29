@@ -11,7 +11,7 @@ class CompareRiskPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(controller.title),
       ),
-      drawer: SideMenuBar(),
+      drawer: const SideMenuBar(),
       body: Center(
         child: Text(controller.title),
       ),

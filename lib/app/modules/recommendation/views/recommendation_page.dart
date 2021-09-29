@@ -1,12 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/data/model/threat.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/controller/recommendation_controller.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/views/widgets/device_recommendation.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/views/widgets/tab_bar_builder.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/views/widgets/user_recommendation.dart';
-import 'package:get/get.dart';
 
 class RecommendationPage extends StatelessWidget {
   RecommendationPage({Key? key}) : super(key: key);

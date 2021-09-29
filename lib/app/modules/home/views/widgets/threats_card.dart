@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/data/model/threat.dart';
-import 'package:geiger_toolbox/app/modules/recommendation/controller/recommendation_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:get/get.dart';
 import '../../../../shared_widgets/indicator_gauge.dart';

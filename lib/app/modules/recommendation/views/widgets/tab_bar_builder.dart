@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 TabBar buildTabBar() {
-  return TabBar(
+  return const TabBar(
     tabs: <Widget>[
       Tab(
         icon: Icon(

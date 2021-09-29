@@ -20,9 +20,9 @@ class ExpansionCard extends StatelessWidget {
           title: Text(
             recommendationData.header.toString(),
             softWrap: true,
-            style: TextStyle(),
+            style: const TextStyle(),
           ),
-          trailing: Text("high"),
+          trailing: const Text("high"),
         ),
         collapsed: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -33,14 +33,14 @@ class ExpansionCard extends StatelessWidget {
                 recommendationData.body.toString(),
                 softWrap: true,
               ),
-              SizedBox(height: 5),
-              Text(
+              const SizedBox(height: 5),
+              const Text(
                 "Required Tool:",
                 style: TextStyle(color: Colors.black45),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [
+                children: const [
                   OutlinedButton(
                     onPressed: null,
                     child: Text("Get Help"),

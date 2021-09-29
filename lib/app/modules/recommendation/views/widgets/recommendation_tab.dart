@@ -24,7 +24,7 @@ class RecommendationTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
       child: Column(
         children: [
           IndicatorGauge(score: score.toDouble()),
@@ -36,8 +36,8 @@ class RecommendationTab extends StatelessWidget {
                 onPressed: null,
                 child: Row(
                   children: [
-                    Icon(Icons.warning_rounded),
-                    SizedBox(width: 5),
+                    const Icon(Icons.warning_rounded),
+                    const SizedBox(width: 5),
                     Text("About $threatTitle"),
                   ],
                 ),
@@ -45,7 +45,7 @@ class RecommendationTab extends StatelessWidget {
               OutlinedButton(
                 onPressed: null,
                 child: Row(
-                  children: [
+                  children: const [
                     Icon(Icons.warning_rounded),
                     SizedBox(width: 5),
                     Text("About Device"),
@@ -54,18 +54,18 @@ class RecommendationTab extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           recommendationType == null
-              ? SizedBox()
+              ? const SizedBox()
               : Row(
                   children: [
                     Text(
                       recommendationType!,
-                      style: TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   ],
                 ),
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
           Obx(

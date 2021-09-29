@@ -14,7 +14,7 @@ class IndicatorGauge extends StatelessWidget {
           GaugeSegment('High', 30, Colors.green),
         ],
         currentValue: score,
-        displayWidget: Text('High', style: TextStyle(fontSize: 12)),
+        displayWidget: const Text('High', style: TextStyle(fontSize: 12)),
         showMarkers: false);
   }
 }

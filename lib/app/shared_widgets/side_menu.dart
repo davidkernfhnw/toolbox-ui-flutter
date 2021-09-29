@@ -3,13 +3,14 @@ import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:get/get.dart';
 
 class SideMenuBar extends StatelessWidget {
+  const SideMenuBar({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          DrawerHeader(
+          const DrawerHeader(
             child: Center(
               child: Text(
                 'Geiger Toolbox',

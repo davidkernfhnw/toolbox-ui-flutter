@@ -19,7 +19,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SideMenuBar(),
+      drawer: const SideMenuBar(),
       appBar: AppBar(
         title: const Text('Geiger Toolbox'),
       ),
