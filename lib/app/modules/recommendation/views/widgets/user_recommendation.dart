@@ -12,13 +12,15 @@ class UserRecommendation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: RecommendationTab(
-        threatTitle: Get.parameters['threatTitle'].toString(),
-        score: 44,
-        label: 'Current user',
-        controller: controller,
-        recommendationType: "Personal Recommendations",
-      ),
+      child: Obx(() {
+        return RecommendationTab(
+          threatTitle: controller.threat.value.name.toString(),
+          score: double.parse(controller.threat.value.score!.score ?? "44.3"),
+          label: 'Current user',
+          controller: controller,
+          recommendationType: "Personal Recommendations",
+        );
+      }),
     );
   }
 }

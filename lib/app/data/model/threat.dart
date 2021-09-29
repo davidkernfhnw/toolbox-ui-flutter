@@ -4,9 +4,9 @@ part 'threat.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Threat {
-  final String threatId;
-  final String name;
-  final ThreatScore score;
+  final String? threatId;
+  final String? name;
+  final ThreatScore? score;
 
   Threat(this.threatId, this.name, this.score);
 

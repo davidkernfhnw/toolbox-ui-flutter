@@ -4,7 +4,7 @@ part 'threat_score.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class ThreatScore {
-  String score;
+  String? score;
   ThreatScore(this.score);
 
   factory ThreatScore.fromJson(Map<String, dynamic> json) {

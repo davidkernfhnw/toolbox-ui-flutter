@@ -6,7 +6,7 @@ ThemeData customThemeData() {
   return ThemeData(
     primaryColor: AppColors.white,
     primarySwatch: AppColors.green,
-    secondaryHeaderColor: Color(0xFF00395D),
+    secondaryHeaderColor: const Color(0xFF00395D),
     textTheme: TextTheme(
       headline1: GoogleFonts.hind().copyWith(
         fontSize: 34.0,

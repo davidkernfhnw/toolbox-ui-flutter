@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:get/get.dart';
 
 class CompareRiskController extends GetxController {
@@ -8,19 +10,19 @@ class CompareRiskController extends GetxController {
 
   @override
   void onInit() {
-    print('>>> compareRiskController init');
+    log('>>> compareRiskController init');
     super.onInit();
   }
 
   @override
   void onReady() {
-    print('>>> compareRiskController ready');
+    log('>>> compareRiskController ready');
     super.onReady();
   }
 
   @override
   void onClose() {
-    print('>>> compareRiskController close');
+    log('>>> compareRiskController close');
     super.onClose();
   }
 }

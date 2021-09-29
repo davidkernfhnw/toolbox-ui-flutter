@@ -1,6 +1,5 @@
 import 'package:geiger_toolbox/app/data/model/threat.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:geiger_toolbox/app/data/model/threat_score.dart';
 part 'geiger_aggregate_score.g.dart';
 
 @JsonSerializable(explicitToJson: true)

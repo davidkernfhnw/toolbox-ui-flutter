@@ -7,7 +7,7 @@ import 'expansion_card.dart';
 
 class RecommendationTab extends StatelessWidget {
   final String label;
-  final int score;
+  final double score;
   final String threatTitle;
   final String? recommendationType;
   final RecommendationController controller;

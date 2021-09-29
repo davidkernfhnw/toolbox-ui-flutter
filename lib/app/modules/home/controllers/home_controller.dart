@@ -35,11 +35,6 @@ class HomeController extends GetxController {
     isLoading.value = false;
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
   _setGeigerAggregateThreatScore() {
     //pass List<Threat> threats and score
     _threatsScore = geigerAggregateScore.value.threatScores;

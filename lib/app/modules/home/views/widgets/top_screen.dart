@@ -18,31 +18,31 @@ class TopScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
+        const Text(
           'Your total Risk Score:',
           style: TextStyle(color: Colors.grey),
         ),
-        SizedBox(height: 5.0),
+        const SizedBox(height: 5.0),
         GradientText(
           aggregratedScore!,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 34.0,
             fontWeight: FontWeight.w700,
           ),
-          colors: [
+          colors: const [
             Color(0xffD92323),
             Color(0xffD92323),
           ],
         ),
-        SizedBox(height: 5.0),
+        const SizedBox(height: 5.0),
         ScanRiskButton(
           onScanPressed: onScanPressed,
           warming: warming,
         ),
-        SizedBox(height: 10.0),
+        const SizedBox(height: 10.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+          children: const [
             OutlinedButton(
               onPressed: null,
               child: Text(
@@ -60,10 +60,10 @@ class TopScreen extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 5.0),
+        const SizedBox(height: 5.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+          children: const [
             Text(
               'Current Threats',
               style: TextStyle(color: Colors.grey),

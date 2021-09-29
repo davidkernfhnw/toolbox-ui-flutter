@@ -47,11 +47,11 @@ class ScanRiskButton extends StatelessWidget {
           top: 8,
           child: Container(
             width: 50,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               shape: BoxShape.rectangle,
             ),
             child: warming == true
-                ? Icon(
+                ? const Icon(
                     Icons.warning_sharp,
                     size: 30,
                     color: Colors.redAccent,

@@ -8,7 +8,7 @@ part of 'threat_score.dart';
 
 ThreatScore _$ThreatScoreFromJson(Map<String, dynamic> json) {
   return ThreatScore(
-    json['score'] as String,
+    json['score'] as String?,
   );
 }
 

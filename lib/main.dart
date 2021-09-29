@@ -6,10 +6,11 @@ import 'app/routes/app_routes.dart';
 import 'app/util/theme/custom_theme_data.dart';
 
 void main() {
-  runApp(GeigerApp());
+  runApp(const GeigerApp());
 }
 
 class GeigerApp extends StatelessWidget {
+  const GeigerApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(

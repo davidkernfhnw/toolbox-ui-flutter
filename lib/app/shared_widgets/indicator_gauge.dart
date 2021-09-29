@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pretty_gauge/pretty_gauge.dart';
 
 class IndicatorGauge extends StatelessWidget {
+  const IndicatorGauge({Key? key, @required this.score}) : super(key: key);
   final double? score;
-  IndicatorGauge({@required this.score});
-
   @override
   Widget build(BuildContext context) {
     return PrettyGauge(
