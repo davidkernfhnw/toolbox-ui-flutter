@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/util/theme/app_colors.dart';
+
 import 'package:google_fonts/google_fonts.dart';
+
+import 'custom_material_color.dart';
 
 ThemeData customThemeData() {
   return ThemeData(
-    primaryColor: AppColors.white,
-    primarySwatch: AppColors.green,
-    secondaryHeaderColor: const Color(0xFF00395D),
+    primarySwatch: CustomMaterialColor.createMaterialColor(Colors.white),
+
+    toggleableActiveColor: Colors.green,
+
+    //customize styling for elevatedButton
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: TextButton.styleFrom(
+          backgroundColor: Colors.green, primary: Colors.white),
+    ),
+
     textTheme: TextTheme(
       headline1: GoogleFonts.hind().copyWith(
         fontSize: 34.0,

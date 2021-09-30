@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 TabBar buildTabBar() {
   return const TabBar(
+    indicatorWeight: 2.0,
+    indicatorColor: Colors.green,
     tabs: <Widget>[
       Tab(
         icon: Icon(

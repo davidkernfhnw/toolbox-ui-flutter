@@ -4,8 +4,6 @@ import 'package:geiger_toolbox/app/modules/recommendation/views/widgets/recommen
 
 import 'package:geiger_toolbox/app/modules/recommendation/controller/recommendation_controller.dart';
 
-import 'package:get/get.dart';
-
 class DeviceRecommendation extends StatelessWidget {
   final RecommendationController controller;
   const DeviceRecommendation({Key? key, required this.controller})
@@ -15,8 +13,8 @@ class DeviceRecommendation extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: RecommendationTab(
-        threatTitle: Get.parameters['threatTitle'].toString(),
-        score: 80,
+        threatTitle: controller.threat.value.name.toString(),
+        score: double.parse(controller.threat.value.score!.score.toString()),
         label: 'Current device',
         controller: controller,
         recommendationType: "Device Recommendations",

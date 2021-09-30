@@ -13,8 +13,8 @@ class RecommendationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
       initialIndex: 0,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           title: Text(controller.threat.value.name.toString()),
@@ -22,10 +22,8 @@ class RecommendationPage extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            UserRecommendation(
-              controller: controller,
-            ),
-            DeviceRecommendation(controller: controller),
+            UserRecommendation(controller: controller),
+            DeviceRecommendation(controller: controller)
           ],
         ),
       ),

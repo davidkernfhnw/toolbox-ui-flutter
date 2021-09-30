@@ -6,19 +6,19 @@ import 'app/routes/app_routes.dart';
 import 'app/util/theme/custom_theme_data.dart';
 
 void main() {
-  runApp(const GeigerApp());
+  runApp(GeigerApp());
 }
 
 class GeigerApp extends StatelessWidget {
-  const GeigerApp({Key? key}) : super(key: key);
+  GeigerApp({Key? key}) : super(key: key);
+  final ThemeData customTheme = customThemeData();
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      debugShowCheckedModeBanner: true,
-      navigatorKey: Get.key,
-      initialRoute: Routes.HOME_PAGE,
-      getPages: Pages.pages,
-      theme: customThemeData(),
-    );
+        debugShowCheckedModeBanner: true,
+        navigatorKey: Get.key,
+        initialRoute: Routes.HOME_PAGE,
+        getPages: Pages.pages,
+        theme: customTheme);
   }
 }
