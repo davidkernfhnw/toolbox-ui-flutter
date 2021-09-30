@@ -8,9 +8,9 @@ part 'geiger_score_device.g.dart';
 class GeigerScoreDevice {
   Device deviceId;
   String geigerScore;
-  List<Map<String, Threat>> threatScore = [];
+  List<Threat> threatScores;
 
-  GeigerScoreDevice(this.deviceId, this.geigerScore, this.threatScore);
+  GeigerScoreDevice(this.deviceId, this.geigerScore, this.threatScores);
 
   factory GeigerScoreDevice.fromJson(Map<String, dynamic> json) {
     return _$GeigerScoreDeviceFromJson(json);

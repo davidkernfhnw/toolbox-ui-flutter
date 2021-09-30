@@ -7,7 +7,7 @@ part 'geiger_score_user.g.dart';
 @JsonSerializable(explicitToJson: true)
 class GeigerScore {
   User userId;
-  List<Map<String, Threat>> threatScores = [];
+  List<Threat> threatScores;
   final String geigerScore;
 
   GeigerScore(this.userId, this.threatScores, this.geigerScore);
