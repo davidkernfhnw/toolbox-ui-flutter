@@ -1,12 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:geiger_toolbox/app/data/model/threat_score.dart';
+import 'package:geiger_toolbox/app/data/model/score.dart';
 part 'threat.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Threat {
   final String? threatId;
   final String? name;
-  final ThreatScore? score;
+  final Score? score;
 
   Threat(this.threatId, this.name, this.score);
 

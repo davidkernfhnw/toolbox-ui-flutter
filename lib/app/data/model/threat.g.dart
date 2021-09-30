@@ -6,15 +6,13 @@ part of 'threat.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Threat _$ThreatFromJson(Map<String, dynamic> json) {
-  return Threat(
-    json['threatId'] as String?,
-    json['name'] as String?,
-    json['score'] == null
-        ? null
-        : ThreatScore.fromJson(json['score'] as Map<String, dynamic>),
-  );
-}
+Threat _$ThreatFromJson(Map<String, dynamic> json) => Threat(
+      json['threatId'] as String?,
+      json['name'] as String?,
+      json['score'] == null
+          ? null
+          : Score.fromJson(json['score'] as Map<String, dynamic>),
+    );
 
 Map<String, dynamic> _$ThreatToJson(Threat instance) => <String, dynamic>{
       'threatId': instance.threatId,

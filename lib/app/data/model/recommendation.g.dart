@@ -6,18 +6,17 @@ part of 'recommendation.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Recommendation _$RecommendationFromJson(Map<String, dynamic> json) {
-  return Recommendation(
-    json['recommendationId'] as String,
-    json['shortDescription'] as String,
-    json['longDescription'] as String,
-    (json['threatImpact'] as Map<String, dynamic>).map(
-      (k, e) => MapEntry(k, Threat.fromJson(e as Map<String, dynamic>)),
-    ),
-    User.fromJson(json['user'] as Map<String, dynamic>),
-    json['recommendationType'] as String,
-  );
-}
+Recommendation _$RecommendationFromJson(Map<String, dynamic> json) =>
+    Recommendation(
+      json['recommendationId'] as String,
+      json['shortDescription'] as String,
+      json['longDescription'] as String,
+      (json['threatImpact'] as Map<String, dynamic>).map(
+        (k, e) => MapEntry(k, Threat.fromJson(e as Map<String, dynamic>)),
+      ),
+      User.fromJson(json['user'] as Map<String, dynamic>),
+      json['recommendationType'] as String,
+    );
 
 Map<String, dynamic> _$RecommendationToJson(Recommendation instance) =>
     <String, dynamic>{

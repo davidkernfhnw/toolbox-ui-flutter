@@ -6,15 +6,13 @@ part of 'device.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Device _$DeviceFromJson(Map<String, dynamic> json) {
-  return Device(
-    json['deviceId'] as String,
-    json['deviceName'] as String,
-    json['os'] as String?,
-    json['osVersion'] as String?,
-    User.fromJson(json['owner'] as Map<String, dynamic>),
-  );
-}
+Device _$DeviceFromJson(Map<String, dynamic> json) => Device(
+      json['deviceId'] as String,
+      json['deviceName'] as String,
+      json['os'] as String?,
+      json['osVersion'] as String?,
+      User.fromJson(json['owner'] as Map<String, dynamic>),
+    );
 
 Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
       'deviceId': instance.deviceId,
