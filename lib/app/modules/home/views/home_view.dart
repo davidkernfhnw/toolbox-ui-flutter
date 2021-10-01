@@ -11,8 +11,8 @@ import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/util/geiger_icons.dart';
 import 'package:get/get.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({Key? key}) : super(key: key);
+class HomeView extends StatelessWidget {
+  HomeView({Key? key}) : super(key: key);
   // getting an instance of HomeController
   final HomeController controller = HomeController.to;
 
@@ -32,29 +32,31 @@ class HomePage extends StatelessWidget {
               TopScreen(
                 onScanPressed: () {
                   //testing Geiger Aggregate score Model
-                  controller.fetchGeigerAggregateScore();
-                  log(controller.getGeigerAggregateThreatScore().toString());
+                  controller.emptyThreatScores();
+                  controller.setGeigerAggregateThreatScore();
+                  log(controller.setGeigerAggregateThreatScore().toString());
                 },
-                aggregratedScore:
-                    controller.geigerAggregateScore.value.geigerScore ?? "",
+                aggregratedScore: !controller.isLoading.value
+                    ? controller.geigerAggregateScore.value.geigerScore ?? ""
+                    : "",
                 warming: false,
+                isLoading: controller.isLoading.value,
               ),
               controller.isLoading.value
                   ? const CircularProgressIndicator.adaptive()
-                  : controller.getGeigerAggregateThreatScore().isEmpty
+                  : controller.threatsScore.isEmpty
                       ? const Center(
                           child: Text("NO DATA FOUND"),
                         )
                       : Column(
-                          children: controller
-                              .getGeigerAggregateThreatScore()
+                          children: controller.threatsScore
                               .map<ThreatsCard>((Threat e) {
                             return ThreatsCard(
                               label: e.name,
                               icon: GeigerIcon.iconsMap[e.name!.toLowerCase()],
                               indicatorScore:
                                   double.parse(e.score!.score.toString()),
-                              routeName: Routes.RECOMMENDATION_PAGE,
+                              routeName: Routes.RECOMMENDATION_VIEW,
                               routeArguments: e,
                             );
                           }).toList(),

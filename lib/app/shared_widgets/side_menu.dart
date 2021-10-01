@@ -32,7 +32,11 @@ class SideMenuBar extends StatelessWidget {
                         : null,
                     onTap: () {
                       //navigate and remove previous screen from the tree
-                      Get.offNamed(item.route);
+                      //but data will be lost
+                      //Get.offNamed(item.route);
+
+                      //navigate
+                      Get.toNamed(item.route);
                     },
                   ),
                 )
@@ -43,3 +47,7 @@ class SideMenuBar extends StatelessWidget {
     );
   }
 }
+
+//Todo
+//issues of removing screens and controller after used from memory
+// can done without iterating menu items

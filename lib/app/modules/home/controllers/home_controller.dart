@@ -15,34 +15,33 @@ class HomeController extends GetxController {
       GeigerAggregateScore([], null, null).obs;
 
   //initial as a private list obs
-  List<Threat> _threatsScore = <Threat>[].obs;
+  List<Threat> threatsScore = <Threat>[].obs;
 
   // populate static json data
-  fetchGeigerAggregateScore() {
-    isLoading.value = true;
+  Future<List<Threat>> _fetchGeigerAggregateScore() async {
     const scoreAggJsonData = '''{
         "threatScores": [ {"threatId":"1234ph", "name":"Phishing", "score":{"score":"40.20"}}, {"threatId":"1234ml", "name":"Malware", "score" :{"score":"80.23"}}],
         "numberMetrics": "2",
         "geigerScore" : "62.0"
     }''';
+
+    //delay by 1sec
+    await Future.delayed(1000.milliseconds);
     GeigerAggregateScore aggScore =
         GeigerAggregateScore.fromJson(json.decode(scoreAggJsonData));
     //assign decode GeigerAggregateScore json
     geigerAggregateScore.value = aggScore;
+    return geigerAggregateScore.value.threatScores;
+  }
 
-    _setGeigerAggregateThreatScore();
-
+  setGeigerAggregateThreatScore() async {
+    isLoading.value = true;
+    threatsScore = await _fetchGeigerAggregateScore();
     isLoading.value = false;
   }
 
-  _setGeigerAggregateThreatScore() {
-    //pass List<Threat> threats and score
-    _threatsScore = geigerAggregateScore.value.threatScores;
-  }
-
-  //return a list of threats and scores
-  List<Threat> getGeigerAggregateThreatScore() {
-    return _threatsScore;
+  emptyThreatScores() {
+    threatsScore = [];
   }
 }
 

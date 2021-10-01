@@ -6,6 +6,7 @@ import 'app/routes/app_routes.dart';
 import 'app/util/theme/custom_theme_data.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(GeigerApp());
 }
 
@@ -17,7 +18,7 @@ class GeigerApp extends StatelessWidget {
     return GetMaterialApp(
         debugShowCheckedModeBanner: true,
         navigatorKey: Get.key,
-        initialRoute: Routes.HOME_PAGE,
+        initialRoute: Routes.HOME_VIEW,
         getPages: Pages.pages,
         theme: customTheme);
   }

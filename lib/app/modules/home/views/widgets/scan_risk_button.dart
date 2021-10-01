@@ -1,12 +1,19 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:get/get.dart';
 
 class ScanRiskButton extends StatelessWidget {
   final void Function()? onScanPressed;
   final bool? warming;
 
-  const ScanRiskButton(
+  // getting an instance of HomeController
+  final HomeController controller = HomeController.to;
+
+  ScanRiskButton(
       {Key? key, @required this.onScanPressed, @required this.warming})
       : super(key: key);
 
@@ -15,10 +22,11 @@ class ScanRiskButton extends StatelessWidget {
     return Stack(
       children: [
         CircularPercentIndicator(
+          animationDuration: 500,
           animation: true,
           radius: 100.0,
           lineWidth: 3.0,
-          percent: 1.0,
+          percent: controller.threatsScore.isEmpty ? 0.0 : 1.0,
           progressColor: warming == false ? Colors.green : null,
           center: ElevatedButton(
             style: ElevatedButton.styleFrom(

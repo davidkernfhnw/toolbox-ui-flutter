@@ -44,7 +44,7 @@ class ThreatsCard extends StatelessWidget {
                   score: indicatorScore,
                 ),
                 ElevatedButton(
-                  onPressed: () => Get.toNamed(Routes.RECOMMENDATION_PAGE,
+                  onPressed: () => Get.toNamed(Routes.RECOMMENDATION_VIEW,
                       arguments: routeArguments),
                   child: const Text("Improve"),
                 ),
