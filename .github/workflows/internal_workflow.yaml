@@ -28,9 +28,10 @@ jobs:
     - run: flutter doctor -v
 
     # Checkout gallery code and get packages.
-    - name: -> Checkout GitHub Action code
+    - name: -> Checkout gallery code
       uses: actions/checkout@v2
-    - run: flutter pub get
+    - name: -> Get packages
+      run: flutter pub get
 
     # Analyze, check formatting, and run unit tests.
     - name: -> Analyze the project
@@ -48,8 +49,8 @@ jobs:
     #       -X POST \
     #       -u '${{secrets.USER_NAME}}:${{secrets.APPLICATION_ACCESS_TOKEN}}' \
     #       -H "Accept: application/vnd.github.v3+json" \
-    #       https://api.github.com/repos/luongnv89/geiger_toolbox_api_flutter/actions/workflows/main.yaml/dispatches \
-    #       -d '{"ref":"refs/heads/main"}'
+    #       https://api.github.com/repos/cyber-geiger/toolbox-storage/actions/workflows/external_workflow.yaml/dispatches \
+    #       -d '{"ref":"refs/heads/development"}'
 
     # # publish to pub.dev
     # - name: -> Check before publish to pub.dev
