@@ -1,10 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:get/get.dart';
 
 class ScanRiskButton extends StatelessWidget {
   final void Function()? onScanPressed;
