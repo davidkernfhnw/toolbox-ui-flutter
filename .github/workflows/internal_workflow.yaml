@@ -4,10 +4,9 @@ on:
     branches:
     - development
   pull_request:
-    branches:
-    - development
-    - main
-
+    # branches:
+    # - development
+    # - main
 jobs:
   unit-test:
     name: -> Unit tests on ${{ matrix.os }}
