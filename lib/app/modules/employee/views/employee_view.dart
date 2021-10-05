@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/employee/views/widgets/EmployeeCard.dart';
+import 'package:geiger_toolbox/app/modules/employee/views/widgets/qr_code_view.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
+import 'package:get/get.dart';
 
 class EmployeeView extends StatelessWidget {
   const EmployeeView({Key? key}) : super(key: key);
@@ -22,7 +24,7 @@ class EmployeeView extends StatelessWidget {
                   " of the employee scores",
               btnIcon: Icon(Icons.qr_code_scanner),
               btnText: "QR Code",
-              onScan: null,
+              onScan: () => Get.to(() => QrCodeView()),
             ),
             EmployeeCard(
               title: "Your Employee",
