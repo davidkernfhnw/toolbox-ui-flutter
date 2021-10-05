@@ -12,7 +12,7 @@ class EmployeeCard extends StatelessWidget {
 
   final String title;
   final String msgBody;
-  void Function()? onScan;
+  final void Function()? onScan;
   final Icon btnIcon;
   final String btnText;
 
