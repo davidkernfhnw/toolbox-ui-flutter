@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -10,12 +11,44 @@ class QrScannerController extends GetxController {
   Barcode? result;
   QRViewController? qrViewController;
 
+  var viewTitle = "".obs;
+
   //instance
   static QrScannerController get to => Get.find();
 
   @override
   void onInit() {
+    viewTitle.value = Get.arguments.toString();
+    log("Get arguments: ${Get.arguments}");
     super.onInit();
+  }
+
+  Future<void> requestCameraPermission(String page, {dynamic arguments}) async {
+    final PermissionStatus cameraStatus = await Permission.camera.request();
+    if (cameraStatus == PermissionStatus.granted) {
+      log("Permission granted");
+      Get.toNamed(page, arguments: arguments);
+    } else if (cameraStatus == PermissionStatus.denied) {
+      log('Permission denied');
+      Get.snackbar("Permission Denied", "Try Again: Please grant Permission.",
+          duration: Duration(seconds: 10),
+          showProgressIndicator: true,
+          snackPosition: SnackPosition.BOTTOM);
+    } else if (cameraStatus == PermissionStatus.permanentlyDenied) {
+      log('Permission Permanently Denied');
+      Get.snackbar("Permission Denied:", "Please press to enable permission.",
+          duration: Duration(seconds: 5),
+          // backgroundColor: Colors.deepOrangeAccent,
+          // colorText: Colors.white,
+          onTap: (bar) async {
+        await openAppSettings();
+      },
+          shouldIconPulse: true,
+          icon: Icon(Icons.warning_rounded),
+          showProgressIndicator: true,
+          progressIndicatorBackgroundColor: Colors.redAccent,
+          snackPosition: SnackPosition.BOTTOM);
+    }
   }
 
   void onQRViewCreated(QRViewController controller) {

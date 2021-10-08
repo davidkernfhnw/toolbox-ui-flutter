@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/employee/controllers/employee_controller.dart';
 import 'package:geiger_toolbox/app/modules/employee/views/employee_qrcode_view.dart';
+import 'package:geiger_toolbox/app/modules/qrcode/controllers/qr_scanner_controller.dart';
+import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/shared_widgets/EmployeeCard.dart';
 
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
@@ -11,11 +13,13 @@ class EmployeeView extends StatelessWidget {
 
   //instance of EmployeeController
   final EmployeeController controller = EmployeeController.to;
+  //instance of QrScannerController
+  final QrScannerController qrController = QrScannerController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('EmployeeView'),
+        title: Text('Employee'),
       ),
       drawer: SideMenuBar(),
       body: Padding(
@@ -37,7 +41,9 @@ class EmployeeView extends StatelessWidget {
                 btnIcon: Icon(Icons.camera_alt),
                 btnText: "Add an Employee",
                 onScan: () async {
-                  await controller.requestCameraPermission();
+                  await qrController.requestCameraPermission(
+                      Routes.QrSCANNER_VIEW,
+                      arguments: "Add an employee");
 
                   //controller.requestCameraPermission();
                 })

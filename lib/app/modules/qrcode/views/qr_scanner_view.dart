@@ -32,7 +32,7 @@ class _QRScannerViewState extends State<QRScannerView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Geiger Toolbox"),
+        title: Text(qrScannerViewController.viewTitle.value),
       ),
       body: Column(
         children: <Widget>[
@@ -51,24 +51,36 @@ class _QRScannerViewState extends State<QRScannerView> {
               init: QrScannerController(),
               builder: (_) {
                 return Expanded(
-                  flex: 2,
-                  child: (_.result != null)
-                      ? Text(
-                          "Barcode Type: ${(_.result!.format)}   Data: ${_.result!.code}")
-                      : SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              buildPaddedText("Ask your Employee:"),
-                              buildPaddedText(
-                                  "1. To Open the GEIGER Toolbox on their device."),
-                              buildPaddedText(
-                                  '2. To select the tab “Employees” & press the button “QR Code”.'),
-                              buildPaddedText(
-                                  "3. Point your Phone to their screen to scan the code.")
-                            ],
-                          ),
-                        ),
-                );
+                    flex: 2,
+                    child: (_.result != null)
+                        ? Text(
+                            "Barcode Type: ${(_.result!.format)}   Data: ${_.result!.code}")
+                        : _.viewTitle == "Add an employee"
+                            ? SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    buildPaddedText("Ask your Employee:"),
+                                    buildPaddedText(
+                                        "1. To Open the GEIGER Toolbox on their device."),
+                                    buildPaddedText(
+                                        '2. To select the tab “Employees” & press the button “QR Code”.'),
+                                    buildPaddedText(
+                                        "3. Point your Phone to their screen to scan the code.")
+                                  ],
+                                ),
+                              )
+                            : SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    buildPaddedText(
+                                        "1. Open the GEIGER Toolbox on your other  device."),
+                                    buildPaddedText(
+                                        '2. Select the Tab “Devices”.'),
+                                    buildPaddedText(
+                                        "3. Select “QR Code” and scan it with this camera.")
+                                  ],
+                                ),
+                              ));
               })
         ],
       ),

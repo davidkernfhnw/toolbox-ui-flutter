@@ -15,6 +15,7 @@ class RecommendationController extends GetxController {
 
   setThreat() {
     log(Get.arguments.name.toString());
+    //retrieve arguments from Routes
     threat.value = Get.arguments;
   }
 

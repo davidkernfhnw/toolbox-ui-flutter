@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/shared_widgets/indicator_gauge.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
