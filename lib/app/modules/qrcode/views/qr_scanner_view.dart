@@ -1,11 +1,8 @@
 import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/qrcode/controllers/qr_scanner_controller.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:get/get.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRScannerView extends StatefulWidget {
   const QRScannerView({Key? key}) : super(key: key);
@@ -56,7 +53,7 @@ class _QRScannerViewState extends State<QRScannerView> {
                   flex: 2,
                   child: (_.result != null)
                       ? Text(
-                          "Barcode Type: ${describeEnum(_.result!.format)}   Data: ${_.result!.code}")
+                          "Barcode Type: ${(_.result!.format)}   Data: ${_.result!.code}")
                       : SingleChildScrollView(
                           child: Column(
                             children: [
