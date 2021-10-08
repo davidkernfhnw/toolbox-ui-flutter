@@ -41,6 +41,8 @@ dependencies:
   google_fonts: ^2.1.0
   json_annotation: ^4.0.1
   qr_flutter: ^4.0.0
+  qr_code_scanner: ^0.5.2
+  permission_handler: ^8.2.2
 
 dev_dependencies:
   flutter_test:
@@ -64,3 +66,8 @@ flutter:
      - family:  GeigerIcon
        fonts:
          - asset: assets/fonts/GeigerIcon.ttf
+
+
+#Todo
+#add to web/index.html
+#<script src="https://cdn.jsdelivr.net/npm/jsqr@1.3.1/dist/jsQR.min.js"></script>

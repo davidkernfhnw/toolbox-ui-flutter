@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:geiger_toolbox/app/modules/employee/controllers/employee_controller.dart';
 import 'package:geiger_toolbox/app/modules/employee/views/widgets/EmployeeCard.dart';
-import 'package:geiger_toolbox/app/modules/employee/views/widgets/qr_code_view.dart';
+import 'package:geiger_toolbox/app/modules/qrcode/views/qr_code_view.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 import 'package:get/get.dart';
 
 class EmployeeView extends StatelessWidget {
-  const EmployeeView({Key? key}) : super(key: key);
+  EmployeeView({Key? key}) : super(key: key);
 
+  //instance of EmployeeController
+  final EmployeeController controller = EmployeeController.to;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,13 +30,16 @@ class EmployeeView extends StatelessWidget {
               onScan: () => Get.to(() => QrCodeView()),
             ),
             EmployeeCard(
-              title: "Your Employee",
-              msgBody: "Connect your toolbox with your employees "
-                  "to be able to follow their achievements",
-              btnIcon: Icon(Icons.camera_alt),
-              btnText: "Add an Employee",
-              onScan: null,
-            )
+                title: "Your Employee",
+                msgBody: "Connect your toolbox with your employees "
+                    "to be able to follow their achievements",
+                btnIcon: Icon(Icons.camera_alt),
+                btnText: "Add an Employee",
+                onScan: () async {
+                  await controller.requestCameraPermission();
+
+                  //controller.requestCameraPermission();
+                })
           ],
         ),
       ),

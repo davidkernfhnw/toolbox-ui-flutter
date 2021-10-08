@@ -37,7 +37,11 @@ class QrCodeView extends StatelessWidget {
                 "By letting your supervisor adding you to their toolbox no "
                 "data will be shared automatically.",
                 softWrap: true,
+                textAlign: TextAlign.justify,
                 style: TextStyle(color: Colors.grey),
+              ),
+              SizedBox(
+                height: 5,
               ),
               Text("You will need to actively share your Risk Score.",
                   softWrap: true, style: TextStyle(color: Colors.grey)),

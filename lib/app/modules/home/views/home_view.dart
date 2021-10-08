@@ -75,22 +75,22 @@ class HomeView extends StatelessWidget {
 ListView.builder(
 shrinkWrap: true,
 itemCount:
-controller.getGeigerAggregateThreatScore().length,
+controllers.getGeigerAggregateThreatScore().length,
 itemBuilder: (BuildContext context, int index) =>
 ThreatsCard(
-label: controller
+label: controllers
     .getGeigerAggregateThreatScore()[index]
 .name,
-icon: GeigerIcon.iconsMap[controller
+icon: GeigerIcon.iconsMap[controllers
     .getGeigerAggregateThreatScore()[index]
 .name
     .toLowerCase()],
-indicatorScore: double.parse(controller
+indicatorScore: double.parse(controllers
     .getGeigerAggregateThreatScore()[index]
 .score
     .score
     .toString()),
 routeName: Routes.RECOMMENDATION_PAGE +
-'/userId?threatTitle=${controller.getGeigerAggregateThreatScore()[index].name}',
+'/userId?threatTitle=${controllers.getGeigerAggregateThreatScore()[index].name}',
 ),
 ),*/

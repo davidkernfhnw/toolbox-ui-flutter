@@ -1,8 +1,10 @@
 import 'package:geiger_toolbox/app/modules/compare/bindings/compare_risk_binding.dart';
-import 'package:geiger_toolbox/app/modules/compare/views/compare_risk_page.view';
+import 'package:geiger_toolbox/app/modules/compare/views/compare_risk_view.dart';
 import 'package:geiger_toolbox/app/modules/employee/bindings/employee_binding.dart';
 import 'package:geiger_toolbox/app/modules/employee/views/employee_view.dart';
 import 'package:geiger_toolbox/app/modules/home/views/home_view.dart';
+import 'package:geiger_toolbox/app/modules/qrcode/bindings/qr_scanner_binding.dart';
+import 'package:geiger_toolbox/app/modules/qrcode/views/qr_scanner_view.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/binding/recommendation_binding.dart';
 import 'package:geiger_toolbox/app/modules/home/bindings/home_binding.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/views/recommendation_page.dart';
@@ -31,6 +33,11 @@ class Pages {
       name: Routes.EMPLOYEE_VIEW,
       page: () => EmployeeView(),
       binding: EmployeeBinding(),
+    ),
+    GetPage(
+      name: Routes.QrSCANNER_VIEW,
+      page: () => QRScannerView(),
+      binding: QrScannerBinding(),
     ),
   ];
 }
