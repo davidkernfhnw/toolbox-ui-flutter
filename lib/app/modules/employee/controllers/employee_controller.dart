@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class EmployeeController extends GetxController {

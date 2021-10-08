@@ -7,12 +7,14 @@ class Routes {
   static const RECOMMENDATION_VIEW = "/recommendation-view";
   static const EMPLOYEE_VIEW = "/employee-view";
   static const QrSCANNER_VIEW = "/scanner-view";
+  static const DEVICE_VIEW = '/device';
 
   //Display page names
   static const HOME_PAGE_DISPLAY_NAME = "Home";
   static const COMPARE_RISK_DISPLAY_NAME = "Compare risk";
   static const EMPLOYEE_DISPLAY_NAME = "Employee";
   static const QrSCANNER_DISPLAY_NAME = "Qr Scanner";
+  static const DEVICE_DISPLAY_NAME = "Device";
 
   static List<MenuItem> sideMenuRoutes = [
     MenuItem(name: Routes.HOME_PAGE_DISPLAY_NAME, route: Routes.HOME_VIEW),
