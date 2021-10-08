@@ -22,5 +22,6 @@ class Routes {
         name: Routes.COMPARE_RISK_DISPLAY_NAME,
         route: Routes.COMPARE_RISK_VIEW),
     MenuItem(name: Routes.EMPLOYEE_DISPLAY_NAME, route: Routes.EMPLOYEE_VIEW),
+    MenuItem(name: DEVICE_DISPLAY_NAME, route: Routes.DEVICE_VIEW)
   ];
 }

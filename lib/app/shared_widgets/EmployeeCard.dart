@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geiger_toolbox/app/util/style.dart';
 
 class EmployeeCard extends StatelessWidget {
   EmployeeCard(
@@ -25,13 +26,11 @@ class EmployeeCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            boldText(
               title,
-              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text(
+            greyText(
               msgBody,
-              style: TextStyle(color: Colors.grey),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,

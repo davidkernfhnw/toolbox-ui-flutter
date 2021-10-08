@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/employee/controllers/employee_controller.dart';
-import 'package:geiger_toolbox/app/modules/employee/views/widgets/EmployeeCard.dart';
-import 'package:geiger_toolbox/app/modules/qrcode/views/qr_code_view.dart';
+import 'package:geiger_toolbox/app/modules/employee/views/employee_qrcode_view.dart';
+import 'package:geiger_toolbox/app/shared_widgets/EmployeeCard.dart';
+
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 import 'package:get/get.dart';
 
@@ -27,7 +28,7 @@ class EmployeeView extends StatelessWidget {
                   " of the employee scores",
               btnIcon: Icon(Icons.qr_code_scanner),
               btnText: "QR Code",
-              onScan: () => Get.to(() => QrCodeView()),
+              onScan: () => Get.to(() => EmployeeQrCodeView()),
             ),
             EmployeeCard(
                 title: "Your Employee",

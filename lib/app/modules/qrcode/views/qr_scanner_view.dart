@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/qrcode/controllers/qr_scanner_controller.dart';
+import 'package:geiger_toolbox/app/util/style.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -70,20 +71,6 @@ class _QRScannerViewState extends State<QRScannerView> {
                 );
               })
         ],
-      ),
-    );
-  }
-
-  Padding buildPaddedText(String text) {
-    return Padding(
-      padding: EdgeInsets.all(10),
-      child: SizedBox(
-        width: 500,
-        child: Text(
-          text,
-          textAlign: TextAlign.left,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
       ),
     );
   }

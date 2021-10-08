@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+import 'package:geiger_toolbox/app/modules/qrcode/views/widgets/qr_code_preview.dart';
 
-class QrCodeView extends StatelessWidget {
-  const QrCodeView({Key? key}) : super(key: key);
+class EmployeeQrCodeView extends StatelessWidget {
+  const EmployeeQrCodeView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,20 +16,7 @@ class QrCodeView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                // width: 200,
-                // height: 200,
-                padding: EdgeInsets.all(8),
-                margin: EdgeInsets.all(20),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.green, width: 3)),
-                child: QrImage(
-                  data: "1234567890",
-                  version: QrVersions.auto,
-                  size: 300.0,
-                ),
-              ),
+              QrCodePreview(),
               SizedBox(
                 height: 10,
               ),
