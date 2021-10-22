@@ -15,6 +15,14 @@ jobs:
     #   image:  google/dart:latest
     steps:
     # Set up Flutter.
+    - name: -> Decode the keystore
+      id: decode_keystore
+      uses: timheuer/base64-to-file@v1
+      with:
+        fileName: 'keystore.jks'
+        encodedString: ${{ secrets.KEY_JKS }}
+    - name: -> Relocate the keystore file
+      run: cp ${{steps.decode_keystore.outputs.filePath}} android/
     - name: -> Setup Flutter environment
       uses: subosito/flutter-action@4389e6cbc6cb8a4b18c628ff96ff90be0e926aa8
       with:
@@ -37,6 +45,15 @@ jobs:
     # Run the unit tests
     - name: -> Run unit tests
       run: flutter test
+    - name: -> Generate apk file
+      env:
+        KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        ALIAS_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      run: flutter build apk --release
+    - uses: actions/upload-artifact@v2
+      with:
+        name: release-apk
+        path: build/app/outputs/flutter-apk/app-release.apk
 
     # Trigger other to test the application
     # - name: -> Trigger the external_workflows on other repositories
@@ -47,21 +64,3 @@ jobs:
     #       -H "Accept: application/vnd.github.v3+json" \
     #       https://api.github.com/repos/luongnv89/geiger_toolbox_api_flutter/actions/workflows/main.yaml/dispatches \
     #       -d '{"ref":"refs/heads/main"}'
-
-    # # publish to pub.dev
-    # - name: -> Check before publish to pub.dev
-    #   run: dart pub publish --dry-run
-    # - name: -> Setup credentials
-    #   run: |
-    #     cat <<EOF > $PUB_CACHE/credentials.json
-    #     {
-    #       "accessToken":"${{ secrets.OAUTH_ACCESS_TOKEN }}",
-    #       "refreshToken":"${{ secrets.OAUTH_REFRESH_TOKEN }}",
-    #       "idToken":"${{ secrets.OAUTH_ID_TOKEN }}",
-    #       "tokenEndpoint":"https://accounts.google.com/o/oauth2/token",
-    #       "scopes": [ "openid", "https://www.googleapis.com/auth/userinfo.email" ],
-    #       "expiration": 1630429975373
-    #     }
-    #     EOF
-    # - name: -> Publish package
-    #   run: dart pub publish -f
