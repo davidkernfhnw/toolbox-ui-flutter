@@ -19,6 +19,18 @@ jobs:
     # container:
     #   image:  google/dart:latest
     steps:
+    # Get the source code
+    - name: -> Get the source code
+      uses: actions/checkout@v2
+    # Create the keystore file
+    - name: -> Decode the keystore
+      id: decode_keystore
+      uses: timheuer/base64-to-file@v1
+      with:
+        fileName: 'keystore.jks'
+        encodedString: ${{ secrets.KEY_JKS }}
+    - name: -> Relocate the keystore file
+      run: cp ${{steps.decode_keystore.outputs.filePath}} android/
     # Set up Flutter.
     - name: -> Setup Flutter environment
       uses: subosito/flutter-action@4389e6cbc6cb8a4b18c628ff96ff90be0e926aa8
@@ -26,9 +38,7 @@ jobs:
         channel: master
     - run: flutter doctor -v
 
-    # Checkout gallery code and get packages.
-    - name: -> Checkout gallery code
-      uses: actions/checkout@v2
+    # Install the dependencies
     - name: -> Get packages
       run: flutter pub get
 
@@ -40,7 +50,17 @@ jobs:
     # Run the unit tests
     - name: -> Run unit tests
       run: flutter test
-
+    # Generate the apk file
+    - name: -> Generate apk file
+      env:
+        KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        ALIAS_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      run: flutter build apk --release
+    # Upload the artifact
+    - uses: actions/upload-artifact@v2
+      with:
+        name: release-apk
+        path: build/app/outputs/flutter-apk/app-release.apk
     # Trigger other to test the application
     # - name: -> Trigger the external_workflows on other repositories
     #   run: |
