@@ -31,7 +31,8 @@ jobs:
       uses: subosito/flutter-action@4389e6cbc6cb8a4b18c628ff96ff90be0e926aa8
       with:
         channel: master
-    - run: flutter doctor -v
+    - name: -> Check the flutter environment
+      run: flutter doctor -v
 
     # Install the dependencies
     - name: -> Get packages
@@ -55,7 +56,8 @@ jobs:
         ALIAS_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
       run: flutter build apk --release
     # Upload the artifact
-    - uses: actions/upload-artifact@v2
+    - name: -> Upload the generated .apk file
+      uses: actions/upload-artifact@v2
       with:
         name: release-apk
         path: build/app/outputs/flutter-apk/app-release.apk
