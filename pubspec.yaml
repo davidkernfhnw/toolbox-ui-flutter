@@ -39,17 +39,20 @@ dependencies:
   expandable: ^5.0.1
   #google fonts
   google_fonts: ^2.1.0
-  json_annotation: ^4.0.1
+  json_annotation: ^4.3.0
   qr_flutter: ^4.0.0
   qr_code_scanner: ^0.5.2
   permission_handler: ^8.2.2
+  geiger_dummy_data: ^0.2.1
+  sqlite3_flutter_libs: ^0.5.1
+  sqflite: ^2.0.0+4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  json_serializable: ^5.0.2
+  json_serializable: ^6.0.0
   #runner for generating json
-  build_runner: ^2.1.2
+  build_runner: ^2.1.4
   flutter_lints: ^1.0.4
 
   #for generating folder structure
