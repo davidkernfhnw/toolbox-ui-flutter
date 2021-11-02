@@ -253,14 +253,14 @@ packages:
       name: geiger_dummy_data
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.1"
+    version: "0.2.4"
   geiger_localstorage:
     dependency: transitive
     description:
       name: geiger_localstorage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.4"
+    version: "0.5.6"
   get:
     dependency: "direct main"
     description:
