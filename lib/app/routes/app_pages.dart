@@ -12,6 +12,8 @@ import 'package:geiger_toolbox/app/modules/qrcode/bindings/qr_scanner_binding.da
 import 'package:geiger_toolbox/app/modules/qrcode/views/qr_scanner_view.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/binding/recommendation_binding.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/views/recommendation_page.dart';
+import 'package:geiger_toolbox/app/modules/termsAndConditions/bindings/terms_and_conditions_binding.dart';
+import 'package:geiger_toolbox/app/modules/termsAndConditions/views/terms_and_conditions_view.dart';
 
 import 'app_routes.dart';
 
@@ -46,6 +48,11 @@ class Pages {
       name: Routes.DEVICE_VIEW,
       page: () => DeviceView(),
       binding: DeviceBinding(),
+    ),
+    GetPage(
+      name: Routes.TERMS_AND_CONDITIONS,
+      page: () => TermsAndConditionsView(),
+      binding: TermsAndConditionsBinding(),
     ),
   ];
 }

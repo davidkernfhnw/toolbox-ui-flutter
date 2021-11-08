@@ -45,7 +45,7 @@ dependencies:
   permission_handler: ^8.2.2
   sqlite3_flutter_libs: ^0.5.1
   sqflite: ^2.0.0+4
-  geiger_dummy_data: ^0.2.4
+  geiger_dummy_data: ^0.2.7
 
 
 

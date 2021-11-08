@@ -24,19 +24,49 @@ class HomeView extends StatelessWidget {
         title: const Text('Geiger Toolbox'),
       ),
       body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-          child: Column(mainAxisSize: MainAxisSize.max, children: [
-            TopScreen(
-              onScanPressed: () {
-                //testing Geiger Aggregate score Model
-
-                controller.setGeigerAggregateThreatScore();
-              },
-              isLoading: false,
-              aggregratedScore: '',
-              warming: false,
-            ),
-          ])),
+        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+        child: Obx(() {
+          return Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              TopScreen(
+                onScanPressed: () {
+                  //testing Geiger Aggregate score Model
+                  controller.emptyThreatScores();
+                  controller.setGeigerAggregateThreatScore();
+                  log(controller.setGeigerAggregateThreatScore().toString());
+                },
+                aggregratedScore: !controller.isLoading.value
+                    ? controller.geigerAggregateScore.value.geigerScore ?? ""
+                    : "",
+                warming: false,
+                isLoading: controller.isLoading.value,
+              ),
+              controller.isLoading.value
+                  ? const CircularProgressIndicator.adaptive(
+                      backgroundColor: Colors.green,
+                    )
+                  : controller.threatsScore.isEmpty
+                      ? const Center(
+                          child: Text("NO DATA FOUND"),
+                        )
+                      : Column(
+                          children: controller.threatsScore
+                              .map<ThreatsCard>((Threat e) {
+                            return ThreatsCard(
+                              label: e.name,
+                              icon: GeigerIcon.iconsMap[e.name!.toLowerCase()],
+                              indicatorScore:
+                                  double.parse(e.score!.score.toString()),
+                              routeName: Routes.RECOMMENDATION_VIEW,
+                              routeArguments: e,
+                            );
+                          }).toList(),
+                        ),
+            ],
+          );
+        }),
+      ),
     );
   }
 }

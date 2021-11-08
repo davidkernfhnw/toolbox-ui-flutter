@@ -7,7 +7,7 @@ import 'custom_material_color.dart';
 ThemeData customThemeData() {
   return ThemeData(
     primarySwatch: CustomMaterialColor.createMaterialColor(Colors.white),
-
+    unselectedWidgetColor: Colors.green,
     toggleableActiveColor: Colors.green,
 
     //customize styling for elevatedButton

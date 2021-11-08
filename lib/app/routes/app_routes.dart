@@ -8,6 +8,7 @@ class Routes {
   static const EMPLOYEE_VIEW = "/employee-view";
   static const QrSCANNER_VIEW = "/scanner-view";
   static const DEVICE_VIEW = '/device';
+  static const TERMS_AND_CONDITIONS = '/terms-and-conditions';
 
   //Display page names
   static const HOME_PAGE_DISPLAY_NAME = "Home";
