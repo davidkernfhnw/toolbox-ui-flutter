@@ -6,7 +6,7 @@ import 'package:sqflite/sqflite.dart';
 class LocalStorage {
   //initialize this inside onInit() in your controller
   static Future<StorageController?> initLocalStorage() async {
-    String dbPath = join(await getDatabasesPath(), 'test4212.sqlite');
+    String dbPath = join(await getDatabasesPath(), 'eswt.sqlite');
     try {
       StorageController storageController =
           GenericController('test123', SqliteMapper(dbPath));

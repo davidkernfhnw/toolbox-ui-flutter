@@ -5,6 +5,6 @@ class HomeBinding extends Bindings {
   @override
   void dependencies() {
     //only called when someone use Get.find<HomeController>()
-    Get.put<HomeController>(HomeController(), permanent: true);
+    Get.put<HomeController>(HomeController());
   }
 }

@@ -18,7 +18,7 @@ import 'package:geiger_toolbox/app/modules/termsAndConditions/views/terms_and_co
 import 'app_routes.dart';
 
 class Pages {
-  static final List<GetPage> pages = [
+  static final List<GetPage<dynamic>> pages = [
     GetPage(
       name: Routes.HOME_VIEW,
       page: () => HomeView(),
