@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
 import 'package:geiger_toolbox/app/services/local_storage.dart';
-
 import 'package:get/get.dart';
+
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 import 'app/util/theme/custom_theme_data.dart';
@@ -29,7 +29,7 @@ class GeigerApp extends StatelessWidget {
           return GetMaterialApp(
               debugShowCheckedModeBanner: true,
               getPages: Pages.pages,
-              initialRoute: Routes.TERMS_AND_CONDITIONS,
+              initialRoute: Routes.SETTINGS_VIEW,
               theme: customThemeData());
         }
       },
@@ -42,8 +42,8 @@ class SplashView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool lightMode =
-        MediaQuery.of(context).platformBrightness == Brightness.light;
+    //bool lightMode =
+    MediaQuery.of(context).platformBrightness == Brightness.light;
     return Scaffold(
       // backgroundColor:
       // lightMode ? const Color(0xffe1f5fe) : const Color(0xff042a49),

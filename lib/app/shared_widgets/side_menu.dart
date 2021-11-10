@@ -3,8 +3,8 @@ import 'package:geiger_toolbox/app/modules/home/views/home_view.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:get/get.dart';
 
-class SideMenuBar extends StatelessWidget {
-  const SideMenuBar({Key? key}) : super(key: key);
+class SideMenu extends StatelessWidget {
+  const SideMenu({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Drawer(

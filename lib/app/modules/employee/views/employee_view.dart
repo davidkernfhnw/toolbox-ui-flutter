@@ -4,7 +4,6 @@ import 'package:geiger_toolbox/app/modules/employee/views/employee_qrcode_view.d
 import 'package:geiger_toolbox/app/modules/qrcode/controllers/qr_scanner_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/shared_widgets/EmployeeCard.dart';
-
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 import 'package:get/get.dart';
 
@@ -21,7 +20,7 @@ class EmployeeView extends StatelessWidget {
       appBar: AppBar(
         title: Text('Employee'),
       ),
-      drawer: SideMenuBar(),
+      drawer: SideMenu(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
