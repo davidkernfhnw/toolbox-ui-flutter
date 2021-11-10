@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/views/widgets/tab_bar_builder.dart';
+import 'package:geiger_toolbox/app/modules/settings/controllers/settings_controller.dart';
 import 'package:geiger_toolbox/app/modules/settings/views/widgets/profile_view.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 
 class SettingsView extends StatelessWidget {
-  const SettingsView({Key? key}) : super(key: key);
-
+  SettingsView({Key? key}) : super(key: key);
+  final SettingsController _controller = SettingsController.to;
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       initialIndex: 0,
       length: 3,
       child: Scaffold(
+        endDrawerEnableOpenDragGesture: false,
         drawer: SideMenu(),
         appBar: AppBar(
           title: Text("Settings"),
@@ -38,8 +40,9 @@ class SettingsView extends StatelessWidget {
           ]),
         ),
         body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
           children: [
-           ProfileView(),
+            ProfileView(controller: _controller),
             Container(
               child: Text("2"),
             ),
