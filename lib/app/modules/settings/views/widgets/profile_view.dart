@@ -24,14 +24,10 @@ class ProfileView extends StatelessWidget {
                 hintText: "Enter username",
                 label: 'User Name',
               ),
-              SizedBox(height: 10),
               CustomTextField(
                 fieldBuilderName: 'deviceName',
                 hintText: "auto get deviceName",
                 label: 'Name of this Device',
-              ),
-              SizedBox(
-                height: 10,
               ),
               CustomSwitch(
                 fieldBuilderName: 'companyOwner',
@@ -40,17 +36,23 @@ class ProfileView extends StatelessWidget {
                 label: "I'm a company owner",
               ),
               SizedBox(
-                height: 10,
+                height: 20,
               ),
               CustomDropDown(
                   fieldBuilderName: 'language',
                   titleText: "language",
                   listItems: ["english"],
                   hintText: "Select language"),
+              SizedBox(
+                height: 10,
+              ),
               CustomDropDown(
                   fieldBuilderName: 'competentCert',
                   listItems: ["english"],
                   hintText: "Select Competent CERT"),
+              SizedBox(
+                height: 10,
+              ),
               CustomDropDown(
                   fieldBuilderName: 'professionalAssociation',
                   listItems: ["english"],

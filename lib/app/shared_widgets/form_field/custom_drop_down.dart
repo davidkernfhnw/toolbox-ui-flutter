@@ -23,7 +23,11 @@ class CustomDropDown extends StatelessWidget {
       name: fieldBuilderName,
       decoration: InputDecoration(
         labelText: titleText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
+
       // initialValue: 'Male',
       allowClear: true,
       hint: Text(hintText),
