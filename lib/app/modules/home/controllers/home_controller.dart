@@ -1,11 +1,9 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_aggregate_score.dart';
 import 'package:geiger_toolbox/app/data/model/threat.dart';
-import 'package:geiger_toolbox/app/services/local_storage.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
@@ -17,8 +15,8 @@ class HomeController extends GetxController {
 
   //storageController
   _init() async {
-    _storageController = await LocalStorage.initLocalStorage();
-    _geigerApi = dummy.GeigerApi(_storageController!);
+    // _storageController = await LocalStorage.initLocalStorage();
+    // _geigerApi = dummy.GeigerApi(_storageController!);
   }
 
   var isLoading = false.obs;
@@ -50,7 +48,7 @@ class HomeController extends GetxController {
   setGeigerAggregateThreatScore() async {
     isLoading.value = true;
     threatsScore = await _fetchGeigerAggregateScore();
-    log(await _geigerApi!.onBtnPressed());
+    //log(await _geigerApi!.onBtnPressed());
     isLoading.value = false;
   }
 
@@ -61,6 +59,6 @@ class HomeController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    await _init();
+    //await _init();
   }
 }

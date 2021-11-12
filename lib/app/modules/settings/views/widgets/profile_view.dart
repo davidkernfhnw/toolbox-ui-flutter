@@ -8,10 +8,12 @@ import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_text_field.d
 class ProfileView extends StatelessWidget {
   ProfileView({required this.controller, Key? key}) : super(key: key);
   final SettingsController controller;
+
   @override
   Widget build(BuildContext context) {
+    final formKey = GlobalKey<FormBuilderState>();
     return FormBuilder(
-      key: controller.formKey,
+      key: formKey,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(

@@ -1,12 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 
 class SettingsController extends GetxController {
   //instance
   static SettingsController to = Get.find();
 
-  final formKey = GlobalKey<FormBuilderState>();
+  //final userName = formKey.currentState!.fields['userName']!.effectiveFocusNode;
 
   @override
   void onInit() {
@@ -19,5 +17,7 @@ class SettingsController extends GetxController {
   }
 
   @override
-  void onClose() {}
+  void onClose() {
+    super.onClose();
+  }
 }

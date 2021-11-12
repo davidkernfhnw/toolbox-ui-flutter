@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
-import 'package:geiger_toolbox/app/services/local_storage.dart';
 import 'package:get/get.dart';
 
 import 'app/routes/app_pages.dart';
@@ -10,7 +9,7 @@ import 'app/util/theme/custom_theme_data.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 // localStorage database
-  await LocalStorage.initLocalStorage();
+  //await LocalStorage.initLocalStorage();
   runApp(GeigerApp());
 }
 
@@ -29,7 +28,7 @@ class GeigerApp extends StatelessWidget {
           return GetMaterialApp(
               debugShowCheckedModeBanner: true,
               getPages: Pages.pages,
-              initialRoute: Routes.SETTINGS_VIEW,
+              initialRoute: Routes.HOME_VIEW,
               theme: customThemeData());
         }
       },
