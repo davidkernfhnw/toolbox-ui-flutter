@@ -24,7 +24,6 @@ class CustomTextField extends StatelessWidget {
           maxLength: 100,
           decoration: InputDecoration(
               border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.green),
                 borderRadius: BorderRadius.circular(10),
               ),
               focusedBorder: OutlineInputBorder(

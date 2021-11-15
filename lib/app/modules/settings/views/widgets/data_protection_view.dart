@@ -3,8 +3,8 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_switch.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
 
-class DataProtection extends StatelessWidget {
-  const DataProtection({Key? key}) : super(key: key);
+class DataProtectionView extends StatelessWidget {
+  const DataProtectionView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

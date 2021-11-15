@@ -28,4 +28,5 @@ class Routes {
     MenuItem(name: DEVICE_DISPLAY_NAME, route: Routes.DEVICE_VIEW),
     MenuItem(name: SETTINGS_DISPLAY_NAME, route: Routes.SETTINGS_VIEW),
   ];
+  static const TOOLS = '/tools';
 }

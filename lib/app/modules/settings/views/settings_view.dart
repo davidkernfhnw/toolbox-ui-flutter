@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/views/widgets/tab_bar_builder.dart';
 import 'package:geiger_toolbox/app/modules/settings/controllers/settings_controller.dart';
-import 'package:geiger_toolbox/app/modules/settings/views/widgets/data_protection.dart';
+import 'package:geiger_toolbox/app/modules/settings/views/widgets/data_protection_view.dart';
+import 'package:geiger_toolbox/app/modules/settings/views/widgets/edit_data_view.dart';
 import 'package:geiger_toolbox/app/modules/settings/views/widgets/profile_view.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 
@@ -11,7 +12,7 @@ class SettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      initialIndex: 0,
+      initialIndex: 2,
       length: 3,
       child: Scaffold(
         endDrawerEnableOpenDragGesture: false,
@@ -44,10 +45,8 @@ class SettingsView extends StatelessWidget {
           physics: NeverScrollableScrollPhysics(),
           children: [
             ProfileView(controller: _controller),
-            DataProtection(),
-            Container(
-              child: Text("3"),
-            ),
+            DataProtectionView(),
+            EditDataView(),
           ],
         ),
       ),

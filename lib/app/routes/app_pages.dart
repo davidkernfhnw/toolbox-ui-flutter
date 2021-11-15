@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 import 'package:geiger_toolbox/app/modules/compare/bindings/compare_risk_binding.dart';
 import 'package:geiger_toolbox/app/modules/compare/views/compare_risk_view.dart';
 import 'package:geiger_toolbox/app/modules/device/bindings/device_binding.dart';
@@ -14,7 +16,8 @@ import 'package:geiger_toolbox/app/modules/settings/bindings/settings_binding.da
 import 'package:geiger_toolbox/app/modules/settings/views/settings_view.dart';
 import 'package:geiger_toolbox/app/modules/termsAndConditions/bindings/terms_and_conditions_binding.dart';
 import 'package:geiger_toolbox/app/modules/termsAndConditions/views/terms_and_conditions_view.dart';
-import 'package:get/get.dart';
+import 'package:geiger_toolbox/app/modules/tools/bindings/tools_binding.dart';
+import 'package:geiger_toolbox/app/modules/tools/views/tools_view.dart';
 
 import 'app_routes.dart';
 
@@ -59,6 +62,11 @@ class Pages {
       name: Routes.SETTINGS_VIEW,
       page: () => SettingsView(),
       binding: SettingsBinding(),
+    ),
+    GetPage(
+      name: Routes.TOOLS,
+      page: () => ToolsView(),
+      binding: ToolsBinding(),
     ),
   ];
 }
