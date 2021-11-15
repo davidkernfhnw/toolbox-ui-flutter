@@ -28,7 +28,7 @@ class GeigerApp extends StatelessWidget {
           return GetMaterialApp(
               debugShowCheckedModeBanner: true,
               getPages: Pages.pages,
-              initialRoute: Routes.SETTINGS_VIEW,
+              initialRoute: Routes.TOOLS_VIEW,
               theme: customThemeData());
         }
       },

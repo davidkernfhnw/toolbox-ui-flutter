@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
-import 'package:geiger_localstorage/geiger_localstorage.dart';
+//import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
+//import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_aggregate_score.dart';
 import 'package:geiger_toolbox/app/data/model/threat.dart';
 import 'package:get/get.dart';
@@ -10,14 +10,14 @@ class HomeController extends GetxController {
   //an instance of HomeController
   static HomeController get to => Get.find();
 
-  StorageController? _storageController;
-  dummy.GeigerApi? _geigerApi;
+  //StorageController? _storageController;
+  //dummy.GeigerApi? _geigerApi;
 
   //storageController
-  _init() async {
-    // _storageController = await LocalStorage.initLocalStorage();
-    // _geigerApi = dummy.GeigerApi(_storageController!);
-  }
+  // _init() async {
+  //   // _storageController = await LocalStorage.initLocalStorage();
+  //   // _geigerApi = dummy.GeigerApi(_storageController!);
+  // }
 
   var isLoading = false.obs;
 

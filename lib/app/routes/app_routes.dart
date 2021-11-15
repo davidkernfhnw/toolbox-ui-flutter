@@ -10,6 +10,7 @@ class Routes {
   static const DEVICE_VIEW = '/device';
   static const TERMS_AND_CONDITIONS_VIEW = '/terms-and-conditions';
   static const SETTINGS_VIEW = '/settings';
+  static const TOOLS_VIEW = '/tools';
 
   //Display page names
   static const HOME_PAGE_DISPLAY_NAME = "Home";
@@ -18,6 +19,7 @@ class Routes {
   static const QrSCANNER_DISPLAY_NAME = "Qr Scanner";
   static const DEVICE_DISPLAY_NAME = "Device";
   static const SETTINGS_DISPLAY_NAME = "Settings";
+  static const TOOLS_DISPLAY_NAME = "Tools";
 
   static List<MenuItem> sideMenuRoutes = [
     MenuItem(name: Routes.HOME_PAGE_DISPLAY_NAME, route: Routes.HOME_VIEW),
@@ -26,7 +28,7 @@ class Routes {
         route: Routes.COMPARE_RISK_VIEW),
     MenuItem(name: Routes.EMPLOYEE_DISPLAY_NAME, route: Routes.EMPLOYEE_VIEW),
     MenuItem(name: DEVICE_DISPLAY_NAME, route: Routes.DEVICE_VIEW),
+    MenuItem(name: TOOLS_DISPLAY_NAME, route: Routes.TOOLS_VIEW),
     MenuItem(name: SETTINGS_DISPLAY_NAME, route: Routes.SETTINGS_VIEW),
   ];
-  static const TOOLS = '/tools';
 }

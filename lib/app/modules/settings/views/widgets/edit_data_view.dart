@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_text_field.dart';
+
+import 'package:geiger_toolbox/app/shared_widgets/empty_space_card.dart';
 
 class EditDataView extends StatelessWidget {
   const EditDataView({Key? key}) : super(key: key);
@@ -12,19 +12,8 @@ class EditDataView extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          Expanded(
-            child: Container(
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(color: Colors.black54),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Container(
-                  width: size.width,
-                  child: Text(""),
-                ),
-              ),
-            ),
+          EmptySpaceCard(
+            size: size.width,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

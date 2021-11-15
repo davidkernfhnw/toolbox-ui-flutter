@@ -64,7 +64,7 @@ class Pages {
       binding: SettingsBinding(),
     ),
     GetPage(
-      name: Routes.TOOLS,
+      name: Routes.TOOLS_VIEW,
       page: () => ToolsView(),
       binding: ToolsBinding(),
     ),
