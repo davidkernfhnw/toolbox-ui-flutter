@@ -40,7 +40,8 @@ class TermsAndConditionsController extends GetxController {
   Future<void> previouslyAgreed() async {
     try {
       UserNode _userNode = UserNode(_storageController!);
-      TermsAndConditions userTerms = _userNode.getUserInfo!.termsAndConditions;
+      TermsAndConditions userTerms = await _userNode.getUserInfo
+          .then((User value) => value.termsAndConditions);
 
       if (userTerms.ageCompliant == true &&
           userTerms.signedConsent == true &&
@@ -70,7 +71,6 @@ class TermsAndConditionsController extends GetxController {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 }
