@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
+import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/language.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
 import 'package:geiger_toolbox/app/services/local_storage.dart';
@@ -14,6 +15,8 @@ class SettingsController extends GetxController {
   //instance
   static SettingsController to = Get.find();
   dummy.UserNode? _userNode;
+  StorageController? _storageController;
+
   TextEditingController userName = TextEditingController();
   final TextEditingController deviceName = TextEditingController();
   //user object observable
@@ -106,7 +109,8 @@ class SettingsController extends GetxController {
 
   //initial storageController
   _init() async {
-    _userNode = await dummy.UserNode(await LocalStorage.initLocalStorage());
+    _storageController = await LocalStorage.initLocalStorage();
+    _userNode = await dummy.UserNode(_storageController!);
   }
 
   Future<dummy.User> get getUserDetails async {
@@ -180,9 +184,6 @@ class SettingsController extends GetxController {
     }
   }
 
-//reactive testing
-  var currentDevice = "".obs;
-
   @override
   void onInit() async {
     super.onInit();
@@ -190,7 +191,6 @@ class SettingsController extends GetxController {
     userInfo.value = await _setUserDetails();
     log(userName.toString());
     log("userInfo: ${userInfo.value}");
-    currentDevice.value = userInfo.value.deviceOwner.name!;
   }
 
   @override
@@ -199,9 +199,11 @@ class SettingsController extends GetxController {
   }
 
   @override
-  void onClose() {
+  void onClose() async {
     userName.dispose();
     deviceName.dispose();
+    await _storageController!.close();
+
     super.onClose();
   }
 }
