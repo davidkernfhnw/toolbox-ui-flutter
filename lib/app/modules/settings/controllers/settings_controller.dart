@@ -14,8 +14,8 @@ class SettingsController extends GetxController {
   //instance
   static SettingsController to = Get.find();
   dummy.UserNode? _userNode;
-  //final formKey = GlobalKey<FormBuilderState>();
-
+  TextEditingController userName = TextEditingController();
+  final TextEditingController deviceName = TextEditingController();
   //user object observable
   var userInfo = dummy.User(
           consent: dummy.Consent(),
@@ -44,11 +44,11 @@ class SettingsController extends GetxController {
     ),
     Partner(
       country: "Romania",
-      names: [],
+      names: ["Romania Association"],
     ),
     Partner(
       country: "Netherlands",
-      names: [],
+      names: ["Netherlands Association"],
     )
   ];
   List<Partner> _cert = [
@@ -88,20 +88,20 @@ class SettingsController extends GetxController {
 
     Partner selectedProfAss =
         _profAss.firstWhere((Partner element) => country == element.country);
+    log(selectedProfAss.names.toString());
     //updates
     profAssBaseOnCountrySelected = selectedProfAss.names;
     currentProfAss.value = profAssBaseOnCountrySelected.first;
-    log(selectedProfAss.names.toString());
   }
 
   onChangedCert(dynamic cert) {
-    userInfo.value.cert = cert;
     currentCert.value = cert;
+    log(currentCert.value.toString());
   }
 
-  onChangedProfAss(String? profAss) {
-    userInfo.value.profAss = profAss!;
+  onChangedProfAss(dynamic profAss) {
     currentProfAss.value = profAss;
+    log(currentProfAss.value.toString());
   }
 
   //initial storageController
@@ -188,6 +188,7 @@ class SettingsController extends GetxController {
     super.onInit();
     await _init();
     userInfo.value = await _setUserDetails();
+    log(userName.toString());
     log("userInfo: ${userInfo.value}");
     currentDevice.value = userInfo.value.deviceOwner.name!;
   }
@@ -199,6 +200,8 @@ class SettingsController extends GetxController {
 
   @override
   void onClose() {
+    userName.dispose();
+    deviceName.dispose();
     super.onClose();
   }
 }
