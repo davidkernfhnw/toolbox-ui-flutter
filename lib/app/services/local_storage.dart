@@ -10,7 +10,7 @@ class LocalStorage {
   //initialize this inside onInit() in your controller
   static Future<StorageController> initLocalStorage() async {
     String dbPath =
-        join(await getDatabasesPath(), 'samuelawaffwawfw123awir45.sqlite');
+        join(await getDatabasesPath(), 'samuelawaffwawafawfw123awir45.sqlite');
     try {
       StorageController storageController =
           await GenericController('testingUser', SqliteMapper(dbPath));

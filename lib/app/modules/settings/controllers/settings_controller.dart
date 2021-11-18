@@ -19,6 +19,7 @@ class SettingsController extends GetxController {
 
   TextEditingController userName = TextEditingController();
   final TextEditingController deviceName = TextEditingController();
+
   //user object observable
   var userInfo = dummy.User(
           consent: dummy.Consent(),

@@ -72,6 +72,7 @@ class TermsAndConditionsController extends GetxController {
 
   @override
   void dispose() {
+    _storageController!.close();
     super.dispose();
   }
 }
