@@ -17,24 +17,28 @@ class DataProtectionView extends StatelessWidget {
           child: Column(
             children: [
               CustomSwitch(
+                onChanged: null,
                 fieldBuilderName: 'accessData',
                 label: 'This toolbox may be access your data',
                 description:
                     'This setting gives you the ability to work with the toolbox, pair devices, install tools, find people who could support you.',
               ),
               CustomSwitch(
+                onChanged: null,
                 fieldBuilderName: 'processData',
                 label: 'This toolbox may be process your data',
                 description:
                     'This setting gives you the ability to calculate your risk score and receive protection recommendations.',
               ),
               CustomSwitch(
+                onChanged: null,
                 fieldBuilderName: 'CloudData',
                 label: 'The GEIGER cloud may access your data',
                 description:
                     'This setting shares your anonymize data with the GEIGER cloud. The setting gives you the ability to increase the accuracy of the risk score and more complete recommendations',
               ),
               CustomSwitch(
+                onChanged: null,
                 fieldBuilderName: 'toolsData',
                 label: 'Tools may process  your data',
                 description:

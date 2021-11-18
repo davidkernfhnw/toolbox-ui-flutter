@@ -43,14 +43,15 @@ class TermsAndConditionsController extends GetxController {
       TermsAndConditions userTerms = await _userNode.getUserInfo
           .then((User value) => value.termsAndConditions);
 
-      if (userTerms.ageCompliant == true &&
-          userTerms.signedConsent == true &&
-          userTerms.agreedPrivacy == true) {
-        log(userTerms.toString());
-        await Get.offNamed(Routes.HOME_VIEW);
+      if (await userTerms.ageCompliant == true &&
+          await userTerms.signedConsent == true &&
+          await userTerms.agreedPrivacy == true) {
+        //Future.delayed(Duration(seconds: 2));
+        Get.offNamed(Routes.HOME_VIEW);
       }
     } catch (e) {
-      //log("user data not created $e key: ${Get.key}");
+      log("Error: User not created");
+      log("Error from TermsAndConditionController $e\n");
     }
   }
 

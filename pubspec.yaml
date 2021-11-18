@@ -46,7 +46,9 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.1
   sqflite: ^2.0.0+4
   flutter_form_builder: ^7.0.0
-  geiger_dummy_data: ^0.2.9
+  geiger_dummy_data: ^0.3.0
+  device_info: ^2.0.3
+
 
 
 

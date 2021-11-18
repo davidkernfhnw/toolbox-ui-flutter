@@ -5,20 +5,22 @@ import 'package:geiger_toolbox/app/modules/settings/views/widgets/data_protectio
 import 'package:geiger_toolbox/app/modules/settings/views/widgets/edit_data_view.dart';
 import 'package:geiger_toolbox/app/modules/settings/views/widgets/profile_view.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
+import 'package:get/get.dart';
 
 class SettingsView extends StatelessWidget {
   SettingsView({Key? key}) : super(key: key);
   final SettingsController _controller = SettingsController.to;
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      initialIndex: 2,
+      initialIndex: 0,
       length: 3,
       child: Scaffold(
         endDrawerEnableOpenDragGesture: false,
         drawer: SideMenu(),
         appBar: AppBar(
-          title: Text("Settings"),
+          title: Text('title'.tr),
           centerTitle: true,
           bottom: buildTabBar(tabs: [
             Tab(

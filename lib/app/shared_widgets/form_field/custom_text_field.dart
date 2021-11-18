@@ -4,6 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
     required this.fieldBuilderName,
+    required this.defaultValue,
     required this.label,
     required this.hintText,
     Key? key,
@@ -12,6 +13,7 @@ class CustomTextField extends StatelessWidget {
   final String fieldBuilderName;
   final String label;
   final String hintText;
+  final String defaultValue;
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +22,9 @@ class CustomTextField extends StatelessWidget {
       children: [
         Text(label),
         FormBuilderTextField(
+          initialValue: defaultValue,
           name: fieldBuilderName,
-          maxLength: 100,
+          maxLength: 50,
           decoration: InputDecoration(
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),

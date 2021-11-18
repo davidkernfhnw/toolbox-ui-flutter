@@ -7,13 +7,16 @@ class CustomSwitch extends StatelessWidget {
       {required this.fieldBuilderName,
       this.label,
       required this.description,
+      this.defaultValue,
+      required this.onChanged,
       Key? key})
       : super(key: key);
 
   final String fieldBuilderName;
   final String? label;
   final String description;
-
+  final bool? defaultValue;
+  final void Function(bool? value)? onChanged;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -22,7 +25,8 @@ class CustomSwitch extends StatelessWidget {
         boldText(label ?? ''),
         FormBuilderSwitch(
           name: fieldBuilderName,
-          initialValue: false,
+          initialValue: defaultValue,
+          onChanged: onChanged,
           title: Text(description),
         ),
       ],
