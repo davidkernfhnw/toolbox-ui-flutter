@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/settings/controllers/settings_controller.dart';
-import 'package:geiger_toolbox/app/shared_widgets/form_field/country_drop_down.dart';
+import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_country.dart';
+import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_partners.dart';
+import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_switch.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_text_field.dart';
-import 'package:geiger_toolbox/app/shared_widgets/form_field/language_drop_down.dart';
-import 'package:geiger_toolbox/app/shared_widgets/form_field/partners_drop_down.dart';
+import 'package:geiger_toolbox/app/shared_widgets/form_field/cutom_dropdown_language.dart';
 import 'package:get/get.dart';
 
 class ProfileView extends StatelessWidget {
@@ -22,16 +23,28 @@ class ProfileView extends StatelessWidget {
           child: Obx(() {
             return Column(
               children: [
-                CustomTextFieldFlutter(
+                CustomTextField(
                     hintText: "Enter username",
                     label: 'User Name',
                     textEditingController: controller.userName
-                      ..text = controller.userInfo.value.userName ?? "user"),
-                CustomTextFieldFlutter(
+                      ..text =
+                          controller.userInfo.value.userName ?? "userName"),
+                CustomTextField(
                   hintText: "auto get deviceName",
                   label: 'Name of this Device',
                   textEditingController: controller.deviceName
-                    ..text = controller.userInfo.value.deviceOwner.name ?? "ok",
+                    ..text = controller.userInfo.value.deviceOwner.name ??
+                        "deviceName",
+                ),
+                CustomSwitchs(
+                  label: "I’m a company owner",
+                  description:
+                      "As an owner you can compare your company’s geiger score with others ",
+                  defaultValue: controller.supervisor.value,
+                  onChanged: controller.onChangeOwner,
+                ),
+                SizedBox(
+                  height: 10,
                 ),
                 CustomDropdownLanguage(
                   listItems: controller.languages,

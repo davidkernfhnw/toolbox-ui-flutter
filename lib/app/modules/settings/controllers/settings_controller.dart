@@ -30,6 +30,7 @@ class SettingsController extends GetxController {
   var selectedLanguage = Get.locale!.languageCode.obs;
   var currentCert = "NCSC Switzerland".obs;
   var currentProfAss = "Swiss Yoga Association".obs;
+  var supervisor = false.obs;
 
   //list of supported languages
   List<Language> languages = SupportedLanguage.languages;
@@ -71,8 +72,9 @@ class SettingsController extends GetxController {
     log(userInfo.value.language.toString());
   }
 
-  onSwitchOwner(bool? owner) {
-    userInfo.value.supervisor = owner!;
+  onChangeOwner(bool owner) {
+    userInfo.value.supervisor = owner;
+    supervisor.value = userInfo.value.supervisor;
     log(userInfo.value.supervisor.toString());
   }
 

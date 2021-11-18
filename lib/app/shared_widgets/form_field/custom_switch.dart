@@ -33,3 +33,26 @@ class CustomSwitch extends StatelessWidget {
     );
   }
 }
+
+class CustomSwitchs extends StatelessWidget {
+  const CustomSwitchs(
+      {Key? key,
+      required this.label,
+      this.description,
+      required this.defaultValue,
+      this.onChanged})
+      : super(key: key);
+  final String label;
+  final String? description;
+  final bool defaultValue;
+  final void Function(bool value)? onChanged;
+  @override
+  Widget build(BuildContext context) {
+    return SwitchListTile.adaptive(
+      title: boldText(label),
+      subtitle: greyText(description ?? ""),
+      onChanged: onChanged,
+      value: defaultValue,
+    );
+  }
+}
