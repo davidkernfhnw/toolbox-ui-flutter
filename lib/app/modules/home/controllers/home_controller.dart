@@ -55,10 +55,10 @@ class HomeController extends GetxController {
     isLoading.value = true;
     threatsScore = await _fetchGeigerAggregateScore();
     //log(await _geigerApi!.onBtnPressed());
-    log(await _userNode!.getUserInfo
-        .then((value) async => value.deviceOwner.deviceId!));
-    log(await _deviceNode!.getDeviceInfo
-        .then((value) async => value.deviceId!));
+    // log(await _userNode!.getUserInfo
+    //     .then((value) async => value.deviceOwner.deviceId!));
+    // log(await _deviceNode!.getDeviceInfo
+    //     .then((value) async => value.deviceId!));
     isLoading.value = false;
   }
 
@@ -69,6 +69,6 @@ class HomeController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    await _init();
+    //await _init();
   }
 }

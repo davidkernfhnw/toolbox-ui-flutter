@@ -190,10 +190,10 @@ class SettingsController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    await _init();
-    userInfo.value = await _setUserDetails();
-    log(userName.toString());
-    log("userInfo: ${userInfo.value}");
+    // await _init();
+    // userInfo.value = await _setUserDetails();
+    // log(userName.toString());
+    // log("userInfo: ${userInfo.value}");
   }
 
   @override

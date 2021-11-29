@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 import 'package:geiger_toolbox/app/modules/compare/bindings/compare_risk_binding.dart';
 import 'package:geiger_toolbox/app/modules/compare/views/compare_risk_view.dart';
 import 'package:geiger_toolbox/app/modules/device/bindings/device_binding.dart';
@@ -9,14 +11,15 @@ import 'package:geiger_toolbox/app/modules/home/views/home_view.dart';
 import 'package:geiger_toolbox/app/modules/qrcode/bindings/qr_scanner_binding.dart';
 import 'package:geiger_toolbox/app/modules/qrcode/views/qr_scanner_view.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/binding/recommendation_binding.dart';
-import 'package:geiger_toolbox/app/modules/recommendation/views/recommendation_page.dart';
+import 'package:geiger_toolbox/app/modules/recommendation/views/recommendation_view.dart';
+import 'package:geiger_toolbox/app/modules/security_defenders/bindings/security_defenders_binding.dart';
+import 'package:geiger_toolbox/app/modules/security_defenders/views/security_defenders_view.dart';
 import 'package:geiger_toolbox/app/modules/settings/bindings/settings_binding.dart';
 import 'package:geiger_toolbox/app/modules/settings/views/settings_view.dart';
 import 'package:geiger_toolbox/app/modules/termsAndConditions/bindings/terms_and_conditions_binding.dart';
 import 'package:geiger_toolbox/app/modules/termsAndConditions/views/terms_and_conditions_view.dart';
 import 'package:geiger_toolbox/app/modules/tools/bindings/tools_binding.dart';
 import 'package:geiger_toolbox/app/modules/tools/views/tools_view.dart';
-import 'package:get/get.dart';
 
 import 'app_routes.dart';
 
@@ -67,6 +70,11 @@ class Pages {
       name: Routes.TOOLS_VIEW,
       page: () => ToolsView(),
       binding: ToolsBinding(),
+    ),
+    GetPage(
+      name: Routes.SECURITY_DEFENDERS_VIEW,
+      page: () => SecurityDefendersView(),
+      binding: SecurityDefendersBinding(),
     ),
   ];
 }

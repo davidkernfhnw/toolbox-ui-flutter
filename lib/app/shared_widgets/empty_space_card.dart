@@ -15,7 +15,7 @@ class EmptySpaceCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Container(
-            width: size ?? 400,
+            width: size,
             child: child ?? Center(child: Text("coming soon")),
           ),
         ),

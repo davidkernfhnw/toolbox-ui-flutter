@@ -11,8 +11,8 @@ import 'app/util/theme/custom_theme_data.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 // localStorage database
-  await LocalStorage.initLocalStorage();
-  await Get.put(TermsAndConditionsController().previouslyAgreed());
+//   await LocalStorage.initLocalStorage();
+//   await Get.put(TermsAndConditionsController().previouslyAgreed());
   runApp(GeigerApp());
 }
 
@@ -24,7 +24,7 @@ class GeigerApp extends StatelessWidget {
     return GetMaterialApp(
         debugShowCheckedModeBanner: true,
         getPages: Pages.pages,
-        initialRoute: Routes.TERMS_AND_CONDITIONS_VIEW,
+        initialRoute: Routes.HOME_VIEW,
         translationsKeys: AppTranslation.translationsKeys,
         locale: Get.deviceLocale,
         fallbackLocale: Locale('en'),
