@@ -2,19 +2,19 @@
 
 import 'dart:developer';
 
+import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 
 class LocalStorage {
   //initialize this inside onInit() in your controller
-  static Future<StorageController> initLocalStorage() async {
-    String dbPath =
-        join(await getDatabasesPath(), 'samuelawaffwawafawfw123awir45.sqlite');
+  static Future<StorageController?> initLocalStorage() async {
+    // String dbPath =
+    //     join(await getDatabasesPath(), 'samuelawaffwawafawfw123awir45.sqlite');
     try {
-      StorageController storageController =
-          await GenericController('testingUser', SqliteMapper(dbPath));
-      return storageController;
+      // StorageController storageController =
+      //     await GenericController('testingUser', SqliteMapper(dbPath));
+      GeigerDummy geigerDummy = GeigerDummy();
+      return await geigerDummy.localGeigerApi();
     } catch (e) {
       log("Database Connection Error From LocalStorage: $e");
       rethrow;

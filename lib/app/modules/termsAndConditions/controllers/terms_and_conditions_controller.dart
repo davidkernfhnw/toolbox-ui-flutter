@@ -7,7 +7,6 @@ import 'package:geiger_toolbox/app/services/local_storage.dart';
 import 'package:get/get.dart';
 
 class TermsAndConditionsController extends GetxController {
-  GeigerApi? _geigerApi;
   StorageController? _storageController;
 
   static TermsAndConditionsController to = Get.find();
@@ -18,10 +17,9 @@ class TermsAndConditionsController extends GetxController {
 
   var error = false.obs;
 
-  //storageController
+  // storageController
   _init() async {
     _storageController = await LocalStorage.initLocalStorage();
-    _geigerApi = GeigerApi(_storageController!);
   }
 
   Future<void> agreed() async {
@@ -29,7 +27,7 @@ class TermsAndConditionsController extends GetxController {
         signedConsent.value == true &&
         agreedPrivacy.value == true) {
       error.value = false;
-      await _geigerApi!.initialGeigerDummyData(TermsAndConditions(
+      await GeigerDummy().initialGeigerDummyData(TermsAndConditions(
           ageCompliant: true, signedConsent: true, agreedPrivacy: true));
       Get.offNamed(Routes.HOME_VIEW);
     } else {
@@ -61,7 +59,7 @@ class TermsAndConditionsController extends GetxController {
 
     //init storageController and geigerApi
     await _init();
-    // //check if terms and condition were previously agreed
+    //check if terms and condition were previously agreed
     await previouslyAgreed();
   }
 
