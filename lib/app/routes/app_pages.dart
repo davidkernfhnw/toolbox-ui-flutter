@@ -56,11 +56,10 @@ class Pages {
       binding: DeviceBinding(),
     ),
     GetPage(
-      name: Routes.TERMS_AND_CONDITIONS_VIEW,
-      page: () => TermsAndConditionsView(),
-      binding: TermsAndConditionsBinding(),
-      transition: Transition.noTransition,
-    ),
+        name: Routes.TERMS_AND_CONDITIONS_VIEW,
+        page: () => TermsAndConditionsView(),
+        binding: TermsAndConditionsBinding(),
+        transition: Transition.noTransition),
     GetPage(
       name: Routes.SETTINGS_VIEW,
       page: () => SettingsView(),

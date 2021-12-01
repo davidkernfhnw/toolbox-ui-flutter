@@ -7,6 +7,7 @@ import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/language.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
+import 'package:geiger_toolbox/app/services/local_storage.dart';
 //import 'package:geiger_toolbox/app/services/local_storage.dart';
 import 'package:geiger_toolbox/app/translation/suppored_language.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,9 @@ class SettingsController extends GetxController {
   dummy.UserNode? _userNode;
   StorageController? _storageController;
   LocalStorageController _localStorage = LocalStorageController.to;
+
+  TextEditingController userName = TextEditingController();
+  final TextEditingController deviceName = TextEditingController();
 
   //final formKey = GlobalKey<FormBuilderState>();
 
@@ -190,10 +194,10 @@ class SettingsController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    // await _init();
-    // userInfo.value = await _setUserDetails();
-    // log(userName.toString());
-    // log("userInfo: ${userInfo.value}");
+    await _init();
+    userInfo.value = await _setUserDetails();
+    log(userName.toString());
+    log("userInfo: ${userInfo.value}");
   }
 
   @override
