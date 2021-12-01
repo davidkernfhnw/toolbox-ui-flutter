@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
 import 'package:get/get.dart';
 
 import 'app/routes/app_pages.dart';
@@ -10,9 +9,9 @@ import 'app/util/theme/custom_theme_data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-// localStorage database
-  await LocalStorage.initLocalStorage();
-  await Get.put(TermsAndConditionsController().previouslyAgreed());
+// intialize localStorage
+  await Get.put(LocalStorageController()).initLocalStorage();
+  //await Get.put(TermsAndConditionsController().previouslyAgreed());
   runApp(GeigerApp());
 }
 

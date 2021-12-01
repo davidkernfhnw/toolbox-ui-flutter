@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 class HomeController extends GetxController {
   //an instance of HomeController
   static HomeController get to => Get.find();
+  LocalStorageController _localStorage = LocalStorageController.to;
 
   StorageController? _storageController;
 
@@ -19,10 +20,8 @@ class HomeController extends GetxController {
 
   //storageController
   _init() async {
-    _storageController = await LocalStorage.initLocalStorage();
-
-    _userNode = await dummy.UserNode(_storageController!);
-    _deviceNode = await dummy.DeviceNode(_storageController!);
+    //_storageController = await LocalStorage.initLocalStorage();
+    _storageController = await _localStorage.storageController;
   }
 
   var isLoading = false.obs;
@@ -52,6 +51,9 @@ class HomeController extends GetxController {
   }
 
   setGeigerAggregateThreatScore() async {
+    await _init();
+    _userNode = await dummy.UserNode(_storageController!);
+    _deviceNode = await dummy.DeviceNode(_storageController!);
     isLoading.value = true;
     threatsScore = await _fetchGeigerAggregateScore();
     //log(await _geigerApi!.onBtnPressed());
@@ -69,6 +71,6 @@ class HomeController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    await _init();
+    //await _init();
   }
 }

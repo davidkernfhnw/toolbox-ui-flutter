@@ -2,25 +2,46 @@
 
 import 'dart:developer';
 
+import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:get/get.dart';
+import 'package:geiger_api/geiger_api.dart';
 
-class LocalStorage {
-  //initialize this inside onInit() in your controller
-  static Future<StorageController> initLocalStorage() async {
-    String dbPath =
-        join(await getDatabasesPath(), 'samuelawfw123awir45.sqlite');
+class LocalStorageController extends GetxController {
+  //instance
+  static LocalStorageController to = Get.find();
+
+  late StorageController storageController;
+
+  // Future<StorageController?> initLocalStorage() async {
+  //   try {
+  //     GeigerDummy g = GeigerDummy();
+  //
+  //     GeigerApi api = await g.initGeigerApi();
+  //     ;
+  //     return api.getStorage();
+  //   } catch (e) {
+  //     log("Database Connection Error From LocalStorage: $e");
+  //     rethrow;
+  //   }
+  // }
+  Future<void> initLocalStorage() async {
     try {
-      StorageController storageController =
-          await GenericController('testingUser', SqliteMapper(dbPath));
-      return storageController;
+      GeigerDummy g = GeigerDummy();
+
+      GeigerApi api = await g.initGeigerApi();
+      storageController = api.getStorage()!;
+      //storageController = (await g.getStorageController())!;
     } catch (e) {
       log("Database Connection Error From LocalStorage: $e");
       rethrow;
-      // log("Database Connection: Failed \n $e \n $stack");
-      // log(dbPath);
-      // return null;
     }
+  }
+
+  @override
+  void onInit() async {
+    //storageController = (await _initLocalStorage())!;
+    super.onInit();
+    // await _initLocalStorage();
   }
 }

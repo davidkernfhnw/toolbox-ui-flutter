@@ -7,9 +7,9 @@ import 'package:geiger_toolbox/app/services/local_storage.dart';
 import 'package:get/get.dart';
 
 class TermsAndConditionsController extends GetxController {
-  GeigerApi? _geigerApi;
+  GeigerDummy? _geigerDummy = GeigerDummy();
   StorageController? _storageController;
-
+  LocalStorageController _localStorage = LocalStorageController.to;
   static TermsAndConditionsController to = Get.find();
 
   var ageCompliant = false.obs;
@@ -20,8 +20,7 @@ class TermsAndConditionsController extends GetxController {
 
   //storageController
   _init() async {
-    _storageController = await LocalStorage.initLocalStorage();
-    _geigerApi = GeigerApi(_storageController!);
+    _storageController = await _localStorage.storageController;
   }
 
   Future<void> agreed() async {
@@ -29,8 +28,10 @@ class TermsAndConditionsController extends GetxController {
         signedConsent.value == true &&
         agreedPrivacy.value == true) {
       error.value = false;
-      await _geigerApi!.initialGeigerDummyData(TermsAndConditions(
-          ageCompliant: true, signedConsent: true, agreedPrivacy: true));
+      await _geigerDummy!.initialGeigerDummyData(
+          _storageController!,
+          TermsAndConditions(
+              ageCompliant: true, signedConsent: true, agreedPrivacy: true));
       Get.offNamed(Routes.HOME_VIEW);
     } else {
       error.value = true;

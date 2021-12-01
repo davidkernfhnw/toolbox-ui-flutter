@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
+import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/language.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
 import 'package:geiger_toolbox/app/services/local_storage.dart';
@@ -14,6 +15,9 @@ class SettingsController extends GetxController {
   //instance
   static SettingsController to = Get.find();
   dummy.UserNode? _userNode;
+  StorageController? _storageController;
+  LocalStorageController _localStorage = LocalStorageController.to;
+
   //final formKey = GlobalKey<FormBuilderState>();
 
   //user object observable
@@ -106,7 +110,8 @@ class SettingsController extends GetxController {
 
   //initial storageController
   _init() async {
-    _userNode = await dummy.UserNode(await LocalStorage.initLocalStorage());
+    _storageController = await _localStorage.storageController;
+    _userNode = await dummy.UserNode(_storageController!);
   }
 
   Future<dummy.User> get getUserDetails async {
