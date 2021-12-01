@@ -6,7 +6,7 @@ import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_par
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_text_field.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 
-import 'package:get/get.dart';
+//import 'package:get/get.dart';
 
 class SecurityDefendersView extends StatelessWidget {
   @override

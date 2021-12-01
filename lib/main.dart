@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
+//import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
 import 'package:get/get.dart';
 
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
-import 'app/services/local_storage.dart';
+//import 'app/services/local_storage.dart';
 import 'app/translation/app_translation.dart';
 import 'app/util/theme/custom_theme_data.dart';
 

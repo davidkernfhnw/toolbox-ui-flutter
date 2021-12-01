@@ -1,29 +1,29 @@
 import 'dart:convert';
-import 'dart:developer';
+//import 'dart:developer';
 
-import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
-import 'package:geiger_localstorage/geiger_localstorage.dart';
+//import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
+//import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_aggregate_score.dart';
 import 'package:geiger_toolbox/app/data/model/threat.dart';
-import 'package:geiger_toolbox/app/services/local_storage.dart';
+//import 'package:geiger_toolbox/app/services/local_storage.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
   //an instance of HomeController
   static HomeController get to => Get.find();
 
-  StorageController? _storageController;
+  //StorageController? _storageController;
 
-  dummy.UserNode? _userNode;
-  dummy.DeviceNode? _deviceNode;
+  //dummy.UserNode? _userNode;
+  //dummy.DeviceNode? _deviceNode;
 
   //storageController
-  _init() async {
-    _storageController = await LocalStorage.initLocalStorage();
-
-    _userNode = await dummy.UserNode(_storageController!);
-    _deviceNode = await dummy.DeviceNode(_storageController!);
-  }
+  // _init() async {
+  //   // _storageController = await LocalStorage.initLocalStorage();
+  //
+  //   //_userNode = await dummy.UserNode(_storageController!);
+  //   //_deviceNode = await dummy.DeviceNode(_storageController!);
+  // }
 
   var isLoading = false.obs;
 

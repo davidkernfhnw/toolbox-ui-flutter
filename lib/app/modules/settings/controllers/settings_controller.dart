@@ -7,7 +7,7 @@ import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/language.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
-import 'package:geiger_toolbox/app/services/local_storage.dart';
+//import 'package:geiger_toolbox/app/services/local_storage.dart';
 import 'package:geiger_toolbox/app/translation/suppored_language.dart';
 import 'package:get/get.dart';
 
@@ -111,10 +111,10 @@ class SettingsController extends GetxController {
   }
 
   //initial storageController
-  _init() async {
-    _storageController = await LocalStorage.initLocalStorage();
-    _userNode = await dummy.UserNode(_storageController!);
-  }
+  // _init() async {
+  //   // _storageController = await LocalStorage.initLocalStorage();
+  //   _userNode = await dummy.UserNode(_storageController!);
+  // }
 
   Future<dummy.User> get getUserDetails async {
     return await _setUserDetails();
