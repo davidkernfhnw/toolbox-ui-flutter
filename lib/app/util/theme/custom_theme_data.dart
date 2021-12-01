@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:google_fonts/google_fonts.dart';
 
 import 'custom_material_color.dart';
@@ -7,7 +6,7 @@ import 'custom_material_color.dart';
 ThemeData customThemeData() {
   return ThemeData(
     primarySwatch: CustomMaterialColor.createMaterialColor(Colors.white),
-
+    unselectedWidgetColor: Colors.green,
     toggleableActiveColor: Colors.green,
 
     //customize styling for elevatedButton
@@ -28,5 +27,9 @@ ThemeData customThemeData() {
       bodyText2: GoogleFonts.nunito().copyWith(
           fontSize: 16.0, fontWeight: FontWeight.w400, color: Colors.black),
     ),
+    pageTransitionsTheme: PageTransitionsTheme(builders: {
+      TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+      TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder()
+    }),
   );
 }

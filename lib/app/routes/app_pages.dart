@@ -11,12 +11,20 @@ import 'package:geiger_toolbox/app/modules/home/views/home_view.dart';
 import 'package:geiger_toolbox/app/modules/qrcode/bindings/qr_scanner_binding.dart';
 import 'package:geiger_toolbox/app/modules/qrcode/views/qr_scanner_view.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/binding/recommendation_binding.dart';
-import 'package:geiger_toolbox/app/modules/recommendation/views/recommendation_page.dart';
+import 'package:geiger_toolbox/app/modules/recommendation/views/recommendation_view.dart';
+import 'package:geiger_toolbox/app/modules/security_defenders/bindings/security_defenders_binding.dart';
+import 'package:geiger_toolbox/app/modules/security_defenders/views/security_defenders_view.dart';
+import 'package:geiger_toolbox/app/modules/settings/bindings/settings_binding.dart';
+import 'package:geiger_toolbox/app/modules/settings/views/settings_view.dart';
+import 'package:geiger_toolbox/app/modules/termsAndConditions/bindings/terms_and_conditions_binding.dart';
+import 'package:geiger_toolbox/app/modules/termsAndConditions/views/terms_and_conditions_view.dart';
+import 'package:geiger_toolbox/app/modules/tools/bindings/tools_binding.dart';
+import 'package:geiger_toolbox/app/modules/tools/views/tools_view.dart';
 
 import 'app_routes.dart';
 
 class Pages {
-  static final List<GetPage> pages = [
+  static final List<GetPage<dynamic>> pages = [
     GetPage(
       name: Routes.HOME_VIEW,
       page: () => HomeView(),
@@ -46,6 +54,27 @@ class Pages {
       name: Routes.DEVICE_VIEW,
       page: () => DeviceView(),
       binding: DeviceBinding(),
+    ),
+    GetPage(
+      name: Routes.TERMS_AND_CONDITIONS_VIEW,
+      page: () => TermsAndConditionsView(),
+      binding: TermsAndConditionsBinding(),
+      transition: Transition.noTransition,
+    ),
+    GetPage(
+      name: Routes.SETTINGS_VIEW,
+      page: () => SettingsView(),
+      binding: SettingsBinding(),
+    ),
+    GetPage(
+      name: Routes.TOOLS_VIEW,
+      page: () => ToolsView(),
+      binding: ToolsBinding(),
+    ),
+    GetPage(
+      name: Routes.SECURITY_DEFENDERS_VIEW,
+      page: () => SecurityDefendersView(),
+      binding: SecurityDefendersBinding(),
     ),
   ];
 }

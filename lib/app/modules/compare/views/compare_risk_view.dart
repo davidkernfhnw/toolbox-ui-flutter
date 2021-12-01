@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 import 'package:geiger_toolbox/app/modules/compare/controller/compare_risk_controller.dart';
+import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 
 class CompareRiskPage extends StatelessWidget {
   CompareRiskPage({Key? key}) : super(key: key);
@@ -11,7 +11,7 @@ class CompareRiskPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(controller.title),
       ),
-      drawer: const SideMenuBar(),
+      drawer: const SideMenu(),
       body: Center(
         child: Text(controller.title),
       ),

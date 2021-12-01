@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/modules/home/views/home_view.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:get/get.dart';
 
-class SideMenuBar extends StatelessWidget {
-  const SideMenuBar({Key? key}) : super(key: key);
+class SideMenu extends StatelessWidget {
+  const SideMenu({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -59,7 +58,7 @@ Widget menuList() {
         tileColor:
             Get.currentRoute == Routes.HOME_VIEW ? Colors.grey[300] : null,
         onTap: () {
-          Get.off(() => HomeView());
+          Get.toNamed(Routes.HOME_VIEW);
         },
       ),
       ListTile(
@@ -77,6 +76,14 @@ Widget menuList() {
             Get.currentRoute == Routes.EMPLOYEE_VIEW ? Colors.grey[300] : null,
         onTap: () {
           Get.offNamed(Routes.EMPLOYEE_VIEW);
+        },
+      ),
+      ListTile(
+        title: Text(Routes.SETTINGS_DISPLAY_NAME),
+        tileColor:
+            Get.currentRoute == Routes.SETTINGS_VIEW ? Colors.grey[300] : null,
+        onTap: () {
+          Get.offNamed(Routes.SETTINGS_VIEW);
         },
       ),
     ],

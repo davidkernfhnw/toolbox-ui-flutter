@@ -2,12 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/data/model/threat.dart';
-
-import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
-import 'package:geiger_toolbox/app/modules/home/views/widgets/threats_card.dart';
 import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
+import 'package:geiger_toolbox/app/modules/home/views/widgets/threats_card.dart';
 import 'package:geiger_toolbox/app/modules/home/views/widgets/top_screen.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
+import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 import 'package:geiger_toolbox/app/util/geiger_icons.dart';
 import 'package:get/get.dart';
 
@@ -19,7 +18,7 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const SideMenuBar(),
+      drawer: const SideMenu(),
       appBar: AppBar(
         title: const Text('Geiger Toolbox'),
       ),
@@ -43,7 +42,9 @@ class HomeView extends StatelessWidget {
                 isLoading: controller.isLoading.value,
               ),
               controller.isLoading.value
-                  ? const CircularProgressIndicator.adaptive()
+                  ? const CircularProgressIndicator.adaptive(
+                      backgroundColor: Colors.green,
+                    )
                   : controller.threatsScore.isEmpty
                       ? const Center(
                           child: Text("NO DATA FOUND"),

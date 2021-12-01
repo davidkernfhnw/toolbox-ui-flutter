@@ -18,7 +18,20 @@ class RecommendationPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(controller.threat.value.name.toString()),
-          bottom: buildTabBar(),
+          bottom: buildTabBar(tabs: [
+            Tab(
+              icon: Icon(
+                Icons.person,
+              ),
+              text: "User",
+            ),
+            Tab(
+              icon: Icon(
+                Icons.phone_android_rounded,
+              ),
+              text: "Device Risk",
+            ),
+          ]),
         ),
         body: TabBarView(
           children: [

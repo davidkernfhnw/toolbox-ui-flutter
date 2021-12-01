@@ -3,10 +3,8 @@ import 'package:geiger_toolbox/app/modules/device/views/device_qrcode_view.dart'
 import 'package:geiger_toolbox/app/modules/device/views/widgets/device_card.dart';
 import 'package:geiger_toolbox/app/modules/qrcode/controllers/qr_scanner_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
-
 import 'package:geiger_toolbox/app/shared_widgets/EmployeeCard.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
-
 import 'package:get/get.dart';
 
 class DeviceView extends StatelessWidget {
@@ -19,7 +17,7 @@ class DeviceView extends StatelessWidget {
       appBar: AppBar(
         title: Text('DeviceView'),
       ),
-      drawer: SideMenuBar(),
+      drawer: SideMenu(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(children: [
