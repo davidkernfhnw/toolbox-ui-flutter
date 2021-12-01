@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
-import 'package:geiger_toolbox/app/services/local_storage.dart';
+//import 'package:geiger_toolbox/app/services/local_storage.dart';
 import 'package:get/get.dart';
 
 class TermsAndConditionsController extends GetxController {
@@ -61,8 +61,8 @@ class TermsAndConditionsController extends GetxController {
     super.onInit();
 
     //init storageController and geigerApi
-    await _init();
-    // //check if terms and condition were previously agreed
+    //await _init();
+    //check if terms and condition were previously agreed
     await previouslyAgreed();
   }
 
@@ -73,6 +73,7 @@ class TermsAndConditionsController extends GetxController {
 
   @override
   void dispose() {
+    _storageController!.close();
     super.dispose();
   }
 }

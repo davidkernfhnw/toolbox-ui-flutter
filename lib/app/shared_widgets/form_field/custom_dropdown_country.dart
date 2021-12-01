@@ -1,29 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class CountryDropDown extends StatelessWidget {
-  CountryDropDown(
-      {required this.fieldBuilderName,
+class CustomDropDownCountry extends StatelessWidget {
+  const CustomDropDownCountry(
+      {Key? key,
       this.titleText,
       required this.listItems,
       required this.hintText,
       this.defaultValue,
-      this.onChanged,
-      Key? key})
+      this.onChanged})
       : super(key: key);
 
-  final String fieldBuilderName;
   final String? titleText;
   final List<String> listItems;
   final String hintText;
   final String? defaultValue;
   final void Function(String? country)? onChanged;
+
   @override
   Widget build(BuildContext context) {
-    return FormBuilderDropdown(
+    return DropdownButtonFormField(
       /// focusNode issue : used after dispose
-
-      name: fieldBuilderName,
+      value: defaultValue,
       decoration: InputDecoration(
         labelText: titleText,
         border: OutlineInputBorder(
@@ -31,8 +28,6 @@ class CountryDropDown extends StatelessWidget {
         ),
       ),
       onChanged: onChanged,
-      initialValue: defaultValue,
-      allowClear: true,
       hint: Text(hintText),
       items: listItems
           .map((item) => DropdownMenuItem(

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
-import 'app/services/local_storage.dart';
+//import 'app/services/local_storage.dart';
 import 'app/translation/app_translation.dart';
 import 'app/util/theme/custom_theme_data.dart';
 
@@ -23,7 +23,7 @@ class GeigerApp extends StatelessWidget {
     return GetMaterialApp(
         debugShowCheckedModeBanner: true,
         getPages: Pages.pages,
-        initialRoute: Routes.TERMS_AND_CONDITIONS_VIEW,
+        initialRoute: Routes.HOME_VIEW,
         translationsKeys: AppTranslation.translationsKeys,
         locale: Get.deviceLocale,
         fallbackLocale: Locale('en'),

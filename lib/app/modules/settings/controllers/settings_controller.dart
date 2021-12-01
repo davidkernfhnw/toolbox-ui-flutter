@@ -7,7 +7,7 @@ import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/language.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
-import 'package:geiger_toolbox/app/services/local_storage.dart';
+//import 'package:geiger_toolbox/app/services/local_storage.dart';
 import 'package:geiger_toolbox/app/translation/suppored_language.dart';
 import 'package:get/get.dart';
 
@@ -31,6 +31,7 @@ class SettingsController extends GetxController {
   var selectedLanguage = Get.locale!.languageCode.obs;
   var currentCert = "NCSC Switzerland".obs;
   var currentProfAss = "Swiss Yoga Association".obs;
+  var supervisor = false.obs;
 
   //list of supported languages
   List<Language> languages = SupportedLanguage.languages;
@@ -48,11 +49,11 @@ class SettingsController extends GetxController {
     ),
     Partner(
       country: "Romania",
-      names: [],
+      names: ["Romania Association"],
     ),
     Partner(
       country: "Netherlands",
-      names: [],
+      names: ["Netherlands Association"],
     )
   ];
   List<Partner> _cert = [
@@ -72,8 +73,9 @@ class SettingsController extends GetxController {
     log(userInfo.value.language.toString());
   }
 
-  onSwitchOwner(bool? owner) {
-    userInfo.value.supervisor = owner!;
+  onChangeOwner(bool owner) {
+    userInfo.value.supervisor = owner;
+    supervisor.value = userInfo.value.supervisor;
     log(userInfo.value.supervisor.toString());
   }
 
@@ -92,20 +94,20 @@ class SettingsController extends GetxController {
 
     Partner selectedProfAss =
         _profAss.firstWhere((Partner element) => country == element.country);
+    log(selectedProfAss.names.toString());
     //updates
     profAssBaseOnCountrySelected = selectedProfAss.names;
     currentProfAss.value = profAssBaseOnCountrySelected.first;
-    log(selectedProfAss.names.toString());
   }
 
   onChangedCert(dynamic cert) {
-    userInfo.value.cert = cert;
     currentCert.value = cert;
+    log(currentCert.value.toString());
   }
 
-  onChangedProfAss(String? profAss) {
-    userInfo.value.profAss = profAss!;
+  onChangedProfAss(dynamic profAss) {
     currentProfAss.value = profAss;
+    log(currentProfAss.value.toString());
   }
 
   //initial storageController
@@ -185,16 +187,13 @@ class SettingsController extends GetxController {
     }
   }
 
-//reactive testing
-  var currentDevice = "".obs;
-
   @override
   void onInit() async {
     super.onInit();
-    await _init();
-    userInfo.value = await _setUserDetails();
-    log("userInfo: ${userInfo.value}");
-    currentDevice.value = userInfo.value.deviceOwner.name!;
+    // await _init();
+    // userInfo.value = await _setUserDetails();
+    // log(userName.toString());
+    // log("userInfo: ${userInfo.value}");
   }
 
   @override
@@ -203,7 +202,11 @@ class SettingsController extends GetxController {
   }
 
   @override
-  void onClose() {
+  void onClose() async {
+    userName.dispose();
+    deviceName.dispose();
+    await _storageController!.close();
+
     super.onClose();
   }
 }
