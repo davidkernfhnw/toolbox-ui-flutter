@@ -4,9 +4,9 @@ import 'dart:async';
 import 'package:geiger_toolbox/app/data/model/user.dart';
 
 abstract class LocalUser {
-  Future<String> get getUserid;
+  Future<String> get getUserId;
 
-  void set setUserInfo(User user);
+  void storeUserInfo(User user);
 
   Future<User> get getUserInfo;
 

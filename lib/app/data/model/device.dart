@@ -30,7 +30,7 @@ class Device {
   }
 
   // convert from Device to json
-  static String convertDeviceToJson(Device currentDevice) {
+  static String convertToJson(Device currentDevice) {
     var jsonData = jsonEncode(currentDevice);
     return jsonData;
   }

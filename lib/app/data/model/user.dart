@@ -50,13 +50,13 @@ class User {
   }
 
   //convert from json  to User
-  static User convertUserFromJson(String json) {
+  static User convertToUser(String json) {
     var jsonData = jsonDecode(json);
     return User.fromJson(jsonData);
   }
 
   // convert from User to Json
-  static String convertUserToJson(User user) {
+  static String convertToJson(User user) {
     var jsonData = jsonEncode(user);
     return jsonData;
   }
