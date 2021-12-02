@@ -1,3 +1,5 @@
+import 'package:geiger_toolbox/app/data/model/device.dart';
+import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
 
 import '../abstract/local_user.dart';
@@ -43,7 +45,7 @@ class UserService extends LocalUser {
 
   //store user related information
   @override
-  void storeUserInfo(User user) async {
+  Future<void> storeUserInfo(User user) async {
     try {
       _node = await getNode(":Local", storageController);
       String currentUserId = await getUserId;
@@ -58,4 +60,24 @@ class UserService extends LocalUser {
   }
 
   set setVisibility(vis.Visibility visibility) {}
+
+  @override
+  Future<bool> storeTermsAndConditions(
+      {required TermsAndConditions termsAndConditions,
+      required User userInfo,
+      required Device deviceInfo}) async {
+    if (termsAndConditions.agreedPrivacy == true &&
+        termsAndConditions.signedConsent == true &&
+        termsAndConditions.ageCompliant == true) {
+      //assign termsAndConditions to this user
+      userInfo.termsAndConditions = termsAndConditions;
+      //assign device to this user
+      userInfo.deviceOwner = deviceInfo;
+      //store
+      await storeUserInfo(userInfo);
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

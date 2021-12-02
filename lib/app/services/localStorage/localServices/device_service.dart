@@ -41,7 +41,7 @@ class DeviceService extends LocalDevice {
   //store device related information
 
   @override
-  void setDeviceInfo(Device device) async {
+  Future<void> setDeviceInfo(Device device) async {
     try {
       _node = await getNode(":Local", storageController);
       String currentDeviceId = await getDeviceId;
