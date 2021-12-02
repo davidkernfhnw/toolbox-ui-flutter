@@ -16,7 +16,6 @@ class UserService extends LocalUser {
 
   // ----------- getters ------------------
   @override
-  // TODO: implement getUserid
   Future<String> get getUserId async {
     try {
       _node = await getNode(":Local", storageController);
@@ -28,7 +27,6 @@ class UserService extends LocalUser {
   }
 
   @override
-  // TODO: implement getUserInfo
   Future<User> get getUserInfo async {
     try {
       _node = await getNode(":Local", storageController);
