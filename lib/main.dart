@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:get/get.dart';
 
-import 'app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
+//import 'app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 //import 'app/services/local_storage_controller.dart';
