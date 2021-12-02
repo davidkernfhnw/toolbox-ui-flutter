@@ -7,17 +7,17 @@ part of 'device.dart';
 // **************************************************************************
 
 Device _$DeviceFromJson(Map<String, dynamic> json) => Device(
-      json['deviceId'] as String,
-      json['deviceName'] as String,
-      json['os'] as String?,
-      json['osVersion'] as String?,
-      User.fromJson(json['owner'] as Map<String, dynamic>),
+      deviceId: json['deviceId'] as String?,
+      name: json['name'] as String?,
+      type: json['type'] as String?,
+      tools: (json['tools'] as List<dynamic>?)
+          ?.map((e) => Tool.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
       'deviceId': instance.deviceId,
-      'deviceName': instance.deviceName,
-      'os': instance.os,
-      'osVersion': instance.osVersion,
-      'owner': instance.owner.toJson(),
+      'name': instance.name,
+      'type': instance.type,
+      'tools': instance.tools?.map((e) => e.toJson()).toList(),
     };

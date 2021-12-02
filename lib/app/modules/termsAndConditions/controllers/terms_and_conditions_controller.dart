@@ -1,10 +1,10 @@
 import 'dart:developer';
 
-import 'package:geiger_dummy_data/geiger_dummy_data.dart';
+import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
-//import 'package:geiger_toolbox/app/services/local_storage_controller.dart';
+
 import 'package:get/get.dart';
 
 class TermsAndConditionsController extends GetxController {
@@ -22,7 +22,7 @@ class TermsAndConditionsController extends GetxController {
     _storageController = _localStorage.getStorageController;
   }
 
-  GeigerDummy? _geigerDummy = GeigerDummy();
+  dummy.GeigerDummy? _geigerDummy = dummy.GeigerDummy();
 
   // declaring variable for creativeness
   var ageCompliant = false.obs;
@@ -35,9 +35,9 @@ class TermsAndConditionsController extends GetxController {
   //if false navigate to TermAndCondition view(screen).
   Future<void> checkExistingTerms() async {
     try {
-      UserNode _userNode = UserNode(_storageController!);
-      TermsAndConditions userTerms = await _userNode.getUserInfo
-          .then((User value) => value.termsAndConditions);
+      dummy.UserNode _userNode = dummy.UserNode(_storageController!);
+      dummy.TermsAndConditions userTerms = await _userNode.getUserInfo
+          .then((dummy.User value) => value.termsAndConditions);
 
       if (await userTerms.ageCompliant == true &&
           await userTerms.signedConsent == true &&
@@ -62,7 +62,7 @@ class TermsAndConditionsController extends GetxController {
       errorMsg.value = false;
       await _geigerDummy!.initialGeigerDummyData(
           _storageController!,
-          TermsAndConditions(
+          dummy.TermsAndConditions(
               ageCompliant: ageCompliant.value,
               signedConsent: signedConsent.value,
               agreedPrivacy: agreedPrivacy.value));
