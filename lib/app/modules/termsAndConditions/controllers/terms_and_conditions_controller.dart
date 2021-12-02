@@ -3,43 +3,37 @@ import 'dart:developer';
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
-import 'package:geiger_toolbox/app/services/local_storage.dart';
-//import 'package:geiger_toolbox/app/services/local_storage.dart';
+import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
+//import 'package:geiger_toolbox/app/services/local_storage_controller.dart';
 import 'package:get/get.dart';
 
 class TermsAndConditionsController extends GetxController {
-  GeigerDummy? _geigerDummy = GeigerDummy();
-  StorageController? _storageController;
-  LocalStorageController _localStorage = LocalStorageController.to;
+  //instance of TermsAndConditionController
   static TermsAndConditionsController to = Get.find();
 
+  //get instance of LocalStorageController
+  LocalStorageController _localStorage = LocalStorageController.to;
+
+  //declaring storageController
+  StorageController? _storageController;
+
+  //initialize _storageController using _localStorage instance
+  _initializeStorageController() {
+    _storageController = _localStorage.getStorageController;
+  }
+
+  GeigerDummy? _geigerDummy = GeigerDummy();
+
+  // declaring variable for creativeness
   var ageCompliant = false.obs;
   var signedConsent = false.obs;
   var agreedPrivacy = false.obs;
+  var errorMsg = false.obs;
 
-  var error = false.obs;
-
-  //storageController
-  _init() async {
-    _storageController = await _localStorage.storageController;
-  }
-
-  Future<void> agreed() async {
-    if (ageCompliant.value == true &&
-        signedConsent.value == true &&
-        agreedPrivacy.value == true) {
-      error.value = false;
-      await _geigerDummy!.initialGeigerDummyData(
-          _storageController!,
-          TermsAndConditions(
-              ageCompliant: true, signedConsent: true, agreedPrivacy: true));
-      Get.offNamed(Routes.HOME_VIEW);
-    } else {
-      error.value = true;
-    }
-  }
-
-  Future<void> previouslyAgreed() async {
+  //check if terms and condition values is true in the localstorage
+  // and navigate to home view (screen)
+  //if false navigate to TermAndCondition view(screen).
+  Future<void> checkExistingTerms() async {
     try {
       UserNode _userNode = UserNode(_storageController!);
       TermsAndConditions userTerms = await _userNode.getUserInfo
@@ -57,14 +51,35 @@ class TermsAndConditionsController extends GetxController {
     }
   }
 
+  //store accepted termsAndCondition
+  //show error message if all terms and condition are not check
+  //else navigate to Home view
+  Future<void> acceptTerms() async {
+    if (ageCompliant.value == true &&
+        signedConsent.value == true &&
+        agreedPrivacy.value == true) {
+      //set errorMsg to false
+      errorMsg.value = false;
+      await _geigerDummy!.initialGeigerDummyData(
+          _storageController!,
+          TermsAndConditions(
+              ageCompliant: ageCompliant.value,
+              signedConsent: signedConsent.value,
+              agreedPrivacy: agreedPrivacy.value));
+      Get.offNamed(Routes.HOME_VIEW);
+    } else {
+      //set errorMsg to true
+      errorMsg.value = true;
+    }
+  }
+
   @override
   void onInit() async {
     super.onInit();
-
-    //init storageController and geigerApi
-    await _init();
+    //init storageController
+    _initializeStorageController();
     //check if terms and condition were previously agreed
-    await previouslyAgreed();
+    await checkExistingTerms();
   }
 
   @override
@@ -73,8 +88,9 @@ class TermsAndConditionsController extends GetxController {
   }
 
   @override
-  void dispose() {
-    _storageController!.close();
+  void dispose() async {
     super.dispose();
+    //close storageController after use
+    await _storageController!.close();
   }
 }

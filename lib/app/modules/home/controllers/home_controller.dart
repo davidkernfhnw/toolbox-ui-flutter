@@ -5,7 +5,7 @@ import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_aggregate_score.dart';
 import 'package:geiger_toolbox/app/data/model/threat.dart';
-import 'package:geiger_toolbox/app/services/local_storage.dart';
+import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
@@ -20,7 +20,7 @@ class HomeController extends GetxController {
   //storageController
   _init() async {
     //_storageController = await LocalStorage.initLocalStorage();
-    _storageController = await _localStorage.storageController;
+    _storageController = await _localStorage.getStorageController;
   }
 
   var isLoading = false.obs;

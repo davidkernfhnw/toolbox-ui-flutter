@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:get/get.dart';
 
 import 'app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
-//import 'app/services/local_storage.dart';
-import 'app/services/local_storage.dart';
+//import 'app/services/local_storage_controller.dart';
+import 'app/services/localStorage/local_storage_controller.dart';
 import 'app/translation/app_translation.dart';
 import 'app/util/theme/custom_theme_data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //initialize geigerApi
+  await Get.put(GeigerApiConnector()).initGeigerApi();
   //initialize localStorage
   await Get.put(LocalStorageController()).initLocalStorage();
   //await Get.put(TermsAndConditionsController().previouslyAgreed());
