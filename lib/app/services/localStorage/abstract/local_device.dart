@@ -7,10 +7,11 @@ import 'package:geiger_localstorage/geiger_localstorage.dart';
 abstract class LocalDevice {
   Future<String> get getDeviceId;
 
-  void set setDeviceInfo(Device device);
+  void setDeviceInfo(Device device);
 
   Future<Device> get getDeviceInfo;
 
+//void storeGeigerScoreDevice({ Locale? locale,required GeigerScoreThreats geigerScoreThreats });
 //void storeGeigerScoreAggregate({ Locale? locale,required GeigerScoreThreats geigerScoreThreats });
 
 // ----- Helpers

@@ -1,25 +1,21 @@
-import 'package:geiger_toolbox/app/data/model/user.dart';
-
-import 'abstract/local_user.dart';
-
+import 'package:geiger_toolbox/app/data/model/device.dart';
+import 'package:geiger_toolbox/app/services/localStorage/abstract/local_device.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:geiger_localstorage/src/visibility.dart' as vis;
 
-class UserService extends LocalUser {
+class DeviceService extends LocalDevice {
+  DeviceService(this.storageController);
+
   StorageController storageController;
-
-  UserService(this.storageController);
-
   late Node _node;
   late NodeValue _nodeValue;
 
   // ----------- getters ------------------
   @override
-  // TODO: implement getUserid
-  Future<String> get getUserId async {
+  // TODO: implement getDeviceId
+  Future<String> get getDeviceId async {
     try {
       _node = await getNode(":Local", storageController);
-      _nodeValue = (await _node.getValue("currentUser"))!;
+      _nodeValue = (await _node.getValue("currentDevice"))!;
       return _nodeValue.value;
     } catch (e, s) {
       throw StorageException("Failed to retrieve the Local node\n $e", s);
@@ -27,14 +23,14 @@ class UserService extends LocalUser {
   }
 
   @override
-  // TODO: implement getUserInfo
-  Future<User> get getUserInfo async {
+  // TODO: implement getDeviceInfo
+  Future<Device> get getDeviceInfo async {
     try {
       _node = await getNode(":Local", storageController);
-      _nodeValue = (await _node.getValue("userInfo"))!;
+      _nodeValue = (await _node.getValue("deviceInfo"))!;
       String userInfo = _nodeValue.value;
-      User user = User.convertToUser(userInfo);
-      return user;
+      Device device = Device.convertToDevice(userInfo);
+      return device;
     } catch (e, s) {
       throw StorageException("Failed to retrieve the Local node\n $e", s);
     }
@@ -42,21 +38,20 @@ class UserService extends LocalUser {
 
   // ----------- setters ------------------
 
-  //store user relation information
+  //store device related information
+
   @override
-  void storeUserInfo(User user) async {
+  void setDeviceInfo(Device device) async {
     try {
       _node = await getNode(":Local", storageController);
-      String currentUserId = await getUserId;
-      user.userId = currentUserId;
-      String userInfo = User.convertToJson(user);
-      _nodeValue = NodeValueImpl("userInfo", userInfo);
+      String currentDeviceId = await getDeviceId;
+      device.deviceId = currentDeviceId;
+      String deviceInfo = Device.convertToJson(device);
+      _nodeValue = NodeValueImpl("userInfo", deviceInfo);
       await _node.addOrUpdateValue(_nodeValue);
       await storageController.update(_node);
     } catch (e, s) {
       throw StorageException("Failed to retrieve the Local node\n $e", s);
     }
   }
-
-  set setVisibility(vis.Visibility visibility) {}
 }
