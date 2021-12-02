@@ -5,7 +5,7 @@ import 'abstract/local_user.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_localstorage/src/visibility.dart' as vis;
 
-class UserService implements LocalUser {
+class UserService extends LocalUser {
   StorageController storageController;
 
   UserService(this.storageController);
@@ -18,7 +18,7 @@ class UserService implements LocalUser {
   // TODO: implement getUserid
   Future<String> get getUserId async {
     try {
-      _node = await _getNode(":Local");
+      _node = await getNode(":Local", storageController);
       _nodeValue = (await _node.getValue("currentUser"))!;
       return _nodeValue.value;
     } catch (e, s) {
@@ -30,7 +30,7 @@ class UserService implements LocalUser {
   // TODO: implement getUserInfo
   Future<User> get getUserInfo async {
     try {
-      _node = await _getNode(":Local");
+      _node = await getNode(":Local", storageController);
       _nodeValue = (await _node.getValue("userInfo"))!;
       String userInfo = _nodeValue.value;
       User user = User.convertToUser(userInfo);
@@ -46,7 +46,7 @@ class UserService implements LocalUser {
   @override
   void storeUserInfo(User user) async {
     try {
-      _node = await _getNode(":Local");
+      _node = await getNode(":Local", storageController);
       String currentUserId = await getUserId;
       user.userId = currentUserId;
       String userInfo = User.convertToJson(user);
@@ -56,11 +56,6 @@ class UserService implements LocalUser {
     } catch (e, s) {
       throw StorageException("Failed to retrieve the Local node\n $e", s);
     }
-  }
-
-// ----- Helpers
-  Future<Node> _getNode(String path) async {
-    return await storageController.get(path);
   }
 
   set setVisibility(vis.Visibility visibility) {}

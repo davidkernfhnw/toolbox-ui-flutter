@@ -2,6 +2,7 @@ import 'dart:async';
 
 //import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
+import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 abstract class LocalUser {
   Future<String> get getUserId;
@@ -12,4 +13,8 @@ abstract class LocalUser {
 
   //void storeGeigerScoreAggregate({ Locale? locale,required GeigerScoreThreats geigerScoreThreats });
 
+// ----- Helpers
+  Future<Node> getNode(String path, StorageController storageController) async {
+    return await storageController.get(path);
+  }
 }

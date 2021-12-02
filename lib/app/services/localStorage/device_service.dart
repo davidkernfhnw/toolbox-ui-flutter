@@ -1,7 +1,7 @@
 import 'package:geiger_toolbox/app/data/model/device.dart';
 import 'package:geiger_toolbox/app/services/localStorage/abstract/local_device.dart';
 
-class DeviceService implements LocalDevice {
+class DeviceService extends LocalDevice {
   @override
   // TODO: implement getDeviceId
   Future<String> get getDeviceId => throw UnimplementedError();
