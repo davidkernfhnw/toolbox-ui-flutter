@@ -5,12 +5,12 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter_test/flutter_test.dart';
-import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
-import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
-
-import 'package:geiger_toolbox/main.dart';
-import 'package:get/get.dart';
+// import 'package:flutter_test/flutter_test.dart';
+// import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
+// import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
+//
+// import 'package:geiger_toolbox/main.dart';
+// import 'package:get/get.dart';
 
 void main() async {
   // await Get.put(GeigerApiConnector()).initGeigerApi();

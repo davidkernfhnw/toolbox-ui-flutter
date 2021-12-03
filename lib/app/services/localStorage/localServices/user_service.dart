@@ -1,3 +1,4 @@
+import 'package:geiger_toolbox/app/data/model/consent.dart';
 import 'package:geiger_toolbox/app/data/model/device.dart';
 import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
@@ -6,6 +7,8 @@ import '../abstract/local_user.dart';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_localstorage/src/visibility.dart' as vis;
+
+import 'device_service.dart';
 
 class UserService extends LocalUser {
   UserService(this.storageController);
@@ -61,18 +64,26 @@ class UserService extends LocalUser {
 
   @override
   Future<bool> storeTermsAndConditions(
-      {required TermsAndConditions termsAndConditions,
-      required User userInfo,
-      required Device deviceInfo}) async {
+      {required TermsAndConditions termsAndConditions}) async {
     if (termsAndConditions.agreedPrivacy == true &&
         termsAndConditions.signedConsent == true &&
         termsAndConditions.ageCompliant == true) {
-      // ///assign termsAndConditions to userInfo
-      // userInfo.termsAndConditions = termsAndConditions;
-      // ///assign device to userInfo
-      // userInfo.deviceOwner = deviceInfo;
-      // //store userInfo
-      await storeUserInfo(userInfo);
+      //instance of DeviceService
+      DeviceService deviceService = DeviceService(storageController);
+
+      //store deviceInfo
+      await deviceService.storeDeviceInfo(Device());
+      //get deviceInfo
+      Device deviceInfo = await deviceService.getDeviceInfo;
+
+      //instance of user
+      User user = User(
+          termsAndConditions: termsAndConditions,
+          consent: Consent(),
+          deviceOwner: deviceInfo);
+
+      //store userInfo
+      await storeUserInfo(user);
       return true;
     } else {
       return false;
