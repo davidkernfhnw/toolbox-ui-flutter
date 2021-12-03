@@ -27,4 +27,7 @@ class LocalStorageController extends GetxController {
       rethrow;
     }
   }
+//Todo
+// registered storageListener
+//listen to plugin
 }

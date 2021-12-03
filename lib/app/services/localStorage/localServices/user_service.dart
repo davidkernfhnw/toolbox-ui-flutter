@@ -30,15 +30,15 @@ class UserService extends LocalUser {
   }
 
   @override
-  Future<User> get getUserInfo async {
-    try {
-      _node = await getNode(":Local", storageController);
+  Future<User?> get getUserInfo async {
+    _node = await getNode(":Local", storageController);
+    if (await _node.getValue("userInfo") != null) {
       _nodeValue = (await _node.getValue("userInfo"))!;
       String userInfo = _nodeValue.value;
       User user = User.convertToUser(userInfo);
       return user;
-    } catch (e, s) {
-      throw StorageException("Failed to retrieve the Local node\n $e", s);
+    } else {
+      return null;
     }
   }
 

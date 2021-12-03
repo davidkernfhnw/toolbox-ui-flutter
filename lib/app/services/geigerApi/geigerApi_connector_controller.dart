@@ -19,4 +19,8 @@ class GeigerApiConnector extends GetxController {
     //clear existing state
     await _geigerApiMaster.zapState();
   }
+
+  //Todo
+  // registered plugin
+  //listen to plugin
 }

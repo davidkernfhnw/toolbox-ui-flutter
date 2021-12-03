@@ -33,11 +33,11 @@ class TermsAndConditionsController extends GetxController {
   // and navigate to home view (screen)
   //if false navigate to TermAndCondition view(screen).
   Future<void> checkExistingTerms() async {
-    try {
-      //instance of userService
-      UserService userService = UserService(_storageController!);
-      //get user Info
-      User userInfo = await userService.getUserInfo;
+    //instance of userService
+    UserService userService = UserService(_storageController!);
+    //get user Info
+    User? userInfo = await userService.getUserInfo;
+    if (userInfo != null) {
       // assign user term and condition
       TermsAndConditions userTermsAndConditions = userInfo.termsAndConditions;
       //check if true and return home view (screen)
@@ -47,9 +47,9 @@ class TermsAndConditionsController extends GetxController {
         //Future.delayed(Duration(seconds: 2));
         Get.offNamed(Routes.HOME_VIEW);
       }
-    } catch (e) {
-      log("Error: User not created");
-      log("Error from TermsAndConditionController\n$e");
+    } else {
+      //show default screen(TermsAndConditions view)
+      log("UserInfo not found");
     }
   }
 

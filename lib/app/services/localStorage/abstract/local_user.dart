@@ -11,7 +11,7 @@ abstract class LocalUser {
 
   Future<void> storeUserInfo(User user);
 
-  Future<User> get getUserInfo;
+  Future<User?> get getUserInfo;
 
   Future<bool> storeTermsAndConditions(
       {required TermsAndConditions termsAndConditions});
