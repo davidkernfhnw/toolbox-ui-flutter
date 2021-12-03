@@ -11,7 +11,6 @@ class DeviceService extends LocalDevice {
 
   // ----------- getters ------------------
   @override
-  // TODO: implement getDeviceId
   Future<String> get getDeviceId async {
     try {
       _node = await getNode(":Local", storageController);
@@ -23,7 +22,6 @@ class DeviceService extends LocalDevice {
   }
 
   @override
-  // TODO: implement getDeviceInfo
   Future<Device> get getDeviceInfo async {
     try {
       _node = await getNode(":Local", storageController);
@@ -41,13 +39,13 @@ class DeviceService extends LocalDevice {
   //store device related information
 
   @override
-  Future<void> setDeviceInfo(Device device) async {
+  Future<void> storeDeviceInfo(Device device) async {
     try {
       _node = await getNode(":Local", storageController);
       String currentDeviceId = await getDeviceId;
       device.deviceId = currentDeviceId;
       String deviceInfo = Device.convertToJson(device);
-      _nodeValue = NodeValueImpl("userInfo", deviceInfo);
+      _nodeValue = NodeValueImpl("deviceInfo", deviceInfo);
       await _node.addOrUpdateValue(_nodeValue);
       await storageController.update(_node);
     } catch (e, s) {

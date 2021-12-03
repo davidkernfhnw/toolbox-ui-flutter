@@ -7,7 +7,7 @@ import 'package:geiger_localstorage/geiger_localstorage.dart';
 abstract class LocalDevice {
   Future<String> get getDeviceId;
 
-  Future<void> setDeviceInfo(Device device);
+  Future<void> storeDeviceInfo(Device device);
 
   Future<Device> get getDeviceInfo;
 

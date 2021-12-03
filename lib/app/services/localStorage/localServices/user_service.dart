@@ -67,11 +67,11 @@ class UserService extends LocalUser {
     if (termsAndConditions.agreedPrivacy == true &&
         termsAndConditions.signedConsent == true &&
         termsAndConditions.ageCompliant == true) {
-      //assign termsAndConditions to this user
-      userInfo.termsAndConditions = termsAndConditions;
-      //assign device to this user
-      userInfo.deviceOwner = deviceInfo;
-      //store
+      // ///assign termsAndConditions to userInfo
+      // userInfo.termsAndConditions = termsAndConditions;
+      // ///assign device to userInfo
+      // userInfo.deviceOwner = deviceInfo;
+      // //store userInfo
       await storeUserInfo(userInfo);
       return true;
     } else {
