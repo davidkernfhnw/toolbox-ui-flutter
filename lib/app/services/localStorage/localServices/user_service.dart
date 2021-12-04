@@ -10,8 +10,8 @@ import 'package:geiger_localstorage/src/visibility.dart' as vis;
 
 import 'device_service.dart';
 
-class UserService extends LocalUser {
-  UserService(this.storageController);
+class UserService extends DeviceService implements LocalUser {
+  UserService(this.storageController) : super(storageController);
 
   StorageController storageController;
   late Node _node;
@@ -62,13 +62,10 @@ class UserService extends LocalUser {
     if (termsAndConditions.agreedPrivacy == true &&
         termsAndConditions.signedConsent == true &&
         termsAndConditions.ageCompliant == true) {
-      //instance of DeviceService
-      DeviceService deviceService = DeviceService(storageController);
-
       //store deviceInfo
-      await deviceService.storeDeviceInfo(Device());
+      await storeDeviceInfo(Device());
       //get deviceInfo
-      Device deviceInfo = await deviceService.getDeviceInfo;
+      Device deviceInfo = await getDeviceInfo;
 
       //instance of user
       User user = User(
