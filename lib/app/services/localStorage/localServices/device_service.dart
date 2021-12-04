@@ -13,8 +13,8 @@ class DeviceService extends LocalDevice {
   @override
   Future<String> get getDeviceId async {
     try {
-      _node = await getNode(":Local", storageController);
-      _nodeValue = (await _node.getValue("currentDevice"))!;
+      _nodeValue =
+          (await storageController.getValue(":Local", "currentDevice"))!;
       return _nodeValue.value;
     } catch (e, s) {
       throw StorageException("Failed to retrieve the Local node\n $e", s);
@@ -24,8 +24,7 @@ class DeviceService extends LocalDevice {
   @override
   Future<Device> get getDeviceInfo async {
     try {
-      _node = await getNode(":Local", storageController);
-      _nodeValue = (await _node.getValue("deviceInfo"))!;
+      _nodeValue = (await storageController.getValue(":Local", "deviceInfo"))!;
       String userInfo = _nodeValue.value;
       Device device = Device.convertToDevice(userInfo);
       return device;

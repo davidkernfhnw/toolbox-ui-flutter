@@ -13,7 +13,7 @@ import 'app/util/theme/custom_theme_data.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //initialize geigerApi
-  await Get.put(GeigerApiConnector()).initGeigerApi();
+  await Get.put(GeigerApiConnector()).initLocalMasterPlugin();
   //initialize localStorage
   await Get.put(LocalStorageController()).initLocalStorage();
   //await Get.put(TermsAndConditionsController().previouslyAgreed());

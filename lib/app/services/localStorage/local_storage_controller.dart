@@ -13,19 +13,26 @@ class LocalStorageController extends GetxController {
   //get instance of GeigerApiConnector
   GeigerApiConnector _geigerApiConnector = GeigerApiConnector.to;
   late StorageController _storageController;
-
+  late GeigerApi _api;
   StorageController get getStorageController {
     return _storageController;
   }
 
   Future<void> initLocalStorage() async {
     try {
-      GeigerApi api = await _geigerApiConnector.getGeigerApiMaster;
-      _storageController = api.getStorage()!;
+      _api = await _geigerApiConnector.getLocalMaster;
+      _storageController = _api.getStorage()!;
     } catch (e) {
       log("Database Connection Error From LocalStorage: $e");
       rethrow;
     }
+  }
+
+  //close geigerApi after user
+  @override
+  void onClose() async {
+    super.onClose();
+    await _api.close();
   }
 //Todo
 // registered storageListener

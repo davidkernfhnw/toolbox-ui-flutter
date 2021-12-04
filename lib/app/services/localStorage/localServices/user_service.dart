@@ -21,8 +21,7 @@ class UserService extends LocalUser {
   @override
   Future<String> get getUserId async {
     try {
-      _node = await getNode(":Local", storageController);
-      _nodeValue = (await _node.getValue("currentUser"))!;
+      _nodeValue = (await storageController.getValue(":Local", "currentUser"))!;
       return _nodeValue.value;
     } catch (e, s) {
       throw StorageException("Failed to retrieve the Local node\n $e", s);
@@ -31,15 +30,10 @@ class UserService extends LocalUser {
 
   @override
   Future<User?> get getUserInfo async {
-    _node = await getNode(":Local", storageController);
-    if (await _node.getValue("userInfo") != null) {
-      _nodeValue = (await _node.getValue("userInfo"))!;
-      String userInfo = _nodeValue.value;
-      User user = User.convertToUser(userInfo);
-      return user;
-    } else {
-      return null;
-    }
+    _nodeValue = (await storageController.getValue(":Local", "userInfo"))!;
+    String userInfo = _nodeValue.value;
+    User user = User.convertToUser(userInfo);
+    return user;
   }
 
   // ----------- setters ------------------

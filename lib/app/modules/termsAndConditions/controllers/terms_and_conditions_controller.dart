@@ -98,8 +98,8 @@ class TermsAndConditionsController extends GetxController {
   }
 
   @override
-  void dispose() async {
-    super.dispose();
+  void onClose() async {
+    super.onClose();
     //close storageController after use
     await _storageController!.close();
   }

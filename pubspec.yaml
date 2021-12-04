@@ -48,6 +48,7 @@ dependencies:
   flutter_form_builder: ^7.0.0
   geiger_dummy_data:
     path: ../geiger_dummy_data/
+
   device_info: ^2.0.3
 
 
