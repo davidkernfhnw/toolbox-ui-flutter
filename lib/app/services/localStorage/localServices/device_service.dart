@@ -2,11 +2,13 @@ import 'package:geiger_toolbox/app/data/model/device.dart';
 import 'package:geiger_toolbox/app/services/localStorage/abstract/local_device.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
-class DeviceService extends LocalDevice {
+const String _PATH = ":Local";
+const String _DEVICE_KEY = "deviceInfo";
+
+abstract class DeviceService extends LocalDevice {
   DeviceService(this.storageController);
 
   StorageController storageController;
-  late Node _node;
   late NodeValue _nodeValue;
 
   // ----------- getters ------------------
@@ -38,15 +40,23 @@ class DeviceService extends LocalDevice {
   //store device related information
 
   @override
-  Future<void> storeDeviceInfo(Device device) async {
+  //stores deviceId into Device object
+  Future<bool> storeDeviceInfo(Device device) async {
     try {
-      _node = await getNode(":Local", storageController);
+      //get deviceId
       String currentDeviceId = await getDeviceId;
+      //assign deviceId
       device.deviceId = currentDeviceId;
       String deviceInfo = Device.convertToJson(device);
-      _nodeValue = NodeValueImpl("deviceInfo", deviceInfo);
-      await _node.addOrUpdateValue(_nodeValue);
-      await storageController.update(_node);
+
+      bool success = await storageController.addOrUpdateValue(
+          _PATH, NodeValueImpl(_DEVICE_KEY, deviceInfo));
+
+      if (success) {
+        return true;
+      } else {
+        return false;
+      }
     } catch (e, s) {
       throw StorageException("Failed to retrieve the Local node\n $e", s);
     }

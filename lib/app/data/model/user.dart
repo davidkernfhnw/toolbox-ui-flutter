@@ -21,7 +21,7 @@ class User {
   String? profAss;
   TermsAndConditions termsAndConditions;
   Consent consent;
-  Device deviceOwner;
+  Device? deviceOwner;
   List<Device>? pairedDevices = <Device>[];
   ShareInfo? shareInfo;
   Mse? mse;
@@ -36,7 +36,7 @@ class User {
       this.profAss,
       required this.termsAndConditions,
       required this.consent,
-      required this.deviceOwner,
+      this.deviceOwner,
       this.pairedDevices,
       this.shareInfo,
       this.mse});

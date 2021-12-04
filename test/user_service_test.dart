@@ -30,7 +30,7 @@ void main() {
           reason: "failed to store userInfo first");
     });
 
-    test("get UserInf when stored", () async {
+    test("get UserInfo when stored", () async {
       //store userInfo
       await userService.storeUserInfo(User(
           deviceOwner: Device(deviceId: "2"),
@@ -54,6 +54,21 @@ void main() {
             ageCompliant: true, signedConsent: true, agreedPrivacy: true),
       );
       expect(result, isTrue, reason: "termsAndConditions were set to true ");
+    });
+
+    test("Store userInfo test", () async {
+      //store
+      bool result = await userService.storeUserInfo(User(
+          termsAndConditions: TermsAndConditions(),
+          consent: Consent(),
+          deviceOwner: Device(deviceId: "2")));
+      expect(result, isFalse, reason: "UserInfo already stored");
+    });
+
+    test("Update userInfo test", () async {
+      bool result = await userService.updateUserInfo(
+          User(termsAndConditions: TermsAndConditions(), consent: Consent()));
+      expect(result, isTrue);
     });
   });
 }

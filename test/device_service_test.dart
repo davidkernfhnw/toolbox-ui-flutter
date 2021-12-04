@@ -1,19 +1,15 @@
 // ignore_for_file: avoid_print
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geiger_toolbox/app/data/model/device.dart';
-import 'package:geiger_toolbox/app/services/localStorage/localServices/device_service.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
+import 'package:geiger_toolbox/app/services/localStorage/localServices/user_service.dart';
 
 void main() {
   final StorageController storageController =
       GenericController("test", DummyMapper("testdb"));
-  final DeviceService deviceService = DeviceService(storageController);
+  final UserService deviceService = UserService(storageController);
 
   group("DeviceService ", () {
-    setUp(() async {
-      // userService.storeUserInfo(User(deviceOwner: Device(deviceId: "2")));
-    });
-
     test("Get deviceId", () async {
       String device = await deviceService.getDeviceId;
       expect(device, TypeMatcher<String>());
@@ -25,11 +21,17 @@ void main() {
           reason: "failed to store deviceInfo first");
     });
 
-    test("get DeviceInf when stored", () async {
+    test("get DeviceInfo when stored", () async {
       //store userInfo
       await deviceService.storeDeviceInfo(Device());
       print("${await deviceService.getDeviceInfo}");
       expect(() async => await deviceService.getDeviceInfo, isNotNull);
+    });
+
+    test("Store deviceInfo test", () async {
+      bool result = await deviceService.storeDeviceInfo(Device());
+      expect(result, isFalse,
+          reason: "DeviceInfo already stored and can't be updated");
     });
   });
 }

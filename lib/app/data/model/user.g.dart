@@ -17,7 +17,9 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       termsAndConditions: TermsAndConditions.fromJson(
           json['termsAndConditions'] as Map<String, dynamic>),
       consent: Consent.fromJson(json['consent'] as Map<String, dynamic>),
-      deviceOwner: Device.fromJson(json['deviceOwner'] as Map<String, dynamic>),
+      deviceOwner: json['deviceOwner'] == null
+          ? null
+          : Device.fromJson(json['deviceOwner'] as Map<String, dynamic>),
       pairedDevices: (json['pairedDevices'] as List<dynamic>?)
           ?.map((e) => Device.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -39,7 +41,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'profAss': instance.profAss,
       'termsAndConditions': instance.termsAndConditions.toJson(),
       'consent': instance.consent.toJson(),
-      'deviceOwner': instance.deviceOwner.toJson(),
+      'deviceOwner': instance.deviceOwner?.toJson(),
       'pairedDevices': instance.pairedDevices?.map((e) => e.toJson()).toList(),
       'shareInfo': instance.shareInfo?.toJson(),
       'mse': instance.mse?.toJson(),
