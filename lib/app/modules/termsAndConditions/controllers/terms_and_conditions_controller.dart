@@ -101,6 +101,5 @@ class TermsAndConditionsController extends GetxController {
   void onClose() async {
     super.onClose();
     //close storageController after use
-    await _storageController!.close();
   }
 }
