@@ -214,3 +214,8 @@ class SettingsController extends GetxController {
     super.onClose();
   }
 }
+
+//Todo
+//refactor to use already update services
+//store countries and others in localstorage
+//add update userinfo

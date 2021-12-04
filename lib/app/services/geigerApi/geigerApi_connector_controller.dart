@@ -31,10 +31,6 @@ class GeigerApiConnector extends GetxController {
 
   Future<void> initGeigerIndicatorPlugin() async {}
   Future<void> registerGeigerIndicatorListener() async {}
-
-  //Todo
-  // registered plugin
-  //listen to plugin
 }
 
 class EventListener implements PluginListener {
@@ -85,3 +81,7 @@ class Event {
     return '${type.toString()} ${oldNode.toString()}=>${newNode.toString()}';
   }
 }
+
+//Todo
+// registered plugin(masterPlugin registered)
+//listen to plugin (is this necessary)
