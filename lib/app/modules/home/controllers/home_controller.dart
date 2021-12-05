@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 class HomeController extends GetxController {
   //an instance of HomeController
   static HomeController get to => Get.find();
-  LocalStorageController _localStorage = LocalStorageController.to;
+  LocalStorageController _localStorage = LocalStorageController.instance;
   StorageController? _storageController;
   dummy.GeigerDummy _geigerDummy = dummy.GeigerDummy();
   dummy.UserNode? _userNode;

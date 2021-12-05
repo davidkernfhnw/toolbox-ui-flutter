@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 
 class SettingsView extends StatelessWidget {
   SettingsView({Key? key}) : super(key: key);
-  final SettingsController _controller = SettingsController.to;
+  final SettingsController _controller = SettingsController.instance;
 
   @override
   Widget build(BuildContext context) {

@@ -47,9 +47,9 @@ class SecurityDefendersView extends StatelessWidget {
                     children: [
                       Expanded(
                         child: CustomTextField(
-                            label: "",
-                            hintText: "Search region",
-                            textEditingController: TextEditingController()),
+                          label: "",
+                          hintText: "Search region",
+                        ),
                       ),
                       SizedBox(width: 10),
                       ElevatedButton(

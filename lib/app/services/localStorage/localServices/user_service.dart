@@ -97,7 +97,9 @@ class UserService extends DeviceService implements LocalUser {
       String userInfo = User.convertToJson(user);
       //update userInfo
       _nodeValue = NodeValueImpl("userInfo", userInfo);
-      await _node.addOrUpdateValue(_nodeValue);
+      //does not update if nodeValue is already existing
+      //await _node.addOrUpdateValue(_nodeValue);
+      await _node.updateValue(_nodeValue);
       await storageController.update(_node);
 
       //using this will not be able to update the node

@@ -11,10 +11,10 @@ class CustomDropDownCountry extends StatelessWidget {
       : super(key: key);
 
   final String? titleText;
-  final List<String> listItems;
+  final List listItems;
   final String hintText;
   final String? defaultValue;
-  final void Function(String? country)? onChanged;
+  final void Function(Object? country)? onChanged;
 
   @override
   Widget build(BuildContext context) {

@@ -13,7 +13,7 @@ class TermsAndConditionsController extends GetxController {
   static TermsAndConditionsController to = Get.find();
 
   //get instance of LocalStorageController
-  LocalStorageController _localStorage = LocalStorageController.to;
+  LocalStorageController _localStorage = LocalStorageController.instance;
 
   //declaring storageController
   StorageController? _storageController;

@@ -9,7 +9,7 @@ import 'package:geiger_api/geiger_api.dart';
 
 class LocalStorageController extends GetxController {
   //instance of LocalStorageController
-  static LocalStorageController to = Get.find<LocalStorageController>();
+  static LocalStorageController instance = Get.find<LocalStorageController>();
   //get instance of GeigerApiConnector
   GeigerApiConnector _geigerApiConnector = GeigerApiConnector.to;
   late StorageController _storageController;

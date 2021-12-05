@@ -6,22 +6,28 @@ class CustomTextField extends StatelessWidget {
       required this.label,
       required this.hintText,
       this.onChanged,
-      required this.textEditingController})
+      //required this.textEditingController,
+      this.initialValue,
+      this.validator})
       : super(key: key);
 
   final String label;
   final String hintText;
-  final void Function(String? language)? onChanged;
-  final TextEditingController textEditingController;
+  final void Function(String value)? onChanged;
+  final String? Function(String? value)? validator;
+  //final TextEditingController textEditingController;
+  final String? initialValue;
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label),
-        TextField(
-          controller: textEditingController,
+        TextFormField(
+          // controller: textEditingController,
+          initialValue: initialValue,
           onChanged: onChanged,
+          validator: validator,
           maxLength: 50,
           decoration: InputDecoration(
               border: OutlineInputBorder(
