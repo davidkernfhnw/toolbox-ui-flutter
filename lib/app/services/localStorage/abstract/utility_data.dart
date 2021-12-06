@@ -8,16 +8,16 @@ abstract class UtilityData {
   Future<bool> storeCountries(
       {Locale? locale, required List<Country> countries});
 
-  Future<List<Map>> getCountries({Locale? language});
+  Future<List<Country>> getCountries({String locale: "en"});
 
   Future<bool> storeProfessionAssociation(
       {Locale? locale, required List<Partner> profAss});
 
-  Future<List<Partner>> getProfessionAssociation({Locale? language});
+  Future<List<Partner>> getProfessionAssociation({String locale: "en"});
 
   Future<bool> storeCert({Locale? language, required List<Partner> cert});
 
-  Future<List<Partner>> getCert({Locale? language});
+  Future<List<Partner>> getCert({String locale: "en"});
 
   // ----- Helpers
 

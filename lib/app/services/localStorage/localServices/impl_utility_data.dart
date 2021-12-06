@@ -5,7 +5,6 @@ import 'package:geiger_toolbox/app/data/model/partner.dart';
 import 'package:geiger_toolbox/app/services/localStorage/abstract/utility_data.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/src/locale.dart';
-import '../local_storage_controller.dart';
 import 'package:geiger_localstorage/src/visibility.dart' as vis;
 
 const String _PATH = ":Global:location";
@@ -21,19 +20,34 @@ class ImplUtilityData extends UtilityData {
 
   ImplUtilityData(this.storageController);
   @override
-  Future<List<Partner>> getCert({Locale? language}) {
+  Future<List<Partner>> getCert({String locale: "en"}) {
     // TODO: implement getCert
     throw UnimplementedError();
   }
 
   @override
-  Future<List<Map>> getCountries({Locale? language}) {
-    // TODO: implement getCountries
-    throw UnimplementedError();
+  Future<List<Country>> getCountries({String locale: "en"}) async {
+    List<Country> c = <Country>[];
+    try {
+      _node = await storageController.get(_PATH);
+
+      List<String> countryIds =
+          await _node.getChildNodesCsv().then((value) => value.split(','));
+      for (String countryId in countryIds) {
+        Node countryNode = (await storageController.get("$_PATH:${countryId}"));
+        NodeValue? countryNodeValue = await countryNode.getValue("name");
+        String? countryName = countryNodeValue!.getValue(locale);
+        c.add(Country(id: countryId, name: countryName!));
+      }
+      return c;
+    } on StorageException {
+      log("List of Countries not in the dataBase");
+      return c;
+    }
   }
 
   @override
-  Future<List<Partner>> getProfessionAssociation({Locale? language}) {
+  Future<List<Partner>> getProfessionAssociation({String locale: "en"}) {
     // TODO: implement getProfessionAssociation
     throw UnimplementedError();
   }
@@ -47,8 +61,6 @@ class ImplUtilityData extends UtilityData {
   @override
   Future<bool> storeCountries(
       {Locale? locale, required List<Country> countries}) async {
-    // final StorageController _storageController =
-    //     _localStorage.getStorageController;
     try {
       for (Country country in countries) {
         _node = await storageController.get("$_PATH:${country.id}");
