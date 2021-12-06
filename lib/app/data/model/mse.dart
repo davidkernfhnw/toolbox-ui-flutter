@@ -1,11 +1,10 @@
-import 'package:equatable/equatable.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'mse.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Mse extends Equatable {
+class Mse {
   final String supervisor;
   final List<User> employees;
 
@@ -18,7 +17,4 @@ class Mse extends Equatable {
   Map<String, dynamic> toJson() {
     return _$MseToJson(this);
   }
-
-  @override
-  List<Object?> get props => [supervisor, employees];
 }

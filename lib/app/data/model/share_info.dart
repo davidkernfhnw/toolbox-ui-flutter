@@ -1,10 +1,9 @@
-import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'share_info.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class ShareInfo extends Equatable {
+class ShareInfo {
   final String username;
   final String sharedScore;
   final DateTime sharedScoreDate;
@@ -21,7 +20,4 @@ class ShareInfo extends Equatable {
   Map<String, dynamic> toJson() {
     return _$ShareInfoToJson(this);
   }
-
-  @override
-  List<Object> get props => [username, sharedScore, sharedScoreDate];
 }

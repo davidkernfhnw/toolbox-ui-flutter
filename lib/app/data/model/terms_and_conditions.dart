@@ -1,10 +1,9 @@
-import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'terms_and_conditions.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class TermsAndConditions extends Equatable {
+class TermsAndConditions {
   final bool ageCompliant;
   final bool signedConsent;
   final bool agreedPrivacy;
@@ -27,7 +26,4 @@ class TermsAndConditions extends Equatable {
     super.toString();
     return '{"ageCompliant":$ageCompliant, "signedConsent":$signedConsent, "agreedPrivacy":$agreedPrivacy}';
   }
-
-  @override
-  List<Object> get props => [ageCompliant, signedConsent, agreedPrivacy];
 }
