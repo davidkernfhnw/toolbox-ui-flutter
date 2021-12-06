@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/data/model/consent.dart';
+import 'package:geiger_toolbox/app/data/model/country.dart';
 import 'package:geiger_toolbox/app/data/model/language.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
 import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
@@ -52,7 +53,7 @@ class SettingsController extends GetxController {
   //Todo: store in geiger localStorage
   List<Partner> _profAss = [
     Partner(
-      country: "Switzerland",
+      location: Country(name: "Switzerland"),
       names: [
         "Swiss Yoga Association",
         "Coiffure Suisse",
@@ -60,20 +61,23 @@ class SettingsController extends GetxController {
       ],
     ),
     Partner(
-      country: "Romania",
+      location: Country(name: "Romania"),
       names: ["Romania Association"],
     ),
     Partner(
-      country: "Netherlands",
+      location: Country(name: "Netherlands"),
       names: ["Netherlands Association"],
     )
   ];
   //list of cert
   //Todo: store in geiger localStorage
   List<Partner> _cert = [
-    Partner(country: "Switzerland", names: ["NCSC Switzerland"]),
-    Partner(country: "Romania", names: ["CERT Romania"]),
-    Partner(country: "Netherlands", names: ["Digital Trust Centre Netherlands"])
+    Partner(
+        location: Country(name: "Switzerland"), names: ["NCSC Switzerland"]),
+    Partner(location: Country(name: "Romania"), names: ["CERT Romania"]),
+    Partner(
+        location: Country(name: "Netherlands"),
+        names: ["Digital Trust Centre Netherlands"])
   ];
 
   //update language
@@ -170,7 +174,7 @@ class SettingsController extends GetxController {
 
   void _showProfAssBaseOnCountry(String country) {
     Partner selectedProfAss =
-        _profAss.firstWhere((Partner element) => country == element.country);
+        _profAss.firstWhere((Partner element) => country == element.location);
     //for debug purpose
     log(selectedProfAss.names.toString());
     //updates
@@ -181,7 +185,7 @@ class SettingsController extends GetxController {
   void _showCerBasedOnCountry(String country) {
     //show list of cert base on country selected
     Partner selectedCert =
-        _cert.firstWhere((Partner element) => country == element.country);
+        _cert.firstWhere((Partner element) => country == element.location);
 
     //update observable variable
     certBaseOnCountrySelected = selectedCert.names;
