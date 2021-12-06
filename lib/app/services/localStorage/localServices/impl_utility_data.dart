@@ -20,9 +20,39 @@ class ImplUtilityData extends UtilityData {
 
   ImplUtilityData(this.storageController);
   @override
-  Future<List<Partner>> getCert({String locale: "en"}) {
-    // TODO: implement getCert
-    throw UnimplementedError();
+  Future<List<Partner>> getCert({String locale: "en"}) async {
+    List<Partner> cert = <Partner>[];
+    List<String> names = [];
+    try {
+      _node = await storageController.get(_CERT_PATH);
+
+      List<String> certIds =
+          await _node.getChildNodesCsv().then((value) => value.split(','));
+      for (String certId in certIds) {
+        Node certNode = (await storageController.get("$_CERT_PATH:${certId}"));
+        //print(countryNode);
+        NodeValue? certNodeValue = await certNode.getValue("names");
+        List<String> certNames = certNodeValue!.getValue(locale)!.split(',');
+        NodeValue? certLocId = await certNode.getValue("location");
+        String? certLocValueId = certLocId!.getValue(locale);
+        NodeValue? certLocName = await certNode.getValue("locationName");
+        String? certLocValueName = certLocName!.getValue(locale);
+        for (String certName in certNames) {
+          names.add(certName);
+        }
+
+        cert.add(Partner(
+            id: certId,
+            location: Country(id: certLocValueId, name: certLocValueName!),
+            names: certNames));
+
+        //print("getCountriesNode: $certNode");
+      }
+      return cert;
+    } on StorageException {
+      log("List of Cert not in the dataBase");
+      return cert;
+    }
   }
 
   @override
@@ -70,6 +100,7 @@ class ImplUtilityData extends UtilityData {
         if (locale != null) {
           _nodeValue.setValue(cert.names.join(","), locale);
         }
+
         //await _node.addOrUpdateValue(_nodeValue);
         await _node.addOrUpdateValue(_nodeLocation);
         await _node.addOrUpdateValue(_nodeLocationName);
@@ -120,6 +151,7 @@ class ImplUtilityData extends UtilityData {
     try {
       for (Country country in countries) {
         _node = await storageController.get("$_LOCATION_PATH:${country.id}");
+        NodeValue? _nodeValue;
         _nodeValue = NodeValueImpl("name", country.name);
         if (locale != null) {
           _nodeValue.setValue(country.name, locale);
@@ -139,10 +171,9 @@ class ImplUtilityData extends UtilityData {
           idNode.visibility = vis.Visibility.white;
           await storageController.addOrUpdate(idNode);
           NodeValue countryName = NodeValueImpl("name", country.name);
-          if (locale != null) {
+          if (locale != null && locale != "en") {
             countryName.setValue(country.name, locale);
           }
-
           await idNode.addOrUpdateValue(countryName);
           await storageController.update(idNode);
           //print(idNode);

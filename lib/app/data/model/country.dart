@@ -17,4 +17,10 @@ class Country {
   Map<String, dynamic> toJson() {
     return _$CountryToJson(this);
   }
+
+  @override
+  String toString() {
+    super.toString();
+    return '{"id":$id,  "name":$name}';
+  }
 }

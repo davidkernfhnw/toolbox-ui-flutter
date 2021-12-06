@@ -20,4 +20,10 @@ class Partner {
   Map<String, dynamic> toJson() {
     return _$PartnerToJson(this);
   }
+
+  @override
+  String toString() {
+    super.toString();
+    return '{"id":$id, "location":$location, "names":$names}';
+  }
 }
