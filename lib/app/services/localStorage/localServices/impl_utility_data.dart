@@ -8,7 +8,7 @@ import 'package:intl/src/locale.dart';
 import 'package:geiger_localstorage/src/visibility.dart' as vis;
 
 const String _PATH = ":Global:location";
-// const String _DEVICE_KEY = "deviceInfo";
+
 const String _NODE_OWNER = "geiger";
 
 class ImplUtilityData extends UtilityData {
@@ -35,10 +35,12 @@ class ImplUtilityData extends UtilityData {
           await _node.getChildNodesCsv().then((value) => value.split(','));
       for (String countryId in countryIds) {
         Node countryNode = (await storageController.get("$_PATH:${countryId}"));
+        print(countryNode);
         NodeValue? countryNodeValue = await countryNode.getValue("name");
         String? countryName = countryNodeValue!.getValue(locale);
         c.add(Country(id: countryId, name: countryName!));
       }
+
       return c;
     } on StorageException {
       log("List of Countries not in the dataBase");
@@ -53,7 +55,7 @@ class ImplUtilityData extends UtilityData {
   }
 
   @override
-  Future<bool> storeCert({Locale? language, required List<Partner> cert}) {
+  Future<bool> storeCert({Locale? locale, required List<Partner> cert}) {
     // TODO: implement storeCert
     throw UnimplementedError();
   }

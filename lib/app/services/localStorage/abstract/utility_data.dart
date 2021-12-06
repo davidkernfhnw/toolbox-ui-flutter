@@ -6,16 +6,16 @@ import 'package:intl/locale.dart';
 
 abstract class UtilityData {
   Future<bool> storeCountries(
-      {Locale? locale, required List<Country> countries});
+      {Locale locale, required List<Country> countries});
 
   Future<List<Country>> getCountries({String locale: "en"});
 
   Future<bool> storeProfessionAssociation(
-      {Locale? locale, required List<Partner> profAss});
+      {Locale locale, required List<Partner> profAss});
 
   Future<List<Partner>> getProfessionAssociation({String locale: "en"});
 
-  Future<bool> storeCert({Locale? language, required List<Partner> cert});
+  Future<bool> storeCert({Locale? locale, required List<Partner> cert});
 
   Future<List<Partner>> getCert({String locale: "en"});
 
