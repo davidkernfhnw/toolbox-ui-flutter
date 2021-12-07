@@ -61,16 +61,24 @@ class LocalStorageController extends getx.GetxController {
     }
   }
 
-  Future<List<Event>> listenToStorage(String path) async {
+  Future<List<Event>> listenToStorage(Node node) async {
     LocalStorageListener l = LocalStorageListener();
     SearchCriteria s = SearchCriteria(searchPath: ":");
     //listen to dummy storage
     storageControllerDummy.registerChangeListener(l, s);
-
+    Node _node = await node.deepClone();
     //
     List<Event> e = await storageControllerDummy
-        .get(path)
+        .update(_node)
         .then((_) async => await l.events);
+
+    log("Length of the Event ${e.length}");
+    if (e.length > 0) {
+      for (Event event in e) {
+        log("EventType: ${event.type}");
+      }
+    }
+
     return e;
   }
 
@@ -111,7 +119,7 @@ class LocalStorageListener implements StorageListener {
     print('got event ${e.toString()}');
   }
 
-  Future<List<Event>> getNumEvents(int num, [int timeout = 1000000]) async {
+  Future<List<Event>> getNumEvents(int num, [int timeout = 2000]) async {
     int start = DateTime.now().millisecondsSinceEpoch;
     List<Event> ret = await Future.doWhile(() =>
             events.length < num &&

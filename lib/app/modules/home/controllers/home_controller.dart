@@ -6,11 +6,11 @@ import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_aggregate_score.dart';
 import 'package:geiger_toolbox/app/data/model/threat.dart';
 import 'package:geiger_toolbox/app/services/local_storage.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' as getx;
 
-class HomeController extends GetxController {
+class HomeController extends getx.GetxController {
   //an instance of HomeController
-  static HomeController get to => Get.find();
+  static HomeController get to => getx.Get.find();
   LocalStorageController _localStorage = LocalStorageController.to;
   late StorageController _storageControllerUi;
   StorageController? _storageControllerDummy;
@@ -28,7 +28,7 @@ class HomeController extends GetxController {
   var isLoading = false.obs;
 
   //initial as an obs
-  Rx<GeigerAggregateScore> geigerAggregateScore =
+  getx.Rx<GeigerAggregateScore> geigerAggregateScore =
       GeigerAggregateScore([], null, null).obs;
 
   //initial as a private list obs
@@ -59,6 +59,8 @@ class HomeController extends GetxController {
     log(await _geigerDummy.onBtnPressed(_storageControllerDummy!));
     //listen if node is created
     await listen();
+    //get node from dummy
+    //await getNodeFromDummy();
     log(await _userNode!.getUserInfo
         .then((value) async => value.deviceOwner.deviceId!));
     log(await _deviceNode!.getDeviceInfo
@@ -85,18 +87,30 @@ class HomeController extends GetxController {
 
   Future<void> listen() async {
     String currentUserId = await getUserIdUi();
-    List<Event> e = await _localStorage.listenToStorage(
-        ":Users:${currentUserId}:gi:data:GeigerScoreAggregate");
-    print(e);
+    Node node = await getNodeFromDummy();
+    List<Event> e = await _localStorage.listenToStorage(node);
+    //print("Update : $e");
+  }
+
+  Future<Node> getNodeFromDummy() async {
+    String currentUserId = await getUserIdUi();
+    Node node = await _storageControllerUi
+        .get(":Users:${currentUserId}:gi:data:GeigerScoreAggregate");
+
+    return node;
   }
 
   @override
   void onInit() async {
     super.onInit();
     await _init();
+    await listen();
     String currentUserId = await getUserIdUi();
     log("Userid using storageControllerUi: ${currentUserId}");
     log("Userid using storageControllerDummy: ${await getUserIdDummy()}");
     //listen();
   }
 }
+
+//when listener event is 2 means
+// there is an update
