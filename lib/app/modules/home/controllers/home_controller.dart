@@ -57,10 +57,13 @@ class HomeController extends GetxController {
     isLoading.value = true;
     threatsScore = await _fetchGeigerAggregateScore();
     log(await _geigerDummy.onBtnPressed(_storageControllerDummy!));
+    //listen if node is created
+    await listen();
     log(await _userNode!.getUserInfo
         .then((value) async => value.deviceOwner.deviceId!));
     log(await _deviceNode!.getDeviceInfo
         .then((value) async => value.deviceId!));
+
     isLoading.value = false;
   }
 
@@ -80,12 +83,20 @@ class HomeController extends GetxController {
     return nodeValue!.value;
   }
 
+  Future<void> listen() async {
+    String currentUserId = await getUserIdUi();
+    List<Event> e = await _localStorage.listenToStorage(
+        ":Users:${currentUserId}:gi:data:GeigerScoreAggregate");
+    print(e);
+  }
+
   @override
   void onInit() async {
     super.onInit();
     await _init();
-    log("Userid using storageControllerUi: ${await getUserIdUi()}");
+    String currentUserId = await getUserIdUi();
+    log("Userid using storageControllerUi: ${currentUserId}");
     log("Userid using storageControllerDummy: ${await getUserIdDummy()}");
-    //await _init();
+    //listen();
   }
 }

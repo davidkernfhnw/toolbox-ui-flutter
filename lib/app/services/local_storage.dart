@@ -1,15 +1,16 @@
 //import 'dart:developer';
 
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' as getx;
 import 'package:geiger_api/geiger_api.dart';
 
-class LocalStorageController extends GetxController {
+class LocalStorageController extends getx.GetxController {
   //instance
-  static LocalStorageController to = Get.find();
+  static LocalStorageController to = getx.Get.find();
 
   late StorageController storageControllerDummy;
   late StorageController storageControllerUi;
@@ -60,10 +61,65 @@ class LocalStorageController extends GetxController {
     }
   }
 
+  Future<List<Event>> listenToStorage(String path) async {
+    LocalStorageListener l = LocalStorageListener();
+    SearchCriteria s = SearchCriteria(searchPath: ":");
+    //listen to dummy storage
+    storageControllerDummy.registerChangeListener(l, s);
+
+    //
+    List<Event> e = await storageControllerDummy
+        .get(path)
+        .then((_) async => await l.events);
+    return e;
+  }
+
   @override
   void onInit() async {
     //storageController = (await _initLocalStorage())!;
     super.onInit();
     // await _initLocalStorage();
+  }
+}
+
+class Event {
+  final EventType _event;
+  final Node? _old;
+  final Node? _new;
+
+  Event(this._event, this._old, this._new);
+
+  EventType get type => _event;
+
+  Node? get oldNode => _old;
+
+  Node? get newNode => _new;
+
+  @override
+  String toString() {
+    return '${type.toString()} ${oldNode.toString()}=>${newNode.toString()}';
+  }
+}
+
+class LocalStorageListener implements StorageListener {
+  List<Event> events = <Event>[];
+
+  @override
+  void gotStorageChange(EventType event, Node? oldNode, Node? newNode) {
+    Event e = Event(event, oldNode, newNode);
+    events.add(e);
+    print('got event ${e.toString()}');
+  }
+
+  Future<List<Event>> getNumEvents(int num, [int timeout = 1000000]) async {
+    int start = DateTime.now().millisecondsSinceEpoch;
+    List<Event> ret = await Future.doWhile(() =>
+            events.length < num &&
+            start + 1000 * timeout > DateTime.now().millisecondsSinceEpoch)
+        .then((value) => events);
+    if (events.length < num) {
+      throw TimeoutException('Timeout reached while waiting for $num events');
+    }
+    return ret;
   }
 }
