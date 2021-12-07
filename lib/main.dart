@@ -12,7 +12,7 @@ import 'app/util/theme/custom_theme_data.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //initialize localStorage
-  await Get.put(LocalStorageController()).initLocalStorage();
+  await Get.put(LocalStorageController()).initLocalStorageDummy();
   //await Get.put(TermsAndConditionsController().previouslyAgreed());
   runApp(GeigerApp());
 }

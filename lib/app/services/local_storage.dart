@@ -25,11 +25,32 @@ class LocalStorageController extends GetxController {
   //     rethrow;
   //   }
   // }
-  Future<void> initLocalStorage() async {
+  Future<void> initLocalStorageDummy() async {
     try {
       GeigerDummy g = GeigerDummy();
 
       GeigerApi api = await g.initGeigerApi();
+      storageController = api.getStorage()!;
+      //storageController = (await g.getStorageController())!;
+    } catch (e) {
+      log("Database Connection Error From LocalStorage: $e");
+      rethrow;
+    }
+  }
+
+  Future<GeigerApi> initGeigerApiUi() async {
+    flushGeigerApiCache();
+    //*****************************************master**********************
+    GeigerApi localMaster =
+        (await getGeigerApi("", GeigerApi.masterId, Declaration.doShareData))!;
+    //clear existing state
+    await localMaster.zapState();
+    return localMaster;
+  }
+
+  Future<StorageController?> initLocalStorageUI() async {
+    try {
+      GeigerApi api = await initGeigerApiUi();
       storageController = api.getStorage()!;
       //storageController = (await g.getStorageController())!;
     } catch (e) {
