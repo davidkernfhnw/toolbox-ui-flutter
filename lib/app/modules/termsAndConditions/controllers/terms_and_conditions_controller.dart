@@ -21,7 +21,7 @@ class TermsAndConditionsController extends GetxController {
 
   //storageController
   _init() async {
-    _storageController = await _localStorage.storageController;
+    _storageController = await _localStorage.storageControllerDummy;
   }
 
   Future<void> agreed() async {

@@ -116,7 +116,7 @@ class SettingsController extends GetxController {
 
   //initial storageController
   _init() async {
-    _storageController = await _localStorage.storageController;
+    _storageController = await _localStorage.storageControllerDummy;
     _userNode = await dummy.UserNode(_storageController!);
   }
 

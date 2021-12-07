@@ -20,7 +20,7 @@ class HomeController extends GetxController {
   //storageController
   _init() async {
     //_storageController = await LocalStorage.initLocalStorage();
-    _storageController = await _localStorage.storageController;
+    _storageController = await _localStorage.storageControllerDummy;
   }
 
   var isLoading = false.obs;
