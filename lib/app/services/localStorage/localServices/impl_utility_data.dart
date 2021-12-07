@@ -9,6 +9,7 @@ import 'package:geiger_localstorage/src/visibility.dart' as vis;
 
 const String _LOCATION_PATH = ":Global:location";
 const String _CERT_PATH = ":Global:cert";
+const String _PROF_ASS_PATH = ":Global:professionAssociation";
 const String _NODE_OWNER = "geigerUi";
 
 class ImplUtilityData extends UtilityData {
@@ -22,7 +23,6 @@ class ImplUtilityData extends UtilityData {
   @override
   Future<List<Partner>> getCert({String locale: "en"}) async {
     List<Partner> cert = <Partner>[];
-    List<String> names = [];
     try {
       _node = await storageController.get(_CERT_PATH);
 
@@ -37,9 +37,6 @@ class ImplUtilityData extends UtilityData {
         String? certLocValueId = certLocId!.getValue(locale);
         NodeValue? certLocName = await certNode.getValue("locationName");
         String? certLocValueName = certLocName!.getValue(locale);
-        for (String certName in certNames) {
-          names.add(certName);
-        }
 
         cert.add(Partner(
             id: certId,
@@ -81,9 +78,38 @@ class ImplUtilityData extends UtilityData {
   }
 
   @override
-  Future<List<Partner>> getProfessionAssociation({String locale: "en"}) {
-    // TODO: implement getProfessionAssociation
-    throw UnimplementedError();
+  Future<List<Partner>> getProfessionAssociation({String locale: "en"}) async {
+    List<Partner> professionAssociation = <Partner>[];
+
+    try {
+      _node = await storageController.get(_PROF_ASS_PATH);
+
+      List<String> profAssIds =
+          await _node.getChildNodesCsv().then((value) => value.split(','));
+      for (String profAssId in profAssIds) {
+        Node certNode =
+            (await storageController.get("$_PROF_ASS_PATH:${profAssId}"));
+        //print(countryNode);
+        NodeValue? profAssNodeValue = await certNode.getValue("names");
+        List<String> profAssNames =
+            profAssNodeValue!.getValue(locale)!.split(',');
+        NodeValue? profAssLocId = await certNode.getValue("location");
+        String? profAssLocValueId = profAssLocId!.getValue(locale);
+        NodeValue? profAssLocName = await certNode.getValue("locationName");
+        String? certLocValueName = profAssLocName!.getValue(locale);
+
+        professionAssociation.add(Partner(
+            id: profAssId,
+            location: Country(id: profAssLocValueId, name: certLocValueName!),
+            names: profAssNames));
+
+        //print("getCountriesNode: $certNode");
+      }
+      return professionAssociation;
+    } on StorageException {
+      log("List of Cert not in the dataBase");
+      return professionAssociation;
+    }
   }
 
   @override
@@ -152,7 +178,7 @@ class ImplUtilityData extends UtilityData {
       for (Country country in countries) {
         _node = await storageController.get("$_LOCATION_PATH:${country.id}");
         NodeValue? _nodeValue;
-        _nodeValue = NodeValueImpl("name", country.name);
+        _nodeValue = NodeValueImpl("name", country.name.toLowerCase());
         if (locale != null) {
           _nodeValue.setValue(country.name, locale);
         }
@@ -170,7 +196,8 @@ class ImplUtilityData extends UtilityData {
           idNode = NodeImpl("$_LOCATION_PATH:${country.id}", _NODE_OWNER);
           idNode.visibility = vis.Visibility.white;
           await storageController.addOrUpdate(idNode);
-          NodeValue countryName = NodeValueImpl("name", country.name);
+          NodeValue countryName =
+              NodeValueImpl("name", country.name.toLowerCase());
           if (locale != null && locale != "en") {
             countryName.setValue(country.name, locale);
           }
@@ -190,8 +217,64 @@ class ImplUtilityData extends UtilityData {
 
   @override
   Future<bool> storeProfessionAssociation(
-      {Locale? locale, required List<Partner> profAss}) {
-    // TODO: implement storeProfessionAssociation
-    throw UnimplementedError();
+      {Locale? locale, required List<Partner> professionAssociation}) async {
+    try {
+      for (Partner profAss in professionAssociation) {
+        _node = await storageController.get("$_PROF_ASS_PATH:${profAss.id}");
+        //store profAss names as csv
+        _nodeValue = NodeValueImpl("names", profAss.names.join(","));
+        //store location id
+        NodeValue _nodeLocation =
+            NodeValueImpl("location", profAss.location.id!);
+        NodeValue _nodeLocationName =
+            NodeValueImpl("locationName", profAss.location.name);
+        if (locale != null) {
+          _nodeValue.setValue(profAss.names.join(","), locale);
+          _nodeLocation.setValue(profAss.location.id!, locale);
+          _nodeLocationName.setValue(profAss.location.name, locale);
+        }
+
+        await _node.addOrUpdateValue(_nodeValue);
+        await _node.addOrUpdateValue(_nodeLocation);
+        await _node.addOrUpdateValue(_nodeLocationName);
+        await storageController.update(_node);
+      }
+      return true;
+    } on StorageException {
+      try {
+        Node _node = NodeImpl(_PROF_ASS_PATH, _NODE_OWNER);
+        //create location sub node
+        await storageController.addOrUpdate(_node);
+        for (Partner profAss in professionAssociation) {
+          Node idNode = NodeImpl("$_PROF_ASS_PATH:${profAss.id}", _NODE_OWNER);
+          idNode.visibility = vis.Visibility.white;
+          await storageController.addOrUpdate(idNode);
+          NodeValue certName = NodeValueImpl("names", profAss.names.join(","));
+          //store location id
+          NodeValue _nodeLocation =
+              NodeValueImpl("location", profAss.location.id!);
+          NodeValue _nodeLocationName =
+              NodeValueImpl("locationName", profAss.location.name);
+
+          //translation
+          if (locale != null) {
+            certName.setValue(profAss.names.join(","), locale);
+            _nodeLocation.setValue(profAss.location.id!, locale);
+            _nodeLocationName.setValue(profAss.location.name, locale);
+          }
+
+          await idNode.addOrUpdateValue(certName);
+          await idNode.addOrUpdateValue(_nodeLocation);
+          await idNode.addOrUpdateValue(_nodeLocationName);
+          await storageController.update(idNode);
+          //print(idNode);
+        }
+        return true;
+      } catch (e) {
+        //should never happen:
+        log(e.toString());
+        return false;
+      }
+    }
   }
 }

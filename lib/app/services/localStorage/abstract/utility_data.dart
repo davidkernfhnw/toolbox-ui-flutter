@@ -11,7 +11,7 @@ abstract class UtilityData {
   Future<List<Country>> getCountries({String locale: "en"});
 
   Future<bool> storeProfessionAssociation(
-      {Locale locale, required List<Partner> profAss});
+      {Locale locale, required List<Partner> professionAssociation});
 
   Future<List<Partner>> getProfessionAssociation({String locale: "en"});
 
