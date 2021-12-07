@@ -12,7 +12,8 @@ class HomeController extends GetxController {
   //an instance of HomeController
   static HomeController get to => Get.find();
   LocalStorageController _localStorage = LocalStorageController.to;
-  StorageController? _storageController;
+  late StorageController _storageControllerUi;
+  StorageController? _storageControllerDummy;
   dummy.GeigerDummy _geigerDummy = dummy.GeigerDummy();
   dummy.UserNode? _userNode;
   dummy.DeviceNode? _deviceNode;
@@ -20,7 +21,8 @@ class HomeController extends GetxController {
   //storageController
   _init() async {
     //_storageController = await LocalStorage.initLocalStorage();
-    _storageController = await _localStorage.storageControllerDummy;
+    _storageControllerDummy = await _localStorage.storageControllerDummy;
+    _storageControllerUi = await _localStorage.storageControllerUi;
   }
 
   var isLoading = false.obs;
@@ -50,12 +52,11 @@ class HomeController extends GetxController {
   }
 
   setGeigerAggregateThreatScore() async {
-    await _init();
-    _userNode = await dummy.UserNode(_storageController!);
-    _deviceNode = await dummy.DeviceNode(_storageController!);
+    _userNode = await dummy.UserNode(_storageControllerDummy!);
+    _deviceNode = await dummy.DeviceNode(_storageControllerDummy!);
     isLoading.value = true;
     threatsScore = await _fetchGeigerAggregateScore();
-    log(await _geigerDummy.onBtnPressed(_storageController!));
+    log(await _geigerDummy.onBtnPressed(_storageControllerDummy!));
     log(await _userNode!.getUserInfo
         .then((value) async => value.deviceOwner.deviceId!));
     log(await _deviceNode!.getDeviceInfo
@@ -67,9 +68,24 @@ class HomeController extends GetxController {
     threatsScore = [];
   }
 
+  Future<String> getUserIdUi() async {
+    NodeValue? nodeValue =
+        await _storageControllerUi.getValue(":Local", "currentUser");
+    return nodeValue!.value;
+  }
+
+  Future<String> getUserIdDummy() async {
+    NodeValue? nodeValue =
+        await _storageControllerUi.getValue(":Local", "currentUser");
+    return nodeValue!.value;
+  }
+
   @override
   void onInit() async {
     super.onInit();
+    await _init();
+    log("Userid using storageControllerUi: ${await getUserIdUi()}");
+    log("Userid using storageControllerDummy: ${await getUserIdDummy()}");
     //await _init();
   }
 }
