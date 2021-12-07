@@ -4,14 +4,14 @@ import 'dart:io';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/data/model/consent.dart';
-import 'package:geiger_toolbox/app/data/model/country.dart';
 import 'package:geiger_toolbox/app/data/model/language.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
 import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
+import 'package:geiger_toolbox/app/services/localStorage/localServices/impl_utility_data.dart';
 import 'package:geiger_toolbox/app/services/localStorage/localServices/user_service.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
-
+import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/translation/suppored_language.dart';
 import 'package:get/get.dart';
 
@@ -19,6 +19,7 @@ class SettingsController extends GetxController {
   //instance of SettingsController
   static final SettingsController instance = Get.find<SettingsController>();
 
+  late final StorageController _storageController;
   //userService
   late final UserService _userService;
   //getting instance of localStorageController
@@ -36,49 +37,21 @@ class SettingsController extends GetxController {
   var currentCert = "NCSC Switzerland".obs;
   var currentProfAss = "Swiss Yoga Association".obs;
   var supervisor = false.obs;
-  var currentCountry = "Switzerland".obs;
+  var currentCountry = "".obs;
   var currentDeviceName = "".obs;
+  var currentUserName = "".obs;
   var isSuccess = true.obs;
 
   List certBaseOnCountrySelected = [].obs;
   List profAssBaseOnCountrySelected = [].obs;
-  List c = [].obs;
+  List currentCountries = [].obs;
 
   //list of supported languages
   List<Language> languages = SupportedLanguage.languages;
-  //list of partner countries
-  //Todo: store in geiger localStorage
-  List<String> countries = ["Switzerland", "Romania", "Netherlands"];
   //list of professional association
-  //Todo: store in geiger localStorage
-  List<Partner> _profAss = [
-    Partner(
-      location: Country(name: "Switzerland"),
-      names: [
-        "Swiss Yoga Association",
-        "Coiffure Suisse",
-        "Swiss SME Association"
-      ],
-    ),
-    Partner(
-      location: Country(name: "Romania"),
-      names: ["Romania Association"],
-    ),
-    Partner(
-      location: Country(name: "Netherlands"),
-      names: ["Netherlands Association"],
-    )
-  ];
+  late List<Partner> _profAss;
   //list of cert
-  //Todo: store in geiger localStorage
-  List<Partner> _cert = [
-    Partner(
-        location: Country(name: "Switzerland"), names: ["NCSC Switzerland"]),
-    Partner(location: Country(name: "Romania"), names: ["CERT Romania"]),
-    Partner(
-        location: Country(name: "Netherlands"),
-        names: ["Digital Trust Centre Netherlands"])
-  ];
+  late List<Partner> _cert;
 
   //update language
   onChangeLanguage(String? language) {
@@ -87,17 +60,18 @@ class SettingsController extends GetxController {
     Get.updateLocale(locale);
     //update language
     selectedLanguage.value = language;
+    //update default language
+    userInfo.value.language = selectedLanguage.value;
   }
 
   //update supervisor
   onChangeOwner(bool owner) {
-    //update ui
     supervisor.value = owner;
   }
 
   //update country
   //default is switzerland
-  onChangedCountry([Object? country = "Switzerland"]) {
+  onChangedCountry([Object? country = "switzerland"]) {
     //update country
     currentCountry.value = country.toString();
 
@@ -129,7 +103,7 @@ class SettingsController extends GetxController {
 
   //update userName
   onChangeUserName(String value) {
-    userInfo.value.userName = value;
+    currentUserName.value = value;
   }
 
   //update CurrentDeviceName
@@ -160,8 +134,9 @@ class SettingsController extends GetxController {
   //call when the update button  is pressed
   void updateUserInfo(User userInfo) {
     //check dis
+    //check dis
     userInfo.supervisor = supervisor.value;
-    userInfo.language = selectedLanguage.value;
+    userInfo.userName = currentUserName.value;
     userInfo.country = currentCountry.value;
     userInfo.cert = currentCert.value;
     userInfo.profAss = currentProfAss.value;
@@ -170,29 +145,6 @@ class SettingsController extends GetxController {
     if (isSuccess.value) {
       log("UserInfo: Updated Successfully");
     }
-  }
-
-  void _showProfAssBaseOnCountry(String country) {
-    Partner selectedProfAss =
-        _profAss.firstWhere((Partner element) => country == element.location);
-    //for debug purpose
-    log(selectedProfAss.names.toString());
-    //updates
-    profAssBaseOnCountrySelected = selectedProfAss.names;
-    currentProfAss.value = profAssBaseOnCountrySelected.first;
-  }
-
-  void _showCerBasedOnCountry(String country) {
-    //show list of cert base on country selected
-    Partner selectedCert =
-        _cert.firstWhere((Partner element) => country == element.location);
-
-    //update observable variable
-    certBaseOnCountrySelected = selectedCert.names;
-    currentCert.value = certBaseOnCountrySelected.first;
-
-    //for debugging purpose
-    log(certBaseOnCountrySelected.toString());
   }
 
   _updateUser(User userInfo) async {
@@ -205,44 +157,82 @@ class SettingsController extends GetxController {
     }
   }
 
-  //initial storageController
-  _initData() async {
-    _userService = UserService(await _localStorage.getStorageController);
-    userInfo.value = (await _userService.getUserInfo)!;
+  void _showProfAssBaseOnCountry(String country) {
+    Partner selectedProfAss = _profAss
+        .firstWhere((Partner element) => country == element.location.name);
+    //for debug purpose
+    log(selectedProfAss.names.toString());
+    //updates
+    profAssBaseOnCountrySelected = selectedProfAss.names;
+    currentProfAss.value = profAssBaseOnCountrySelected.first;
+  }
 
+  void _showCerBasedOnCountry(String country) {
+    //show list of cert base on country selected
+    Partner selectedCert =
+        _cert.firstWhere((Partner element) => country == element.location.name);
+
+    //update observable variable
+    certBaseOnCountrySelected = selectedCert.names;
+    currentCert.value = certBaseOnCountrySelected.first;
+
+    //for debugging purpose
+    log(certBaseOnCountrySelected.toString());
+  }
+
+  //init storageController
+  Future<void> _initStorageController() async {
+    _storageController = await _localStorage.getStorageController;
+  }
+
+  //init util data
+  Future<void> _initialUtilityData() async {
+    ImplUtilityData _utilityData = ImplUtilityData(_storageController);
+    currentCountries = await _utilityData.getCountries();
+    _profAss = await _utilityData.getProfessionAssociation();
+    _cert = await _utilityData.getCert();
+  }
+
+  //initial User Data
+  Future<void> _initUserData() async {
+    _userService = UserService(_storageController);
+    userInfo.value = (await _userService.getUserInfo)!;
     //init value in ui
     supervisor.value = userInfo.value.supervisor;
-    c.addAll(countries);
+
+    if (userInfo.value.deviceOwner!.name == null &&
+        userInfo.value.deviceOwner!.type == null) {
+      userInfo.value.deviceOwner!.name = await _getDeviceName;
+      currentDeviceName.value = userInfo.value.deviceOwner!.name!;
+      userInfo.value.deviceOwner!.type = await _getDeviceType;
+    } else {
+      currentDeviceName.value = userInfo.value.deviceOwner!.name!;
+    }
+    //init for ui
+    if (userInfo.value.country != null &&
+        userInfo.value.profAss != null &&
+        userInfo.value.cert != null &&
+        userInfo.value.userName != null) {
+      currentCountry.value = userInfo.value.country!;
+      currentProfAss.value = userInfo.value.profAss!;
+      currentCert.value = userInfo.value.cert!;
+      currentUserName.value = userInfo.value.userName!;
+    }
+
+    log("cert current: " + currentCert.value);
+
+    log("userInfo: ${userInfo.value}");
+    log("CurrentUserName :${currentUserName.value}");
 
     //default country
     //Todo: auto get country by location
     if (userInfo.value.country != null) {
-      onChangedCountry(userInfo.value.country);
-      //for debugging purpose
-      log(certBaseOnCountrySelected.toString());
+      onChangedCountry(userInfo.value.country!.toLowerCase());
     } else {
       onChangedCountry();
     }
-    //language
+    //set language
     onChangeLanguage(userInfo.value.language);
-
-    if (userInfo.value.deviceOwner!.name == null) {
-      userInfo.value.deviceOwner!.name = await _getDeviceName;
-    }
-    userInfo.value.deviceOwner!.type = await _getDeviceType;
-    currentDeviceName.value = userInfo.value.deviceOwner!.name!;
-
-    //init for ui
-    if (userInfo.value.country != null &&
-        userInfo.value.profAss != null &&
-        userInfo.value.cert != null) {
-      currentCountry.value = userInfo.value.country!;
-      currentProfAss.value = userInfo.value.profAss!;
-      currentCert.value = userInfo.value.cert!;
-    }
-    log("cert current: " + currentCert.value);
-
-    log("userInfo: ${userInfo.value}");
   }
 
   //get name of the user device
@@ -281,11 +271,13 @@ class SettingsController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    await _initData();
+    await _initStorageController();
+    await _initialUtilityData();
+    await _initUserData();
   }
 }
 
 //Done userName changes to default when dropdown changes
 //Done refactor to use already update services
-//Todo store countries, cert, profAss list in localstorage and retrieve them
+//Done store countries, cert, profAss list in localstorage and retrieve them
 //Done add update userinfo

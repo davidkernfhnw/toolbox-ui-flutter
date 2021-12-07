@@ -31,8 +31,8 @@ class CustomDropDownCountry extends StatelessWidget {
       hint: Text(hintText),
       items: listItems
           .map((item) => DropdownMenuItem(
-                value: item,
-                child: Text('$item'),
+                value: item.name,
+                child: Text('${item.name}'),
               ))
           .toList(),
     );

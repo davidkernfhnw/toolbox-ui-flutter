@@ -3,7 +3,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geiger_toolbox/app/data/model/country.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
-import 'package:geiger_toolbox/app/routes/app_pages.dart';
 import 'package:geiger_toolbox/app/services/localStorage/localServices/impl_utility_data.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/src/locale.dart';

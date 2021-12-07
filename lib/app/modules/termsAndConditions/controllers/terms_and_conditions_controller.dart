@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
+
 import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
@@ -33,22 +34,27 @@ class TermsAndConditionsController extends GetxController {
   // and navigate to home view (screen)
   //if false navigate to TermAndCondition view(screen).
   Future<void> checkExistingTerms() async {
-    //instance of userService
-    UserService userService = UserService(_storageController!);
-    //get user Info
-    User? userInfo = await userService.getUserInfo;
-    if (userInfo != null) {
-      // assign user term and condition
-      TermsAndConditions userTermsAndConditions = userInfo.termsAndConditions;
-      //check if true and return home view (screen)
-      if (await userTermsAndConditions.ageCompliant == true &&
-          await userTermsAndConditions.signedConsent == true &&
-          await userTermsAndConditions.agreedPrivacy == true) {
-        //Future.delayed(Duration(seconds: 2));
-        Get.offNamed(Routes.HOME_VIEW);
+    try {
+      //instance of userService
+      UserService userService = UserService(_storageController!);
+      //get user Info
+      User? userInfo = await userService.getUserInfo;
+      if (userInfo != null) {
+        // assign user term and condition
+        TermsAndConditions userTermsAndConditions = userInfo.termsAndConditions;
+        //check if true and return home view (screen)
+        if (await userTermsAndConditions.ageCompliant == true &&
+            await userTermsAndConditions.signedConsent == true &&
+            await userTermsAndConditions.agreedPrivacy == true) {
+          //Future.delayed(Duration(seconds: 2));
+          Get.offNamed(Routes.HOME_VIEW);
+        }
+      } else {
+        //show default screen(TermsAndConditions view)
+        log("UserInfo not found");
       }
-    } else {
-      //show default screen(TermsAndConditions view)
+    } catch (e) {
+      log("Something went wrong $e");
       log("UserInfo not found");
     }
   }
@@ -88,6 +94,7 @@ class TermsAndConditionsController extends GetxController {
     super.onInit();
     //init storageController
     _initializeStorageController();
+
     //check if terms and condition were previously agreed
     await checkExistingTerms();
   }

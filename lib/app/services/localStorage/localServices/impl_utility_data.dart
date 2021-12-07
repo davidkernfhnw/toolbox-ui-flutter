@@ -63,6 +63,7 @@ class ImplUtilityData extends UtilityData {
       for (String countryId in countryIds) {
         Node countryNode =
             (await storageController.get("$_LOCATION_PATH:${countryId}"));
+
         //print(countryNode);
         NodeValue? countryNodeValue = await countryNode.getValue("name");
         String? countryName = countryNodeValue!.getValue(locale);
@@ -177,6 +178,7 @@ class ImplUtilityData extends UtilityData {
     try {
       for (Country country in countries) {
         _node = await storageController.get("$_LOCATION_PATH:${country.id}");
+        _node.visibility = vis.Visibility.white;
         NodeValue? _nodeValue;
         _nodeValue = NodeValueImpl("name", country.name.toLowerCase());
         if (locale != null) {
