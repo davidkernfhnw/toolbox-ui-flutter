@@ -32,8 +32,8 @@ class HomeController extends getx.GetxController {
       GeigerScoreThreats(threatScores: [], geigerScore: '').obs;
 
   //initial as a private list obs
-  getx.Rx<GeigerScoreThreats> threatsScore =
-      GeigerScoreThreats(threatScores: [], geigerScore: '').obs;
+  getx.Rx<dummy.GeigerScoreThreats> threatsScore =
+      dummy.GeigerScoreThreats(threatScores: [], geigerScore: '').obs;
 
   // populate static json data
   Future<GeigerScoreThreats> _fetchGeigerAggregateScore() async {
@@ -52,26 +52,34 @@ class HomeController extends getx.GetxController {
     return geigerAggregateScore.value;
   }
 
-  setGeigerAggregateThreatScore() async {
-    _userNode = await dummy.UserNode(_storageControllerDummy!);
-    _deviceNode = await dummy.DeviceNode(_storageControllerDummy!);
-    isLoading.value = true;
-    threatsScore.value = await _fetchGeigerAggregateScore();
+  getAggrFromDataBase() async {
     var result = await _geigerDummy.onBtnPressed(_storageControllerDummy!);
     var json = jsonDecode(result);
     dummy.GeigerData g = dummy.GeigerData.fromJson(json);
     List<dummy.GeigerScoreThreats> gts = g.geigerScoreThreats;
-    dummy.GeigerScoreThreats agg = gts.first;
+    dummy.GeigerScoreThreats agg = gts.last;
+    threatsScore.value = agg;
     log("Geiger Data: $agg");
+  }
+
+  setGeigerAggregateThreatScore() async {
+    _userNode = await dummy.UserNode(_storageControllerDummy!);
+    _deviceNode = await dummy.DeviceNode(_storageControllerDummy!);
+    isLoading.value = true;
+    //test without DataBase data
+    //threatsScore.value = await _fetchGeigerAggregateScore();
+    getAggrFromDataBase();
+    log("previous Agreed");
+    //await _localStorage.upNewUser(false);
 
     //listen if node is created
     await listen();
     //get node from dummy
     //await getNodeFromDummy();
-    log(await _userNode!.getUserInfo
-        .then((value) async => value.deviceOwner.deviceId!));
-    log(await _deviceNode!.getDeviceInfo
-        .then((value) async => value.deviceId!));
+    // log(await _userNode!.getUserInfo
+    //     .then((value) async => value.deviceOwner.deviceId!));
+    // log(await _deviceNode!.getDeviceInfo
+    //     .then((value) async => value.deviceId!));
 
     isLoading.value = false;
   }
@@ -111,7 +119,12 @@ class HomeController extends getx.GetxController {
   void onInit() async {
     super.onInit();
     await _init();
-    await listen();
+    bool isNewUser = await _localStorage.isNewUser();
+    //log("new user homeController: $isNewUser");
+
+    getAggrFromDataBase();
+    //update
+
     String currentUserId = await getUserIdUi();
     log("Userid using storageControllerUi: ${currentUserId}");
     log("Userid using storageControllerDummy: ${await getUserIdDummy()}");

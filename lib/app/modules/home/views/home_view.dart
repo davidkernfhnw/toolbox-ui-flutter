@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/data/model/threat_score.dart';
+import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
 import 'package:geiger_toolbox/app/modules/home/views/widgets/threats_card.dart';
 import 'package:geiger_toolbox/app/modules/home/views/widgets/top_screen.dart';
@@ -36,7 +36,7 @@ class HomeView extends StatelessWidget {
                   log(controller.setGeigerAggregateThreatScore().toString());
                 },
                 aggregratedScore: !controller.isLoading.value
-                    ? controller.geigerAggregateScore.value.geigerScore
+                    ? controller.threatsScore.value.geigerScore
                     : "",
                 warming: false,
                 isLoading: controller.isLoading.value,
@@ -51,7 +51,7 @@ class HomeView extends StatelessWidget {
                         )
                       : Column(
                           children: controller.threatsScore.value.threatScores
-                              .map<ThreatsCard>((ThreatScore e) {
+                              .map<ThreatsCard>((dummy.ThreatScore e) {
                             return ThreatsCard(
                               label: e.threat.name,
                               icon: GeigerIcon

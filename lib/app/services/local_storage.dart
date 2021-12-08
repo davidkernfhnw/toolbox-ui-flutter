@@ -82,6 +82,51 @@ class LocalStorageController extends getx.GetxController {
     return e;
   }
 
+  //helpers
+  Future<void> storeNewUser(bool value) async {
+    try {
+      Node node = await storageControllerUi.get(":Local");
+      await node.addOrUpdateValue(NodeValueImpl("newUser", value.toString()));
+      //when creating my data
+      // add this to avoid error
+      // since on package are also getStorage
+      await ExtendedTimestamp.initializeTimestamp(storageControllerUi);
+      await storageControllerUi.addOrUpdate(node);
+      print("storeNewUser method: $node");
+    } catch (e, s) {
+      StorageException("Storage Error: $e", s);
+    }
+  }
+
+  Future<void> upNewUser(bool value) async {
+    try {
+      Node node = await storageControllerUi.get(":Local");
+      //Note: If nodeValue is already exist used updateValue() to update it
+      await node.updateValue(NodeValueImpl("newUser", value.toString()));
+      //when creating my data
+      // add this to avoid error
+      // since on package are also getStorage
+      await ExtendedTimestamp.initializeTimestamp(storageControllerUi);
+      await storageControllerUi.addOrUpdate(node);
+      print("storeNewUser method: $node");
+    } catch (e, s) {
+      StorageException("Storage Error: $e", s);
+    }
+  }
+
+  Future<bool> isNewUser() async {
+    NodeValue? nodeValue =
+        await storageControllerUi.getValue(":Local", "newUser");
+    String newUser = nodeValue!.value;
+    bool isNewUser = newUser.parseBool();
+    print("isNewUser method: $newUser");
+    if (isNewUser == true) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   @override
   void onInit() async {
     //storageController = (await _initLocalStorage())!;
@@ -129,5 +174,17 @@ class LocalStorageListener implements StorageListener {
       throw TimeoutException('Timeout reached while waiting for $num events');
     }
     return ret;
+  }
+}
+
+extension BoolParsing on String {
+  bool parseBool() {
+    if (this.toLowerCase() == 'true') {
+      return true;
+    } else if (this.toLowerCase() == 'false') {
+      return false;
+    }
+
+    throw '"$this" can not be parsed to boolean.';
   }
 }
