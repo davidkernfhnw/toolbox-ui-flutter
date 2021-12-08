@@ -13,8 +13,8 @@ class DeviceRecommendation extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: RecommendationTab(
-        threatTitle: controller.threat.value.name.toString(),
-        score: double.parse(controller.threat.value.score!.score.toString()),
+        threatTitle: controller.threat.value.threat.name.toString(),
+        score: double.parse(controller.threat.value.score.toString()),
         label: 'Current device',
         controller: controller,
         recommendationType: "Device Recommendations",

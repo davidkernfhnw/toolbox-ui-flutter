@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:geiger_toolbox/app/data/model/recommendations_models.dart';
 import 'package:geiger_toolbox/app/data/model/threat.dart';
+import 'package:geiger_toolbox/app/data/model/threat_score.dart';
 import 'package:get/get.dart';
 
 class RecommendationController extends GetxController {
@@ -11,10 +12,10 @@ class RecommendationController extends GetxController {
   }
 
   //observable
-  Rx<Threat> threat = Threat(null, null, null).obs;
+  Rx<ThreatScore> threat = ThreatScore(score: '', threat: Threat(null, "")).obs;
 
   setThreat() {
-    log(Get.arguments.name.toString());
+    log(Get.arguments.score.toString());
     //retrieve arguments from Routes
     threat.value = Get.arguments;
   }

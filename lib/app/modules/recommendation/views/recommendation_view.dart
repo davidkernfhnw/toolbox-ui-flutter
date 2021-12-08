@@ -17,7 +17,7 @@ class RecommendationPage extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(controller.threat.value.name.toString()),
+          title: Text(controller.threat.value.threat.name.toString()),
           bottom: buildTabBar(tabs: [
             Tab(
               icon: Icon(

@@ -3,8 +3,8 @@ import 'dart:developer';
 
 import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:geiger_toolbox/app/data/model/geiger_aggregate_score.dart';
-import 'package:geiger_toolbox/app/data/model/threat.dart';
+import 'package:geiger_toolbox/app/data/model/geiger_score_threats.dart';
+
 import 'package:geiger_toolbox/app/services/local_storage.dart';
 import 'package:get/get.dart' as getx;
 
@@ -28,35 +28,42 @@ class HomeController extends getx.GetxController {
   var isLoading = false.obs;
 
   //initial as an obs
-  getx.Rx<GeigerAggregateScore> geigerAggregateScore =
-      GeigerAggregateScore([], null, null).obs;
+  getx.Rx<GeigerScoreThreats> geigerAggregateScore =
+      GeigerScoreThreats(threatScores: [], geigerScore: '').obs;
 
   //initial as a private list obs
-  List<Threat> threatsScore = <Threat>[].obs;
+  getx.Rx<GeigerScoreThreats> threatsScore =
+      GeigerScoreThreats(threatScores: [], geigerScore: '').obs;
 
   // populate static json data
-  Future<List<Threat>> _fetchGeigerAggregateScore() async {
+  Future<GeigerScoreThreats> _fetchGeigerAggregateScore() async {
     const scoreAggJsonData = '''{
-        "threatScores": [ {"threatId":"1234ph", "name":"Phishing", "score":{"score":"40.20"}}, {"threatId":"1234ml", "name":"Malware", "score" :{"score":"80.23"}}],
-        "numberMetrics": "2",
+        "threatScores": [ {"threat":{"threatId":"1234ph", "name":"Phishing"}, "score":"40.20"}, {"threat":{"threatId":"1234ml", "name":"Malware"}, "score" :"80.23"}],
         "geigerScore" : "62.0"
     }''';
 
     //delay by 1sec
     await Future.delayed(1000.milliseconds);
-    GeigerAggregateScore aggScore =
-        GeigerAggregateScore.fromJson(json.decode(scoreAggJsonData));
+    GeigerScoreThreats aggScore =
+        GeigerScoreThreats.fromJson(json.decode(scoreAggJsonData));
+
     //assign decode GeigerAggregateScore json
     geigerAggregateScore.value = aggScore;
-    return geigerAggregateScore.value.threatScores;
+    return geigerAggregateScore.value;
   }
 
   setGeigerAggregateThreatScore() async {
     _userNode = await dummy.UserNode(_storageControllerDummy!);
     _deviceNode = await dummy.DeviceNode(_storageControllerDummy!);
     isLoading.value = true;
-    threatsScore = await _fetchGeigerAggregateScore();
-    log(await _geigerDummy.onBtnPressed(_storageControllerDummy!));
+    threatsScore.value = await _fetchGeigerAggregateScore();
+    var result = await _geigerDummy.onBtnPressed(_storageControllerDummy!);
+    var json = jsonDecode(result);
+    dummy.GeigerData g = dummy.GeigerData.fromJson(json);
+    List<dummy.GeigerScoreThreats> gts = g.geigerScoreThreats;
+    dummy.GeigerScoreThreats agg = gts.first;
+    log("Geiger Data: $agg");
+
     //listen if node is created
     await listen();
     //get node from dummy
@@ -70,7 +77,7 @@ class HomeController extends getx.GetxController {
   }
 
   emptyThreatScores() {
-    threatsScore = [];
+    threatsScore.value.threatScores.clear();
   }
 
   Future<String> getUserIdUi() async {

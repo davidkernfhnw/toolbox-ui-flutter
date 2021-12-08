@@ -14,8 +14,8 @@ class UserRecommendation extends StatelessWidget {
     return SingleChildScrollView(
       child: Obx(() {
         return RecommendationTab(
-          threatTitle: controller.threat.value.name.toString(),
-          score: double.parse(controller.threat.value.score!.score ?? "44.3"),
+          threatTitle: controller.threat.value.threat.name.toString(),
+          score: double.parse(controller.threat.value.score),
           label: 'Current user',
           controller: controller,
           recommendationType: "Personal Recommendations",
