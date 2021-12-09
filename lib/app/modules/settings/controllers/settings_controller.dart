@@ -7,8 +7,8 @@ import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/language.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
-import 'package:geiger_toolbox/app/services/local_storage.dart';
-//import 'package:geiger_toolbox/app/services/local_storage.dart';
+import 'package:geiger_toolbox/app/services/ui_storage_controller.dart';
+//import 'package:geiger_toolbox/app/services/ui_storage_controller.dart';
 import 'package:geiger_toolbox/app/translation/suppored_language.dart';
 import 'package:get/get.dart';
 
@@ -17,7 +17,7 @@ class SettingsController extends GetxController {
   static SettingsController to = Get.find();
   dummy.UserNode? _userNode;
   StorageController? _storageController;
-  LocalStorageController _localStorage = LocalStorageController.to;
+  //LocalStorageController _localStorage = LocalStorageController.to;
 
   TextEditingController userName = TextEditingController();
   final TextEditingController deviceName = TextEditingController();
@@ -116,7 +116,7 @@ class SettingsController extends GetxController {
 
   //initial storageController
   _init() async {
-    _storageController = await _localStorage.storageControllerDummy;
+    //_storageController = await _localStorage.storageControllerDummy;
     _userNode = await dummy.UserNode(_storageController!);
   }
 

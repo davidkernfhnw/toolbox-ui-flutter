@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:geiger_toolbox/app/services/dummy_storage_controller.dart';
 import 'package:get/get.dart';
 
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
-//import 'app/services/local_storage.dart';
-import 'app/services/local_storage.dart';
+//import 'app/services/ui_storage_controller.dart';
+import 'app/services/ui_storage_controller.dart';
 import 'app/translation/app_translation.dart';
 import 'app/util/theme/custom_theme_data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Get.put(LocalStorageController()).initLocalStorageDummy();
-  await Get.put(LocalStorageController()).initLocalStorageUI();
-  // LocalStorageController local = LocalStorageController.to;
-  // //initialize localStorage dummy
-  // local.initLocalStorageDummy();
-  //await Get.put(TermsAndConditionsController().previouslyAgreed());
+  await Get.put(DummyStorageController()).initLocalStorageDummy();
+  await Get.put(UiStorageController()).initLocalStorageUI();
+
   runApp(GeigerApp());
 }
 

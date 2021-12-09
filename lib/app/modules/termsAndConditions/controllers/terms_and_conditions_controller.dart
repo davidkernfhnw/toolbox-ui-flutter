@@ -3,14 +3,17 @@ import 'dart:developer';
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart' as local;
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
-import 'package:geiger_toolbox/app/services/local_storage.dart';
-//import 'package:geiger_toolbox/app/services/local_storage.dart';
+import 'package:geiger_toolbox/app/services/dummy_storage_controller.dart';
+import 'package:geiger_toolbox/app/services/ui_storage_controller.dart';
+
 import 'package:get/get.dart';
 
 class TermsAndConditionsController extends GetxController {
   GeigerDummy? _geigerDummy = GeigerDummy();
-  local.StorageController? _storageController;
-  LocalStorageController _localStorage = LocalStorageController.to;
+  late final local.StorageController storageController;
+  //UiStorageController _uiStorageInstance = UiStorageController.instance;
+  DummyStorageController _dummyStorageInstance =
+      DummyStorageController.instance;
   static TermsAndConditionsController to = Get.find();
 
   var ageCompliant = false.obs;
@@ -19,9 +22,9 @@ class TermsAndConditionsController extends GetxController {
 
   var error = false.obs;
 
-  //storageController
+  //DummystorageController
   _init() async {
-    _storageController = await _localStorage.storageControllerDummy;
+    storageController = await _dummyStorageInstance.getDummyController;
   }
 
   Future<void> agreed() async {
@@ -31,9 +34,9 @@ class TermsAndConditionsController extends GetxController {
       error.value = false;
       //_localStorage.storeNewUser(true);
       await _geigerDummy!.initialGeigerDummyData(
-          _storageController!,
           TermsAndConditions(
-              ageCompliant: true, signedConsent: true, agreedPrivacy: true));
+              ageCompliant: true, signedConsent: true, agreedPrivacy: true),
+          storageController);
       Get.offNamed(Routes.HOME_VIEW);
     } else {
       error.value = true;
@@ -42,7 +45,7 @@ class TermsAndConditionsController extends GetxController {
 
   Future<void> previouslyAgreed() async {
     try {
-      UserNode _userNode = UserNode(_storageController!);
+      UserNode _userNode = UserNode(storageController);
       TermsAndConditions userTerms = await _userNode.getUserInfo
           .then((User value) => value.termsAndConditions);
 
@@ -64,7 +67,7 @@ class TermsAndConditionsController extends GetxController {
   void onInit() async {
     super.onInit();
 
-    //init storageController and geigerApi
+    //init DummystorageController
     await _init();
     //check if terms and condition were previously agreed
     await previouslyAgreed();
@@ -77,7 +80,7 @@ class TermsAndConditionsController extends GetxController {
 
   @override
   void dispose() {
-    _storageController!.close();
+    //storageController.close();
     super.dispose();
   }
 }

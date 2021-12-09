@@ -8,56 +8,39 @@ import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:get/get.dart' as getx;
 import 'package:geiger_api/geiger_api.dart';
 
-class LocalStorageController extends getx.GetxController {
+class UiStorageController extends getx.GetxController {
   //instance
-  static LocalStorageController to = getx.Get.find();
+  static UiStorageController instance = getx.Get.find<UiStorageController>();
 
-  late StorageController storageControllerDummy;
-  late StorageController storageControllerUi;
+  late final StorageController _storageControllerUi;
 
-  // Future<StorageController?> initLocalStorage() async {
-  //   try {
-  //     GeigerDummy g = GeigerDummy();
-  //
-  //     GeigerApi api = await g.initGeigerApi();
-  //     ;
-  //     return api.getStorage();
-  //   } catch (e) {
-  //     log("Database Connection Error From LocalStorage: $e");
-  //     rethrow;
-  //   }
-  // }
-  Future<void> initLocalStorageDummy() async {
+  Future<void> initLocalStorageUI() async {
+    log("initLocalStorageUi method has been called");
     try {
-      GeigerDummy g = GeigerDummy();
-
-      GeigerApi api = await g.initGeigerApi();
-      storageControllerDummy = api.getStorage()!;
+      log("calling _initGeigerApi");
+      GeigerApi api = await _initGeigerApiUi();
+      _storageControllerUi = await api.getStorage()!;
+      log("got $_storageControllerUi for Ui");
       //storageController = (await g.getStorageController())!;
     } catch (e) {
-      log("Database Connection Error From LocalStorage: $e");
+      log("Database Connection Error From LocalStorageUI:");
       rethrow;
     }
   }
 
-  Future<GeigerApi> initGeigerApiUi() async {
+  Future<GeigerApi> _initGeigerApiUi() async {
     //flushGeigerApiCache();
     //*****************************************master**********************
-    GeigerApi localMaster =
-        (await getGeigerApi("", GeigerApi.masterId, Declaration.doShareData))!;
-    //clear existing state
-    //await localMaster.zapState();
-    return localMaster;
-  }
-
-  Future<StorageController?> initLocalStorageUI() async {
+    log("_initGeigerApiUi method has been called");
     try {
-      GeigerApi api = await initGeigerApiUi();
-      storageControllerUi = api.getStorage()!;
-      //storageController = (await g.getStorageController())!;
-    } catch (e) {
-      log("Database Connection Error From LocalStorage: $e");
-      rethrow;
+      GeigerApi localMaster = (await getGeigerApi(
+          "", GeigerApi.masterId, Declaration.doShareData))!;
+      //clear existing state
+      //await localMaster.zapState();
+      log("got $localMaster");
+      return localMaster;
+    } on StorageException {
+      throw StorageException("Error from GeigerApi");
     }
   }
 
@@ -65,10 +48,10 @@ class LocalStorageController extends getx.GetxController {
     LocalStorageListener l = LocalStorageListener();
     SearchCriteria s = SearchCriteria(searchPath: ":");
     //listen to dummy storage
-    storageControllerDummy.registerChangeListener(l, s);
+    _storageControllerUi.registerChangeListener(l, s);
     Node _node = await node.deepClone();
     //
-    List<Event> e = await storageControllerDummy
+    List<Event> e = await _storageControllerUi
         .update(_node)
         .then((_) async => await l.events);
 
@@ -82,16 +65,38 @@ class LocalStorageController extends getx.GetxController {
     return e;
   }
 
-  //helpers
+  @override
+  void onInit() {
+    super.onInit();
+  }
+
+  // @override
+  // void onInit() async {
+  //   super.onInit();
+  //   //in uIGeiger
+  //   //Future.delayed(Duration(seconds: 1));
+  //   //await _initLocalStorageUI();
+  // }
+
+  // @override
+  // void onReady() async {
+  //   //storageController = (await _initLocalStorage())!;
+  //   super.onReady();
+  //
+  //   // await _initLocalStorage();
+  //   log("READY CALLED");
+  // }
+
+//helpers
   Future<void> storeNewUser(bool value) async {
     try {
-      Node node = await storageControllerUi.get(":Local");
+      Node node = await _storageControllerUi.get(":Local");
       await node.addOrUpdateValue(NodeValueImpl("newUser", value.toString()));
       //when creating my data
       // add this to avoid error
       // since on package are also getStorage
-      await ExtendedTimestamp.initializeTimestamp(storageControllerUi);
-      await storageControllerUi.addOrUpdate(node);
+      await ExtendedTimestamp.initializeTimestamp(_storageControllerUi);
+      await _storageControllerUi.addOrUpdate(node);
       print("storeNewUser method: $node");
     } catch (e, s) {
       StorageException("Storage Error: $e", s);
@@ -100,14 +105,14 @@ class LocalStorageController extends getx.GetxController {
 
   Future<void> upNewUser(bool value) async {
     try {
-      Node node = await storageControllerUi.get(":Local");
+      Node node = await _storageControllerUi.get(":Local");
       //Note: If nodeValue is already exist used updateValue() to update it
       await node.updateValue(NodeValueImpl("newUser", value.toString()));
       //when creating my data
       // add this to avoid error
       // since on package are also getStorage
-      await ExtendedTimestamp.initializeTimestamp(storageControllerUi);
-      await storageControllerUi.addOrUpdate(node);
+      await ExtendedTimestamp.initializeTimestamp(_storageControllerUi);
+      await _storageControllerUi.addOrUpdate(node);
       print("storeNewUser method: $node");
     } catch (e, s) {
       StorageException("Storage Error: $e", s);
@@ -115,23 +120,21 @@ class LocalStorageController extends getx.GetxController {
   }
 
   Future<bool> isNewUser() async {
-    NodeValue? nodeValue =
-        await storageControllerUi.getValue(":Local", "newUser");
-    String newUser = nodeValue!.value;
-    bool isNewUser = newUser.parseBool();
-    print("isNewUser method: $newUser");
-    if (isNewUser == true) {
-      return true;
-    } else {
+    try {
+      NodeValue? nodeValue =
+          await _storageControllerUi.getValue(":Local", "newUser");
+      String newUser = nodeValue!.value;
+      bool isNewUser = newUser.parseBool();
+      print("isNewUser method: $newUser");
+      if (isNewUser == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      log("Error from storageControllerUi");
       return false;
     }
-  }
-
-  @override
-  void onInit() async {
-    //storageController = (await _initLocalStorage())!;
-    super.onInit();
-    // await _initLocalStorage();
   }
 }
 
