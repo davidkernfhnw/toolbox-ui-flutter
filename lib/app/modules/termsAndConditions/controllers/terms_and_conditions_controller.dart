@@ -10,8 +10,9 @@ import 'package:get/get.dart';
 
 class TermsAndConditionsController extends GetxController {
   GeigerDummy? _geigerDummy = GeigerDummy();
-  late final local.StorageController storageController;
-  //UiStorageController _uiStorageInstance = UiStorageController.instance;
+  late final local.StorageController storageControllerDummy;
+  late final local.StorageController storageControllerUi;
+  UiStorageController _uiStorageInstance = UiStorageController.instance;
   DummyStorageController _dummyStorageInstance =
       DummyStorageController.instance;
   static TermsAndConditionsController to = Get.find();
@@ -24,7 +25,8 @@ class TermsAndConditionsController extends GetxController {
 
   //DummystorageController
   _init() async {
-    storageController = await _dummyStorageInstance.getDummyController;
+    storageControllerDummy = await _dummyStorageInstance.getDummyController;
+    storageControllerUi = await _uiStorageInstance.getUiController;
   }
 
   Future<void> agreed() async {
@@ -36,7 +38,8 @@ class TermsAndConditionsController extends GetxController {
       await _geigerDummy!.initialGeigerDummyData(
           TermsAndConditions(
               ageCompliant: true, signedConsent: true, agreedPrivacy: true),
-          storageController);
+          storageControllerDummy);
+      await _uiStorageInstance.storeNewUser(true, storageControllerUi);
       Get.offNamed(Routes.HOME_VIEW);
     } else {
       error.value = true;
@@ -45,7 +48,7 @@ class TermsAndConditionsController extends GetxController {
 
   Future<void> previouslyAgreed() async {
     try {
-      UserNode _userNode = UserNode(storageController);
+      UserNode _userNode = UserNode(storageControllerDummy);
       TermsAndConditions userTerms = await _userNode.getUserInfo
           .then((User value) => value.termsAndConditions);
 

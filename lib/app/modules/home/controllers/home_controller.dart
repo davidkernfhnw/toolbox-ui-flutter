@@ -12,10 +12,12 @@ import 'package:get/get.dart' as getx;
 class HomeController extends getx.GetxController {
   //an instance of HomeController
   static HomeController get to => getx.Get.find();
-  //LocalStorageController _localStorage = LocalStorageController.to;
+  UiStorageController _uiStorageControllerInstance =
+      UiStorageController.instance;
   DummyStorageController _dummyStorageInstance =
       DummyStorageController.instance;
   late final StorageController storageController;
+  late final StorageController storageControllerUi;
 
   dummy.GeigerDummy _geigerDummy = dummy.GeigerDummy();
   dummy.UserNode? _userNode;
@@ -24,6 +26,7 @@ class HomeController extends getx.GetxController {
   //storageController
   Future<void> _init() async {
     storageController = _dummyStorageInstance.getDummyController;
+    storageControllerUi = await _uiStorageControllerInstance.getUiController;
     //_storageController = await LocalStorage.initLocalStorage();
     // _storageControllerDummy = await _localStorage.storageControllerDummy;
     //_storageControllerUi = await _localStorage.storageControllerUi;
@@ -36,7 +39,7 @@ class HomeController extends getx.GetxController {
       GeigerScoreThreats(threatScores: [], geigerScore: '').obs;
 
   //initial as a private list obs
-  getx.Rx<dummy.GeigerScoreThreats> threatsScore =
+  getx.Rx<dummy.GeigerScoreThreats> aggThreatsScore =
       dummy.GeigerScoreThreats(threatScores: [], geigerScore: '').obs;
 
   // populate static json data
@@ -62,7 +65,7 @@ class HomeController extends getx.GetxController {
     dummy.GeigerData g = dummy.GeigerData.fromJson(json);
     List<dummy.GeigerScoreThreats> gts = g.geigerScoreThreats;
     dummy.GeigerScoreThreats agg = gts.last;
-    threatsScore.value = agg;
+    aggThreatsScore.value = agg;
     log("Geiger Data: $agg");
   }
 
@@ -87,9 +90,10 @@ class HomeController extends getx.GetxController {
 
     isLoading.value = false;
   }
+  //listen to change in aggThreatScore
 
   emptyThreatScores() {
-    threatsScore.value.threatScores.clear();
+    aggThreatsScore.value.threatScores.clear();
   }
 
   // Future<String> getUserIdUi() async {
@@ -123,16 +127,27 @@ class HomeController extends getx.GetxController {
   void onInit() async {
     super.onInit();
     await _init();
-    //bool isNewUser = await _localStorage.isNewUser();
-    //log("new user homeController: $isNewUser");
 
+    //update newUser
+    getx.once(
+        aggThreatsScore, (_) => _uiStorageControllerInstance.upNewUser(false));
     //getAggrFromDataBase();
-    //update
+    //update newUser
 
     //String currentUserId = await getUserIdUi();
     //log("Userid using storageControllerUi: ${currentUserId}");
     log("Userid using storageControllerDummy: ${await getUserIdDummy()}");
     //listen();
+  }
+
+  @override
+  void onReady() async {
+    super.onReady();
+    bool isNewUser = await _uiStorageControllerInstance.isNewUser();
+    log("new user homeController: $isNewUser");
+    if (isNewUser == false) {
+      getAggrFromDataBase();
+    }
   }
 }
 

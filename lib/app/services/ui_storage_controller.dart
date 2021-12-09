@@ -14,6 +14,10 @@ class UiStorageController extends getx.GetxController {
 
   late final StorageController _storageControllerUi;
 
+  StorageController get getUiController {
+    return _storageControllerUi;
+  }
+
   Future<void> initLocalStorageUI() async {
     log("initLocalStorageUi method has been called");
     try {
@@ -41,6 +45,56 @@ class UiStorageController extends getx.GetxController {
       return localMaster;
     } on StorageException {
       throw StorageException("Error from GeigerApi");
+    }
+  }
+
+  //helpers
+  Future<void> storeNewUser(bool value, StorageController _s) async {
+    try {
+      Node node = await _s.get(":Local");
+      await node.addOrUpdateValue(NodeValueImpl("newUser", value.toString()));
+      //when creating my data
+      // add this to avoid error
+      // since on package are also getStorage
+      //await ExtendedTimestamp.initializeTimestamp(_storageControllerUi);
+      await _s.addOrUpdate(node);
+      print("storeNewUser method: $node");
+    } catch (e, s) {
+      StorageException("Storage Error: $e", s);
+    }
+  }
+
+  Future<void> upNewUser(bool value) async {
+    try {
+      Node node = await _storageControllerUi.get(":Local");
+      //Note: If nodeValue is already exist used updateValue() to update it
+      await node.updateValue(NodeValueImpl("newUser", value.toString()));
+      //when creating my data
+      // add this to avoid error
+      // since on package are also getStorage
+      //await ExtendedTimestamp.initializeTimestamp(_storageControllerUi);
+      await _storageControllerUi.update(node);
+      print("storeNewUser method: $node");
+    } catch (e, s) {
+      StorageException("Storage Error: $e", s);
+    }
+  }
+
+  Future<bool> isNewUser() async {
+    try {
+      NodeValue? nodeValue =
+          await _storageControllerUi.getValue(":Local", "newUser");
+      String newUser = nodeValue!.value;
+      bool isNewUser = newUser.parseBool();
+      print("isNewUser method: $newUser");
+      if (isNewUser == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      log("Error from storageControllerUi");
+      return false;
     }
   }
 
@@ -87,55 +141,6 @@ class UiStorageController extends getx.GetxController {
   //   log("READY CALLED");
   // }
 
-//helpers
-  Future<void> storeNewUser(bool value) async {
-    try {
-      Node node = await _storageControllerUi.get(":Local");
-      await node.addOrUpdateValue(NodeValueImpl("newUser", value.toString()));
-      //when creating my data
-      // add this to avoid error
-      // since on package are also getStorage
-      await ExtendedTimestamp.initializeTimestamp(_storageControllerUi);
-      await _storageControllerUi.addOrUpdate(node);
-      print("storeNewUser method: $node");
-    } catch (e, s) {
-      StorageException("Storage Error: $e", s);
-    }
-  }
-
-  Future<void> upNewUser(bool value) async {
-    try {
-      Node node = await _storageControllerUi.get(":Local");
-      //Note: If nodeValue is already exist used updateValue() to update it
-      await node.updateValue(NodeValueImpl("newUser", value.toString()));
-      //when creating my data
-      // add this to avoid error
-      // since on package are also getStorage
-      await ExtendedTimestamp.initializeTimestamp(_storageControllerUi);
-      await _storageControllerUi.addOrUpdate(node);
-      print("storeNewUser method: $node");
-    } catch (e, s) {
-      StorageException("Storage Error: $e", s);
-    }
-  }
-
-  Future<bool> isNewUser() async {
-    try {
-      NodeValue? nodeValue =
-          await _storageControllerUi.getValue(":Local", "newUser");
-      String newUser = nodeValue!.value;
-      bool isNewUser = newUser.parseBool();
-      print("isNewUser method: $newUser");
-      if (isNewUser == true) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      log("Error from storageControllerUi");
-      return false;
-    }
-  }
 }
 
 class Event {

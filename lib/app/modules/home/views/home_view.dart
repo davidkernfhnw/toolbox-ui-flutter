@@ -36,7 +36,7 @@ class HomeView extends StatelessWidget {
                   log(controller.setGeigerAggregateThreatScore().toString());
                 },
                 aggregratedScore: !controller.isLoading.value
-                    ? controller.threatsScore.value.geigerScore
+                    ? controller.aggThreatsScore.value.geigerScore
                     : "",
                 warming: false,
                 isLoading: controller.isLoading.value,
@@ -45,12 +45,13 @@ class HomeView extends StatelessWidget {
                   ? const CircularProgressIndicator.adaptive(
                       backgroundColor: Colors.green,
                     )
-                  : controller.threatsScore.value.threatScores.isEmpty
+                  : controller.aggThreatsScore.value.threatScores.isEmpty
                       ? const Center(
                           child: Text("NO DATA FOUND"),
                         )
                       : Column(
-                          children: controller.threatsScore.value.threatScores
+                          children: controller
+                              .aggThreatsScore.value.threatScores
                               .map<ThreatsCard>((dummy.ThreatScore e) {
                             return ThreatsCard(
                               label: e.threat.name,
