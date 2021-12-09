@@ -31,13 +31,26 @@ void main() {
       expect(c, isEmpty);
     });
 
-    test("test storeCountries without locale", () async {
-      bool result = await implUtilityData.storeCountries(countries: [
-        Country(name: "Switzerland"),
-        Country(name: "Netherlands"),
-        Country(name: "Romania")
+    test("test storeCountries in multiple locale", () async {
+      await implUtilityData
+          .storeCountries(locale: Locale.parse("en"), countries: [
+        Country(name: "switzerland"),
+        Country(name: "netherlands"),
+        Country(name: "romania")
       ]);
-      expect(result, isTrue);
+
+      // await implUtilityData
+      //     .storeCountries(locale: Locale.parse("nl-nl"), countries: [
+      //   Country(name: "Switzerland"),
+      //   Country(name: "Netherlands"),
+      //   Country(name: "Romania")
+      // ]);
+      //
+      // await implUtilityData.storeCountries(countries: [
+      //   Country(name: "Switzerland in de"),
+      //   Country(name: "Netherlands in de"),
+      //   Country(name: "Romania sin de")
+      // ], locale: Locale.parse("de-de"));
     });
     test("test getCountries when stored", () async {
       List<Country> c = await implUtilityData.getCountries();
@@ -45,15 +58,6 @@ void main() {
       expect(c, isNotEmpty);
     });
 
-    // test("test storeCountries with locale", () async {
-    //   bool result =
-    //       await implUtilityData.storeCountries(locale: deCh, countries: [
-    //     Country(name: "Switzerland"),
-    //     Country(name: "Netherlands"),
-    //     Country(name: "Romania")
-    //   ]);
-    //   expect(result, isTrue);
-    // });
     test("test getCountries with locale", () async {
       List<Country> c = await implUtilityData.getCountries(locale: "en");
       print(c.first.name);
@@ -184,5 +188,75 @@ void main() {
       List<Partner> profAss = await implUtilityData.getProfessionAssociation();
       expect(profAss, isNotEmpty);
     });
+  });
+  test(
+      '20211208 - issue #29 (can\'t retrieve value stored in a different language)',
+      () async {
+    // create empty datastore
+
+    // Make sure that parent node exists
+    Node threatsNode = NodeImpl(":Global:threats", "testowner");
+    await storageController.addOrUpdate(threatsNode);
+
+    Future<void> setGlobalThreatsNode(
+        Locale locale, List<String> threats) async {
+      Node n;
+      NodeValue? _nodeValue;
+      // create threats
+
+      for (String e in threats) {
+        // get current node (or create if non existent)
+        try {
+          n = await storageController.get(':Global:threats:${e}');
+          _nodeValue = await n.getValue('name');
+          _nodeValue!.setValue(e, locale);
+        } on StorageException {
+          n = NodeImpl(':Global:threats:${e}', 'testowner');
+          _nodeValue = NodeValueImpl("name", e);
+        }
+
+        // create node
+        await n.addOrUpdateValue(_nodeValue);
+        await storageController.addOrUpdate(n);
+        print(n.toString());
+      }
+    }
+
+    Future<List<String>> getThreats([String language = "en"]) async {
+      List<String> t = [];
+      List<Node> _node = await storageController
+          .search(SearchCriteria(searchPath: ":Global:threats"));
+      for (Node element in _node) {
+        if (element.parentPath == ":Global:threats") {
+          t.add((await element.getValue('name'))!.getValue(language)!);
+        }
+      }
+      return t;
+    }
+
+    // await implUtilityData
+    //     .storeCountries(locale: Locale.parse("en"), countries: [
+    //   Country(name: "Switzerland"),
+    //   Country(name: "Netherlands"),
+    //   Country(name: "Romania")
+    // ]);
+    //
+    // await implUtilityData
+    //     .storeCountries(locale: Locale.parse("nl-nl"), countries: [
+    //   Country(name: "Switzerland"),
+    //   Country(name: "Netherlands"),
+    //   Country(name: "Romania")
+    // ]);
+
+    // write values to store
+    // await setGlobalThreatsNode(Locale.parse("en"), ["phishing", "malware"]);
+    // await setGlobalThreatsNode(
+    //     Locale.parse("de-ch"), ["phishing in de", "malware in de"]);
+    // await setGlobalThreatsNode(
+    //     Locale.parse("nl-nl"), ["phishing in nl", "malware in nl"]);
+
+    // expect('${await getThreats("de-ch")}', '[phishing in de, malware in de]');
+    // expect('${await getThreats("nl-nl")}', '[phishing in nl, malware in nl]');
+    // expect('${await getThreats("en")}', '[phishing, malware]');
   });
 }

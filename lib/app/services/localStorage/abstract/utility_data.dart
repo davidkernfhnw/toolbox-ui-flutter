@@ -6,7 +6,7 @@ import 'package:intl/locale.dart';
 
 abstract class UtilityData {
   Future<bool> storeCountries(
-      {Locale locale, required List<Country> countries});
+      {required Locale locale, required List<Country> countries});
 
   Future<List<Country>> getCountries({String locale: "en"});
 

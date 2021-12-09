@@ -174,47 +174,34 @@ class ImplUtilityData extends UtilityData {
 
   @override
   Future<bool> storeCountries(
-      {Locale? locale, required List<Country> countries}) async {
-    try {
-      for (Country country in countries) {
-        _node = await storageController.get("$_LOCATION_PATH:${country.id}");
-        _node.visibility = vis.Visibility.white;
-        NodeValue? _nodeValue;
-        _nodeValue = NodeValueImpl("name", country.name.toLowerCase());
-        if (locale != null) {
-          _nodeValue.setValue(country.name, locale);
-        }
-        await _node.addOrUpdateValue(_nodeValue);
-        await storageController.update(_node);
-      }
-      return true;
-    } on StorageException {
+      {required Locale locale, required List<Country> countries}) async {
+    Node _n;
+    NodeValue? _nV;
+    //create Node path
+    Node locationNode = NodeImpl(_LOCATION_PATH, _NODE_OWNER);
+    await storageController.addOrUpdate(locationNode);
+    for (Country country in countries) {
       try {
-        Node _node = NodeImpl(_LOCATION_PATH, _NODE_OWNER);
-        //create location sub node
-        await storageController.addOrUpdate(_node);
-        Node idNode;
-        for (Country country in countries) {
-          idNode = NodeImpl("$_LOCATION_PATH:${country.id}", _NODE_OWNER);
-          idNode.visibility = vis.Visibility.white;
-          await storageController.addOrUpdate(idNode);
-          NodeValue countryName =
-              NodeValueImpl("name", country.name.toLowerCase());
-          if (locale != null && locale != "en") {
-            countryName.setValue(country.name, locale);
-          }
-          await idNode.addOrUpdateValue(countryName);
-          await storageController.update(idNode);
-          //print(idNode);
-        }
+        _n = await storageController.get("$_LOCATION_PATH:${country.id}");
+        _nV = await _n.getValue("name");
+        _nV!.setValue(country.name, locale);
 
-        return true;
-      } catch (e) {
-        //should never happen:
-        log(e.toString());
-        return false;
+        // _nodeValue = await n.getValue('name');
+        // _nodeValue!.setValue(e.value, locale);
+
+      } on StorageException {
+        _n = NodeImpl("$_LOCATION_PATH:${country.id}", _NODE_OWNER);
+        //_n.visibility = vis.Visibility.white;
+        _nV = NodeValueImpl("name", country.name.toLowerCase());
       }
+      // create node
+
+      await _n.addOrUpdateValue(_nV);
+      await storageController.addOrUpdate(_n);
+      print(_n);
     }
+
+    return true;
   }
 
   @override

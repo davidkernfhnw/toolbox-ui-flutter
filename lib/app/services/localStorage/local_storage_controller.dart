@@ -8,6 +8,7 @@ import 'package:geiger_toolbox/app/data/model/partner.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:get/get.dart';
 import 'package:geiger_api/geiger_api.dart';
+import 'package:intl/src/locale.dart';
 
 import 'localServices/impl_utility_data.dart';
 
@@ -18,7 +19,7 @@ class LocalStorageController extends GetxController {
   GeigerApiConnector _geigerApiConnector = GeigerApiConnector.to;
   late StorageController _storageController;
   late GeigerApi _api;
-  //
+
   late ImplUtilityData _utilityData;
   StorageController get getStorageController {
     return _storageController;
@@ -43,7 +44,7 @@ class LocalStorageController extends GetxController {
       Country(name: "Switzerland"),
       Country(name: "Netherlands"),
       Country(name: "Romania")
-    ]);
+    ], locale: Locale.parse("en"));
   }
 
   Future<void> _storeCert() async {
