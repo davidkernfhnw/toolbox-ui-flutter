@@ -123,24 +123,6 @@ class UiStorageController extends getx.GetxController {
   void onInit() {
     super.onInit();
   }
-
-  // @override
-  // void onInit() async {
-  //   super.onInit();
-  //   //in uIGeiger
-  //   //Future.delayed(Duration(seconds: 1));
-  //   //await _initLocalStorageUI();
-  // }
-
-  // @override
-  // void onReady() async {
-  //   //storageController = (await _initLocalStorage())!;
-  //   super.onReady();
-  //
-  //   // await _initLocalStorage();
-  //   log("READY CALLED");
-  // }
-
 }
 
 class Event {

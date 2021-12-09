@@ -39,6 +39,7 @@ class TermsAndConditionsController extends GetxController {
           TermsAndConditions(
               ageCompliant: true, signedConsent: true, agreedPrivacy: true),
           storageControllerDummy);
+      //set newUser to true
       await _uiStorageInstance.storeNewUser(true, storageControllerUi);
       Get.offNamed(Routes.HOME_VIEW);
     } else {
