@@ -13,10 +13,11 @@ class DeviceRecommendation extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: RecommendationTab(
-        threatTitle: controller.threat.value.threat.name.toString(),
-        score: double.parse(controller.threat.value.score.toString()),
+        threatTitle: controller.deviceThreatScore.value.threat.name,
+        score: double.parse("${controller.deviceGeigerScore.value}.0"),
         label: 'Current device',
-        controller: controller,
+        recommendations:
+            controller.deviceGeigerRecommendations.value.recommendations,
         recommendationType: "Device Recommendations",
       ),
     );

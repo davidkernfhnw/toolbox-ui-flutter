@@ -4,17 +4,18 @@ import 'package:geiger_toolbox/app/modules/recommendation/controller/recommendat
 import 'package:geiger_toolbox/app/shared_widgets/indicator_gauge.dart';
 import 'package:get/get.dart';
 import 'expansion_card.dart';
+import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 
 class RecommendationTab extends StatelessWidget {
   final String label;
   final double score;
   final String threatTitle;
   final String? recommendationType;
-  final RecommendationController controller;
+  final List<dummy.Recommendations> recommendations;
 
   const RecommendationTab({
     Key? key,
-    required this.controller,
+    required this.recommendations,
     required this.label,
     required this.score,
     required this.threatTitle,
@@ -68,16 +69,11 @@ class RecommendationTab extends StatelessWidget {
           const SizedBox(
             height: 5,
           ),
-          Obx(
-            () {
-              return Column(
-                // animationDuration: Duration(seconds: 2),
-                children: controller.recommendations
-                    .map<Widget>((RecommendationModel e) {
-                  return ExpansionCard(recommendationData: e);
-                }).toList(),
-              );
-            },
+          Column(
+            // animationDuration: Duration(seconds: 2),
+            children: recommendations.map<Widget>((dummy.Recommendations e) {
+              return ExpansionCard(recommendationData: e);
+            }).toList(),
           ),
         ],
       ),

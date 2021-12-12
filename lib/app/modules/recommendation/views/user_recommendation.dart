@@ -14,10 +14,11 @@ class UserRecommendation extends StatelessWidget {
     return SingleChildScrollView(
       child: Obx(() {
         return RecommendationTab(
-          threatTitle: controller.threat.value.threat.name.toString(),
-          score: double.parse(controller.threat.value.score),
+          threatTitle: controller.userThreatScore.value.threat.name,
+          score: double.parse("${controller.userGeigerScore.value}.0"),
           label: 'Current user',
-          controller: controller,
+          recommendations:
+              controller.userGeigerRecommendations.value.recommendations,
           recommendationType: "Personal Recommendations",
         );
       }),

@@ -32,8 +32,8 @@ class HomeView extends StatelessWidget {
                 onScanPressed: () {
                   //testing Geiger Aggregate score Model
                   controller.emptyThreatScores();
-                  controller.setGeigerAggregateThreatScore();
-                  log(controller.setGeigerAggregateThreatScore().toString());
+                  controller.onScanSetGeigerAgg();
+                  log(controller.onScanSetGeigerAgg().toString());
                 },
                 aggregratedScore: !controller.isLoading.value
                     ? controller.aggThreatsScore.value.geigerScore
@@ -59,7 +59,7 @@ class HomeView extends StatelessWidget {
                                   .iconsMap[e.threat.name.toLowerCase()],
                               indicatorScore: double.parse(e.score.toString()),
                               routeName: Routes.RECOMMENDATION_VIEW,
-                              routeArguments: e,
+                              routeArguments: e.threat,
                             );
                           }).toList(),
                         ),

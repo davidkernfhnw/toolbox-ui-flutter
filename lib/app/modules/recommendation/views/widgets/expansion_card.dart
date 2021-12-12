@@ -1,9 +1,10 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/data/model/recommendations_models.dart';
+import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 
 class ExpansionCard extends StatelessWidget {
-  final RecommendationModel recommendationData;
+  final dummy.Recommendations recommendationData;
   const ExpansionCard({Key? key, required this.recommendationData})
       : super(key: key);
 
@@ -18,7 +19,7 @@ class ExpansionCard extends StatelessWidget {
             value: true,
           ),
           title: Text(
-            recommendationData.header.toString(),
+            recommendationData.description.shortDescription,
             softWrap: true,
             style: const TextStyle(),
           ),
@@ -30,7 +31,7 @@ class ExpansionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                recommendationData.body.toString(),
+                recommendationData.description.longDescription!,
                 softWrap: true,
               ),
               const SizedBox(height: 5),
