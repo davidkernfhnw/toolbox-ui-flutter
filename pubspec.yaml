@@ -49,6 +49,7 @@ dependencies:
   geiger_dummy_data:
     path: ../geiger_dummy_data/
   device_info: ^2.0.3
+  get_storage: ^2.0.3
 
 
 

@@ -9,6 +9,7 @@ import 'package:geiger_toolbox/app/services/dummy_storage_controller.dart';
 
 import 'package:geiger_toolbox/app/services/ui_storage_controller.dart';
 import 'package:get/get.dart' as getx;
+import 'package:get_storage/get_storage.dart';
 
 class HomeController extends getx.GetxController {
   //an instance of HomeController
@@ -59,6 +60,7 @@ class HomeController extends getx.GetxController {
     //delay by 3sec
     await Future.delayed(Duration(seconds: 2));
     aggThreatsScore.value = await _getAggThreatScore();
+    _cachedData();
     isLoading.value = false;
   }
 
@@ -82,6 +84,19 @@ class HomeController extends getx.GetxController {
     return node;
   }
 
+  //cached data
+  final box = GetStorage();
+  void _cachedData() {
+    box.write("aggThreat", jsonEncode(aggThreatsScore.value));
+  }
+
+  dummy.GeigerScoreThreats _getCachedData() {
+    var data = box.read("aggThreat");
+    var json = jsonDecode(data);
+    dummy.GeigerScoreThreats result = dummy.GeigerScoreThreats.fromJson(json);
+    return result;
+  }
+
   @override
   void onInit() async {
     super.onInit();
@@ -100,7 +115,8 @@ class HomeController extends getx.GetxController {
     bool isNewUser = await _uiStorageControllerInstance.isNewUser();
     log("new user homeController: $isNewUser");
     if (isNewUser == false) {
-      aggThreatsScore.value = await _getAggThreatScore();
+      //aggThreatsScore.value = await _getAggThreatScore();
+      aggThreatsScore.value = _getCachedData();
     }
   }
 }

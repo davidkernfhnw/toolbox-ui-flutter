@@ -31,7 +31,7 @@ class HomeView extends StatelessWidget {
               TopScreen(
                 onScanPressed: () {
                   //testing Geiger Aggregate score Model
-                  controller.emptyThreatScores();
+
                   controller.onScanSetGeigerAgg();
                   log(controller.onScanSetGeigerAgg().toString());
                 },

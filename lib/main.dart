@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/services/dummy_storage_controller.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
@@ -11,10 +12,10 @@ import 'app/util/theme/custom_theme_data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Get.put(DummyStorageController()).initLocalStorageDummy();
   await Get.put(UiStorageController()).initLocalStorageUI();
-
+  //cached data
+  await GetStorage.init();
   runApp(GeigerApp());
 }
 
