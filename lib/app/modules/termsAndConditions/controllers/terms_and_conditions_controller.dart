@@ -46,7 +46,6 @@ class TermsAndConditionsController extends GetxController {
         if (await userTermsAndConditions.ageCompliant == true &&
             await userTermsAndConditions.signedConsent == true &&
             await userTermsAndConditions.agreedPrivacy == true) {
-          //Future.delayed(Duration(seconds: 2));
           Get.offNamed(Routes.HOME_VIEW);
         }
       } else {
@@ -70,6 +69,10 @@ class TermsAndConditionsController extends GetxController {
         agreedPrivacy.value == true) {
       //set errorMsg to false
       errorMsg.value = false;
+      //store
+      await _localStorage.storeCountry();
+      await _localStorage.storeProfAss();
+      await _localStorage.storeCert();
       //store user accepted term and conditions
       bool success = await userService.storeTermsAndConditions(
           termsAndConditions: TermsAndConditions(
@@ -100,7 +103,7 @@ class TermsAndConditionsController extends GetxController {
   }
 
   @override
-  void onReady() {
+  void onReady() async {
     super.onReady();
   }
 

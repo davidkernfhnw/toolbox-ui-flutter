@@ -30,16 +30,13 @@ class LocalStorageController extends GetxController {
       _api = await _geigerApiConnector.getLocalMaster;
       _storageController = _api.getStorage()!;
       _utilityData = ImplUtilityData(_storageController);
-      await _storeCountry();
-      await _storeCert();
-      await _storeProfAss();
     } catch (e) {
       log("Database Connection Error From LocalStorage: $e");
       rethrow;
     }
   }
 
-  Future<void> _storeCountry() async {
+  Future<void> storeCountry() async {
     await _utilityData.storeCountries(countries: [
       Country(name: "Switzerland"),
       Country(name: "Netherlands"),
@@ -47,7 +44,7 @@ class LocalStorageController extends GetxController {
     ], locale: Locale.parse("en"));
   }
 
-  Future<void> _storeCert() async {
+  Future<void> storeCert() async {
     List<Partner> _cert = [];
     //get countries store in localStore
     List<Country> countries = await _utilityData.getCountries();
@@ -75,7 +72,7 @@ class LocalStorageController extends GetxController {
     await _utilityData.storeCert(certs: _cert);
   }
 
-  Future<void> _storeProfAss() async {
+  Future<void> storeProfAss() async {
     List<Partner> profAss = [];
     List<Country> countries = await _utilityData.getCountries();
 

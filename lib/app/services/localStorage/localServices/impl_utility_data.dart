@@ -68,8 +68,6 @@ class ImplUtilityData extends UtilityData {
         NodeValue? countryNodeValue = await countryNode.getValue("name");
         String? countryName = countryNodeValue!.getValue(locale);
         c.add(Country(id: countryId, name: countryName!));
-
-        print("getCountriesNode: $countryNode");
       }
       return c;
     } on StorageException {
@@ -178,14 +176,21 @@ class ImplUtilityData extends UtilityData {
     Node _n;
     NodeValue? _nV;
     //create Node path
-    Node locationNode = NodeImpl(_LOCATION_PATH, _NODE_OWNER);
-    await storageController.addOrUpdate(locationNode);
+    Node locationNode;
+    try {
+      locationNode = await storageController.get(_LOCATION_PATH);
+    } catch (e, s) {
+      locationNode = NodeImpl(_LOCATION_PATH, _NODE_OWNER);
+      await storageController.addOrUpdate(locationNode);
+    }
+
     for (Country country in countries) {
       try {
         _n = await storageController.get("$_LOCATION_PATH:${country.id}");
         _nV = await _n.getValue("name");
         _nV!.setValue(country.name, locale);
-
+        await _n.addOrUpdateValue(_nV);
+        await storageController.update(_n);
         // _nodeValue = await n.getValue('name');
         // _nodeValue!.setValue(e.value, locale);
 
@@ -193,12 +198,11 @@ class ImplUtilityData extends UtilityData {
         _n = NodeImpl("$_LOCATION_PATH:${country.id}", _NODE_OWNER);
         //_n.visibility = vis.Visibility.white;
         _nV = NodeValueImpl("name", country.name.toLowerCase());
+        await _n.addOrUpdateValue(_nV);
+        await storageController.addOrUpdate(_n);
       }
       // create node
 
-      await _n.addOrUpdateValue(_nV);
-      await storageController.addOrUpdate(_n);
-      print(_n);
     }
 
     return true;

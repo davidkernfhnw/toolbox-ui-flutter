@@ -195,6 +195,7 @@ class SettingsController extends GetxController {
 
   //initial User Data
   Future<void> _initUserData() async {
+    await _initialUtilityData();
     _userService = UserService(_storageController);
     userInfo.value = (await _userService.getUserInfo)!;
     //init value in ui
@@ -217,12 +218,10 @@ class SettingsController extends GetxController {
       currentProfAss.value = userInfo.value.profAss!;
       currentCert.value = userInfo.value.cert!;
       currentUserName.value = userInfo.value.userName!;
+    } else {
+      //currentCountry.value = "Switzerland";
+
     }
-
-    log("cert current: " + currentCert.value);
-
-    log("userInfo: ${userInfo.value}");
-    log("CurrentUserName :${currentUserName.value}");
 
     //default country
     //Todo: auto get country by location
@@ -233,6 +232,12 @@ class SettingsController extends GetxController {
     }
     //set language
     onChangeLanguage(userInfo.value.language);
+    log("cert current: " + currentCert.value);
+    log("country: ${currentCountry.value}");
+    log("country: ${currentCountries}");
+    log("profAss: ${currentProfAss.value}");
+    log("userInfo: ${userInfo.value}");
+    log("CurrentUserName :${currentUserName.value}");
   }
 
   //get name of the user device
@@ -272,7 +277,7 @@ class SettingsController extends GetxController {
   void onInit() async {
     super.onInit();
     await _initStorageController();
-    await _initialUtilityData();
+    //await _initialUtilityData();
     await _initUserData();
   }
 }
