@@ -146,6 +146,7 @@ class RecommendationController extends GetxController {
         gR.add(dummy.GeigerRecommendation(threat: threat, recommendations: r));
       }
     }
+    print("rec ${gR.length}");
     return gR;
   }
 

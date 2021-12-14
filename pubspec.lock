@@ -288,7 +288,7 @@ packages:
       name: geiger_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.4"
+    version: "0.5.5"
   geiger_dummy_data:
     dependency: "direct main"
     description:
@@ -302,7 +302,7 @@ packages:
       name: geiger_localstorage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.15"
+    version: "0.6.17"
   get:
     dependency: "direct main"
     description:
