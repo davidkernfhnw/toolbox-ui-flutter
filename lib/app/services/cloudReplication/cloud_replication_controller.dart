@@ -1,17 +1,26 @@
 import 'package:get/get.dart';
 import 'package:cloud_replication_package/cloud_replication_package.dart';
 
-class CloudReplicationController {
-  // static final CloudReplicationController instance =
-  //     Get.find<CloudReplicationController>();
+class CloudReplicationController extends GetxController {
+  static final CloudReplicationController instance =
+      Get.find<CloudReplicationController>();
 
-  static Future<void> initialReplication() async {
-    ReplicationController controller = ReplicationService();
+  ReplicationController get getReplicationController {
+    return _controller;
+  }
 
-    await controller.initGeigerStorage();
-    //Future.delayed(Duration(seconds: 3));
-    await controller.geigerReplication();
+  late final ReplicationController _controller;
 
-    await controller.endGeigerStorage();
+  Future<void> initialReplication() async {
+    _controller = ReplicationService();
+
+    await _controller.initGeigerStorage();
+    await _controller.geigerReplication();
+    await _controller.endGeigerStorage();
+  }
+
+  @override
+  void onInit() async {
+    super.onInit();
   }
 }

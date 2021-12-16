@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_aggregate_score.dart';
 import 'package:geiger_toolbox/app/data/model/threat.dart';
+import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
 import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:get/get.dart' as getX;
@@ -17,6 +18,12 @@ class HomeController extends getX.GetxController {
   // dummy.UserNode? _userNode;
   // dummy.DeviceNode? _deviceNode;
 
+  final TermsAndConditionsController termsAndConditionsInstance =
+      TermsAndConditionsController.instance;
+
+  //get instance of  CloudReplicationController
+  final CloudReplicationController _cloudReplicationInstance =
+      CloudReplicationController.instance;
   //storageController
   _init() async {
     //_storageController = await LocalStorage.initLocalStorage();
@@ -72,6 +79,17 @@ class HomeController extends getX.GetxController {
   void onInit() async {
     super.onInit();
     await _init();
+    //initialReplication
+    bool check = await termsAndConditionsInstance.checkExistingTerms();
+    if (check == true) {
+      await _cloudReplicationInstance.initialReplication();
+    }
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    termsAndConditionsInstance.dispose();
   }
 
   //*********cloud replication

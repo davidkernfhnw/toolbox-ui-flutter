@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:flutter/foundation.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
@@ -12,17 +13,18 @@ import 'package:get/get.dart';
 
 class TermsAndConditionsController extends GetxController {
   //instance of TermsAndConditionController
-  static TermsAndConditionsController to = Get.find();
+  static TermsAndConditionsController instance = Get.find();
 
   //get instance of LocalStorageController
-  LocalStorageController _localStorage = LocalStorageController.instance;
+  LocalStorageController _localStorageInstance =
+      LocalStorageController.instance;
 
   //declaring storageController
   StorageController? _storageController;
 
   //initialize _storageController using _localStorage instance
   _initializeStorageController() {
-    _storageController = _localStorage.getStorageController;
+    _storageController = _localStorageInstance.getStorageController;
   }
 
   // declaring variable for creativeness
@@ -34,7 +36,7 @@ class TermsAndConditionsController extends GetxController {
   //check if terms and condition values is true in the localstorage
   // and navigate to home view (screen)
   //if false navigate to TermAndCondition view(screen).
-  Future<void> checkExistingTerms() async {
+  Future<bool> checkExistingTerms() async {
     try {
       //instance of userService
       UserService userService = UserService(_storageController!);
@@ -47,15 +49,21 @@ class TermsAndConditionsController extends GetxController {
         if (await userTermsAndConditions.ageCompliant == true &&
             await userTermsAndConditions.signedConsent == true &&
             await userTermsAndConditions.agreedPrivacy == true) {
-          Get.offNamed(Routes.HOME_VIEW);
+          return true;
+          //Show home view
         }
-      } else {
-        //show default screen(TermsAndConditions view)
-        log("UserInfo not found");
+        // else {
+        //   //Get.offNamed(Routes.HOME_VIEW);
+        //   return false;
+        //   //show default screen(Home view)
+        // }
       }
+      return false;
     } catch (e) {
       log("Something went wrong $e");
       log("UserInfo not found");
+      Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
+      return false;
     }
   }
 
@@ -72,13 +80,10 @@ class TermsAndConditionsController extends GetxController {
       errorMsg.value = false;
       //store
 
-      await _localStorage.storeCountry();
-      await _localStorage.storeProfAss();
-      await _localStorage.storeCert();
-      await _localStorage.storePublicKey();
-
-      //replication
-      await CloudReplicationController.initialReplication();
+      await _localStorageInstance.storeCountry();
+      await _localStorageInstance.storeProfAss();
+      await _localStorageInstance.storeCert();
+      await _localStorageInstance.storePublicKey();
 
       //store user accepted term and conditions
       bool success = await userService.storeTermsAndConditions(
@@ -106,7 +111,7 @@ class TermsAndConditionsController extends GetxController {
     _initializeStorageController();
 
     //check if terms and condition were previously agreed
-    await checkExistingTerms();
+    //await checkExistingTerms();
   }
 
   @override

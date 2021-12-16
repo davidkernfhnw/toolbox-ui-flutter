@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/country.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
+import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:get/get.dart';
 import 'package:geiger_api/geiger_api.dart';
@@ -109,6 +110,12 @@ class LocalStorageController extends GetxController {
     await _utilityData.storePublicKey();
   }
 
+  @override
+  void onInit() async {
+    super.onInit();
+  }
+
+  //close geigerApi after user
   //close geigerApi after user
   @override
   void onClose() async {

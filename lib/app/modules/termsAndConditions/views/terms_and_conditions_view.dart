@@ -17,7 +17,7 @@ class TermsAndConditionsView extends StatelessWidget {
 
   //initial controller
   final TermsAndConditionsController _controller =
-      TermsAndConditionsController.to;
+      TermsAndConditionsController.instance;
 
   @override
   Widget build(BuildContext context) {

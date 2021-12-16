@@ -4,6 +4,7 @@ import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_contro
 import 'package:get/get.dart';
 
 //import 'app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
+import 'app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 //import 'app/services/local_storage_controller.dart';
@@ -13,12 +14,13 @@ import 'app/util/theme/custom_theme_data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   //initialize geigerApi for ui
   await Get.put(GeigerApiConnector()).initLocalMasterPlugin();
+  ;
   // //initialize localStorage for ui
   await Get.put(LocalStorageController()).initLocalStorage();
-
-  //await Get.put(TermsAndConditionsController().previouslyAgreed());
+  await Get.put<CloudReplicationController>(CloudReplicationController());
 
   runApp(GeigerApp());
 }
@@ -31,7 +33,7 @@ class GeigerApp extends StatelessWidget {
     return GetMaterialApp(
         debugShowCheckedModeBanner: true,
         getPages: Pages.pages,
-        initialRoute: Routes.TERMS_AND_CONDITIONS_VIEW,
+        initialRoute: Routes.HOME_VIEW,
         translationsKeys: AppTranslation.translationsKeys,
         locale: Get.deviceLocale,
         fallbackLocale: Locale('en'),
