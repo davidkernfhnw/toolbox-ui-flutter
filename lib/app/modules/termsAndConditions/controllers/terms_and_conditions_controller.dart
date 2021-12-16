@@ -71,9 +71,11 @@ class TermsAndConditionsController extends GetxController {
       //set errorMsg to false
       errorMsg.value = false;
       //store
+
       await _localStorage.storeCountry();
       await _localStorage.storeProfAss();
       await _localStorage.storeCert();
+      await _localStorage.storePublicKey();
 
       //replication
       await CloudReplicationController.initialReplication();

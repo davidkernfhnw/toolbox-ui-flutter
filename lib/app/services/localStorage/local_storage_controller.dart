@@ -105,6 +105,10 @@ class LocalStorageController extends GetxController {
         professionAssociation: profAss);
   }
 
+  Future<void> storePublicKey() async {
+    await _utilityData.storePublicKey();
+  }
+
   //close geigerApi after user
   @override
   void onClose() async {

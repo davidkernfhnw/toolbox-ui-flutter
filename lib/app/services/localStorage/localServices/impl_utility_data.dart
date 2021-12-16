@@ -270,4 +270,30 @@ class ImplUtilityData extends UtilityData {
       }
     }
   }
+
+  @override
+  Future<bool> storePublicKey() async {
+    try {
+      Node node = await getNode(":Keys", storageController);
+      String uuid = UtilityData.uuid;
+      await node.addValue(NodeValueImpl("publicKey", uuid));
+      await storageController.addOrUpdate(node);
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Future<String> get getPublicKey async {
+    try {
+      NodeValue? nodeValue =
+          await storageController.getValue(":Keys", "publicKey");
+      String publicKey = nodeValue!.value;
+      return publicKey;
+    } catch (e, s) {
+      throw StorageException("Public Key not found", s);
+    }
+  }
 }

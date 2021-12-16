@@ -1,9 +1,11 @@
 import 'dart:developer';
 
+import 'package:geiger_toolbox/app/services/localStorage/localServices/user_service.dart';
+import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-
+import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QrScannerController extends GetxController {
@@ -14,13 +16,25 @@ class QrScannerController extends GetxController {
   var viewTitle = "".obs;
 
   //instance
-  static QrScannerController get to => Get.find();
+  static QrScannerController get instance => Get.find();
 
   @override
   void onInit() {
+    super.onInit();
     viewTitle.value = Get.arguments.toString();
     log("Get arguments: ${Get.arguments}");
-    super.onInit();
+  }
+
+  void onQRViewCreated(QRViewController controller) {
+    log("Qr_Code_Scanner working");
+    this.qrViewController = controller;
+    controller.scannedDataStream.listen((scanData) {
+      result = scanData;
+      update();
+      if (result != null) {
+        Get.snackbar("success", result!.code);
+      }
+    });
   }
 
   Future<void> requestCameraPermission(String page, {dynamic arguments}) async {
@@ -49,15 +63,6 @@ class QrScannerController extends GetxController {
           progressIndicatorBackgroundColor: Colors.redAccent,
           snackPosition: SnackPosition.BOTTOM);
     }
-  }
-
-  void onQRViewCreated(QRViewController controller) {
-    log("Qr_Code_Scanner working");
-    this.qrViewController = controller;
-    controller.scannedDataStream.listen((scanData) {
-      result = scanData;
-      update();
-    });
   }
 
   /*void onPermissionSet(QRViewController controller, bool p) {

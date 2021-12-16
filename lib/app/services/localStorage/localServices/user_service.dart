@@ -4,6 +4,7 @@ import 'package:geiger_toolbox/app/data/model/consent.dart';
 import 'package:geiger_toolbox/app/data/model/device.dart';
 import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
+import 'package:geiger_toolbox/app/services/localStorage/abstract/utility_data.dart';
 
 import '../abstract/local_user.dart';
 

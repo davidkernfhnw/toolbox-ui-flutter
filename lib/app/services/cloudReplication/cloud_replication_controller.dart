@@ -12,6 +12,6 @@ class CloudReplicationController {
     //Future.delayed(Duration(seconds: 3));
     await controller.geigerReplication();
 
-    //await controller.endGeigerStorage();
+    await controller.endGeigerStorage();
   }
 }

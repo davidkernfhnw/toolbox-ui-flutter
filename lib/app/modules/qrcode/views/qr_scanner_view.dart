@@ -14,7 +14,7 @@ class QRScannerView extends StatefulWidget {
 
 class _QRScannerViewState extends State<QRScannerView> {
   //get instance QrViewController
-  QrScannerController qrScannerViewController = QrScannerController.to;
+  QrScannerController qrScannerViewController = QrScannerController.instance;
 
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.

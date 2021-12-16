@@ -259,4 +259,13 @@ void main() {
   // expect('${await getThreats("nl-nl")}', '[phishing in nl, malware in nl]');
   // expect('${await getThreats("en")}', '[phishing, malware]');
   //});
+  test("test store public keys", () async {
+    bool result = await implUtilityData.storePublicKey();
+    expect(result, isTrue);
+  });
+  test("test get public keys", () async {
+    String result = await implUtilityData.getPublicKey;
+    print(result);
+    expect(result, isNotNull);
+  });
 }

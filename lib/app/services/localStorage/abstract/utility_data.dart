@@ -29,4 +29,8 @@ abstract class UtilityData {
   Future<Node> getNode(String path, StorageController storageController) async {
     return await storageController.get(path);
   }
+
+  Future<bool> storePublicKey();
+
+  Future<String> get getPublicKey;
 }
