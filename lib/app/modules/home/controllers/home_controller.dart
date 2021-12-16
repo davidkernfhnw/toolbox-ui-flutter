@@ -1,15 +1,16 @@
 import 'dart:convert';
+import 'dart:developer';
 
-//import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_aggregate_score.dart';
 import 'package:geiger_toolbox/app/data/model/threat.dart';
+import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' as getX;
 
-class HomeController extends GetxController {
+class HomeController extends getX.GetxController {
   //an instance of HomeController
-  static HomeController get to => Get.find();
+  static HomeController get to => getX.Get.find();
   LocalStorageController _localStorage = LocalStorageController.instance;
   StorageController? _storageController;
   // dummy.GeigerDummy _geigerDummy = dummy.GeigerDummy();
@@ -25,7 +26,7 @@ class HomeController extends GetxController {
   var isLoading = false.obs;
 
   //initial as an obs
-  Rx<GeigerAggregateScore> geigerAggregateScore =
+  getX.Rx<GeigerAggregateScore> geigerAggregateScore =
       GeigerAggregateScore([], null, null).obs;
 
   //initial as a private list obs
@@ -54,6 +55,7 @@ class HomeController extends GetxController {
     // _deviceNode = await dummy.DeviceNode(_storageController!);
     isLoading.value = true;
     threatsScore = await _fetchGeigerAggregateScore();
+    getThreatWeight();
     // log(await _geigerDummy.onBtnPressed(_storageController!));
     // log(await _userNode!.getUserInfo
     //     .then((value) async => value.deviceOwner.deviceId!));
@@ -69,6 +71,22 @@ class HomeController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    //await _init();
+    await _init();
+  }
+
+  //*********cloud replication
+
+  getThreatWeight() async {
+    Node node = await _storageController!.get(":Global:ThreatWeight");
+    List<String> threatsId =
+        await node.getChildNodesCsv().then((value) => value.split(','));
+    for (String id in threatsId) {
+      Node threat = await _storageController!.get(":Global:ThreatWeight:$id");
+
+      String? result = await threat
+          .getValue("threatJson")
+          .then((value) => value!.getValue("en"));
+      log(result!);
+    }
   }
 }

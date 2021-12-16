@@ -4,6 +4,7 @@ import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
+import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/localServices/user_service.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 
@@ -73,6 +74,10 @@ class TermsAndConditionsController extends GetxController {
       await _localStorage.storeCountry();
       await _localStorage.storeProfAss();
       await _localStorage.storeCert();
+
+      //replication
+      await CloudReplicationController.initialReplication();
+
       //store user accepted term and conditions
       bool success = await userService.storeTermsAndConditions(
           termsAndConditions: TermsAndConditions(

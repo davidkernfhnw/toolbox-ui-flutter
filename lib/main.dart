@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:get/get.dart';
 
@@ -12,11 +13,13 @@ import 'app/util/theme/custom_theme_data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //initialize geigerApi
+  //initialize geigerApi for ui
   await Get.put(GeigerApiConnector()).initLocalMasterPlugin();
-  //initialize localStorage
+  // //initialize localStorage for ui
   await Get.put(LocalStorageController()).initLocalStorage();
+
   //await Get.put(TermsAndConditionsController().previouslyAgreed());
+
   runApp(GeigerApp());
 }
 
