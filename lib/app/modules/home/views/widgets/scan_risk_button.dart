@@ -8,7 +8,7 @@ class ScanRiskButton extends StatelessWidget {
   final bool? warming;
 
   // getting an instance of HomeController
-  final HomeController controller = HomeController.to;
+  final HomeController controller = HomeController.instance;
 
   ScanRiskButton(
       {Key? key, @required this.onScanPressed, @required this.warming})

@@ -5,33 +5,32 @@ import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_aggregate_score.dart';
 import 'package:geiger_toolbox/app/data/model/threat.dart';
 import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
+import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:get/get.dart' as getX;
 
 class HomeController extends getX.GetxController {
   //an instance of HomeController
-  static HomeController get to => getX.Get.find();
-  LocalStorageController _localStorage = LocalStorageController.instance;
-  StorageController? _storageController;
-  // dummy.GeigerDummy _geigerDummy = dummy.GeigerDummy();
-  // dummy.UserNode? _userNode;
-  // dummy.DeviceNode? _deviceNode;
+  static HomeController get instance => getX.Get.find();
 
-  final TermsAndConditionsController termsAndConditionsInstance =
+  //get instances
+  final LocalStorageController _localStorageInstance =
+      LocalStorageController.instance;
+
+  final TermsAndConditionsController _termsAndConditionsController =
       TermsAndConditionsController.instance;
 
-  //get instance of  CloudReplicationController
   final CloudReplicationController _cloudReplicationInstance =
       CloudReplicationController.instance;
-  //storageController
-  _init() async {
-    //_storageController = await LocalStorage.initLocalStorage();
-    _storageController = await _localStorage.getStorageController;
-  }
 
+  StorageController? _storageController;
+
+  var isScanning = false.obs;
   var isLoading = false.obs;
+  var message = "".obs;
 
+  //Todo: do pass of data from the localstorage to ui
   //initial as an obs
   getX.Rx<GeigerAggregateScore> geigerAggregateScore =
       GeigerAggregateScore([], null, null).obs;
@@ -56,45 +55,64 @@ class HomeController extends getX.GetxController {
     return geigerAggregateScore.value.threatScores;
   }
 
-  setGeigerAggregateThreatScore() async {
+  onScan() async {
     await _init();
     // _userNode = await dummy.UserNode(_storageController!);
     // _deviceNode = await dummy.DeviceNode(_storageController!);
-    isLoading.value = true;
+    isScanning.value = true;
     threatsScore = await _fetchGeigerAggregateScore();
-    getThreatWeight();
+    _getThreatWeight();
     // log(await _geigerDummy.onBtnPressed(_storageController!));
     // log(await _userNode!.getUserInfo
     //     .then((value) async => value.deviceOwner.deviceId!));
     // log(await _deviceNode!.getDeviceInfo
     //     .then((value) async => value.deviceId!));
-    isLoading.value = false;
+    isScanning.value = false;
   }
 
   emptyThreatScores() {
     threatsScore = [];
   }
 
+  // initialize storageController before the ui loads
+  _init() async {
+    //get StorageController from localStorageController instance
+    _storageController = await _localStorageInstance.getStorageController;
+  }
+
   @override
   void onInit() async {
-    super.onInit();
-    await _init();
-    //initialReplication
-    bool check = await termsAndConditionsInstance.checkExistingTerms();
-    if (check == true) {
-      await _cloudReplicationInstance.initialReplication();
+    bool check = await _termsAndConditionsController.isTermsAccepted();
+    if (check == false) {
+      return getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
     }
+
+    isLoading.value = true;
+    await _init();
+    message.value = "Loading....";
+
+    //initialReplication
+    message.value = "Preparing geigerToolbox...";
+
+    // only initialize replication only when terms and conditions are accepted
+    await _cloudReplicationInstance.initialReplication();
+    log("isLoading is : $isLoading");
+    message.value = "Almost done!";
+    isLoading.value = false;
+    log("done Loading : $isLoading");
+
+    super.onInit();
   }
 
   @override
   void onClose() {
     super.onClose();
-    termsAndConditionsInstance.dispose();
   }
 
   //*********cloud replication
 
-  getThreatWeight() async {
+  // testing purpose
+  _getThreatWeight() async {
     Node node = await _storageController!.get(":Global:ThreatWeight");
     List<String> threatsId =
         await node.getChildNodesCsv().then((value) => value.split(','));

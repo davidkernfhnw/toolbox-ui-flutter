@@ -2,10 +2,11 @@ import 'dart:developer';
 
 import 'package:geiger_toolbox/app/data/model/country.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
-import 'package:geiger_toolbox/app/services/localStorage/abstract/utility_data.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/src/locale.dart';
 import 'package:geiger_localstorage/src/visibility.dart' as vis;
+
+import '../abstract/utility_data.dart';
 
 const String _LOCATION_PATH = ":Global:location";
 const String _CERT_PATH = ":Global:cert";
@@ -159,7 +160,7 @@ class ImplUtilityData extends UtilityData {
           await idNode.addOrUpdateValue(_nodeLocation);
           await idNode.addOrUpdateValue(_nodeLocationName);
           await storageController.update(idNode);
-          print(idNode);
+          log(idNode.toString());
         }
         return true;
       } catch (e) {
@@ -179,7 +180,7 @@ class ImplUtilityData extends UtilityData {
     Node locationNode;
     try {
       locationNode = await storageController.get(_LOCATION_PATH);
-    } catch (e, s) {
+    } catch (e) {
       locationNode = NodeImpl(_LOCATION_PATH, _NODE_OWNER);
       await storageController.addOrUpdate(locationNode);
     }

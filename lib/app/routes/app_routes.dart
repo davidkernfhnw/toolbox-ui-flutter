@@ -1,4 +1,4 @@
-import 'package:geiger_toolbox/app/helpers/menu_item.dart';
+import 'package:geiger_toolbox/app/helpers/ui/menu_item.dart';
 
 class Routes {
   //route name

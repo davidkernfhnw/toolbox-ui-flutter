@@ -4,14 +4,12 @@ import 'package:geiger_toolbox/app/data/model/consent.dart';
 import 'package:geiger_toolbox/app/data/model/device.dart';
 import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
-import 'package:geiger_toolbox/app/services/localStorage/abstract/utility_data.dart';
-
-import '../abstract/local_user.dart';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_localstorage/src/visibility.dart' as vis;
 
-import 'device_service.dart';
+import '../abstract/local_user.dart';
+import 'impl_device_service.dart';
 
 const String _PATH = ":Local";
 const String _USER_KEY = "userInfo";
@@ -117,5 +115,13 @@ class UserService extends DeviceService implements LocalUser {
       log("failed due to unexpected exception\n $e \n $s");
       return false;
     }
+  }
+
+  @override
+  Future<List<String>> getListPairedDevices() async {
+    Node node = await storageController.get(":Devices");
+    List<String> ids =
+        await node.getChildNodesCsv().then((value) => value.split(','));
+    return ids;
   }
 }

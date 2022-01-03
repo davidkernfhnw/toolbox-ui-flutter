@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 class HomeBinding extends Bindings {
   @override
   void dependencies() {
-    //only called when someone use Get.find<HomeController>()
-    Get.put(TermsAndConditionsController());
-    Get.put<HomeController>(HomeController());
+    Get.lazyPut<TermsAndConditionsController>(
+        () => TermsAndConditionsController());
+    Get.lazyPut<HomeController>(() => HomeController());
   }
 }

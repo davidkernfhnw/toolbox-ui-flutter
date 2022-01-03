@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:get/get.dart';
 import 'package:cloud_replication_package/cloud_replication_package.dart';
 
@@ -11,16 +13,26 @@ class CloudReplicationController extends GetxController {
 
   late final ReplicationController _controller;
 
-  Future<void> initialReplication() async {
+  void _initialReplicationController() {
     _controller = ReplicationService();
+  }
 
-    await _controller.initGeigerStorage();
-    await _controller.geigerReplication();
-    await _controller.endGeigerStorage();
+  Future<void> initialReplication() async {
+    try {
+      await _controller.initGeigerStorage();
+      bool checkReplication = await _controller.checkReplication();
+      if (checkReplication == false) {
+        await _controller.geigerReplication();
+        await _controller.endGeigerStorage();
+      }
+    } catch (e) {
+      log("initialReplication already initialized");
+    }
   }
 
   @override
   void onInit() async {
+    _initialReplicationController();
     super.onInit();
   }
 }

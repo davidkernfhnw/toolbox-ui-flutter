@@ -5,6 +5,12 @@ import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/locale.dart';
 
 abstract class UtilityData {
+  // ----- Helpers
+  static String get uuid {
+    ///Generate a v4 (random) id
+    return Uuid().v4();
+  }
+
   Future<bool> storeCountries(
       {required Locale locale, required List<Country> countries});
 
@@ -18,13 +24,6 @@ abstract class UtilityData {
   Future<bool> storeCert({Locale? locale, required List<Partner> certs});
 
   Future<List<Partner>> getCert({String locale: "en"});
-
-  // ----- Helpers
-
-  static String get uuid {
-    ///Generate a v4 (random) id
-    return Uuid().v4();
-  }
 
   Future<Node> getNode(String path, StorageController storageController) async {
     return await storageController.get(path);

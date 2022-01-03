@@ -8,8 +8,8 @@ import 'package:geiger_toolbox/app/data/model/language.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
 import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
-import 'package:geiger_toolbox/app/services/localStorage/localServices/impl_utility_data.dart';
-import 'package:geiger_toolbox/app/services/localStorage/localServices/user_service.dart';
+import 'package:geiger_toolbox/app/services/helpers/implementation/impl_utility_data.dart';
+import 'package:geiger_toolbox/app/services/helpers/implementation/impl_user_service.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/translation/suppored_language.dart';
@@ -188,14 +188,14 @@ class SettingsController extends GetxController {
   //init util data
   Future<void> _initialUtilityData() async {
     ImplUtilityData _utilityData = ImplUtilityData(_storageController);
-    currentCountries = await _utilityData.getCountries();
+    //Todo fix problem with currentCountries not getting populating on time
+    currentCountries.addAll(await _utilityData.getCountries());
     _profAss = await _utilityData.getProfessionAssociation();
     _cert = await _utilityData.getCert();
   }
 
   //initial User Data
   Future<void> _initUserData() async {
-    await _initialUtilityData();
     _userService = UserService(_storageController);
     userInfo.value = (await _userService.getUserInfo)!;
     //init value in ui
@@ -277,12 +277,7 @@ class SettingsController extends GetxController {
   void onInit() async {
     super.onInit();
     await _initStorageController();
-    //await _initialUtilityData();
+    await _initialUtilityData();
     await _initUserData();
   }
 }
-
-//Done userName changes to default when dropdown changes
-//Done refactor to use already update services
-//Done store countries, cert, profAss list in localstorage and retrieve them
-//Done add update userinfo

@@ -25,4 +25,6 @@ abstract class LocalUser {
 
   /// @return Future<bool>
   Future<bool> updateUserInfo(User user);
+
+  Future<List<String>> getListPairedDevices();
 }

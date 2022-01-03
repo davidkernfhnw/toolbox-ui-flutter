@@ -3,23 +3,19 @@ import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_c
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:get/get.dart';
 
-//import 'app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
-import 'app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
-//import 'app/services/local_storage_controller.dart';
 import 'app/services/localStorage/local_storage_controller.dart';
 import 'app/translation/app_translation.dart';
 import 'app/util/theme/custom_theme_data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   //initialize geigerApi for ui
   await Get.put(GeigerApiConnector()).initLocalMasterPlugin();
-  ;
-  // //initialize localStorage for ui
-  await Get.put(LocalStorageController()).initLocalStorage();
+  //initialize localStorage for ui
+  await Get.put(LocalStorageController());
+  //initialize cloudReplicationController
   await Get.put<CloudReplicationController>(CloudReplicationController());
 
   runApp(GeigerApp());
@@ -31,13 +27,15 @@ class GeigerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-        debugShowCheckedModeBanner: true,
-        getPages: Pages.pages,
-        initialRoute: Routes.HOME_VIEW,
-        translationsKeys: AppTranslation.translationsKeys,
-        locale: Get.deviceLocale,
-        fallbackLocale: Locale('en'),
-        theme: customThemeData());
+      debugShowCheckedModeBanner: true,
+      getPages: Pages.pages,
+      //initialBinding: TermsAndConditionsBinding(),
+      initialRoute: Routes.HOME_VIEW,
+      translationsKeys: AppTranslation.translationsKeys,
+      locale: Get.deviceLocale,
+      fallbackLocale: Locale('en'),
+      theme: customThemeData(),
+    );
   }
 }
 

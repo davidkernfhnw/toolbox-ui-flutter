@@ -1,8 +1,7 @@
 import 'dart:convert';
 
-import 'package:geiger_toolbox/app/data/model/user.dart';
-import 'package:geiger_toolbox/app/services/localStorage/localServices/impl_utility_data.dart';
-import 'package:geiger_toolbox/app/services/localStorage/localServices/user_service.dart';
+import 'package:geiger_toolbox/app/services/helpers/implementation/impl_utility_data.dart';
+import 'package:geiger_toolbox/app/services/helpers/implementation/impl_user_service.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:get/get.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
@@ -18,18 +17,18 @@ class QrCodeController extends GetxController {
 
   var data = "".obs;
 
-  void _getData({String agreementType: "in"}) async {
+  void _storeDataAsQrCode({String agreementType: "both"}) async {
     _utilityData = ImplUtilityData(_storageController);
     String publicKey = await _utilityData.getPublicKey;
     UserService userService = UserService(_storageController);
     String userId = await userService.getUserId;
     String body = jsonEncode(<String, dynamic>{
-      'agreement': "in",
+      'agreement': agreementType,
       'publicKey': '${publicKey}',
       'userId': '${userId}',
     });
     data.value = body;
-    User? user = await userService.getUserInfo;
+    //User? user = await userService.getUserInfo;
     // if (user != null) {
     //   if (user.supervisor == true) {
     //     String body = jsonEncode(<String, dynamic>{
@@ -52,7 +51,7 @@ class QrCodeController extends GetxController {
   @override
   void onInit() {
     _storageController = localStorageInstance.getStorageController;
-    _getData();
+    _storeDataAsQrCode();
     super.onInit();
   }
 }

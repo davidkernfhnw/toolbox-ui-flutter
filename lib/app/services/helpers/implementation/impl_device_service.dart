@@ -1,6 +1,7 @@
 import 'package:geiger_toolbox/app/data/model/device.dart';
-import 'package:geiger_toolbox/app/services/localStorage/abstract/local_device.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
+
+import '../abstract/local_device.dart';
 
 const String _PATH = ":Local";
 const String _DEVICE_KEY = "deviceInfo";

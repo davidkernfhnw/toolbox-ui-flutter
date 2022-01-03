@@ -3,7 +3,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geiger_toolbox/app/data/model/country.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
-import 'package:geiger_toolbox/app/services/localStorage/localServices/impl_utility_data.dart';
+import 'package:geiger_toolbox/app/services/helpers/implementation/impl_utility_data.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/src/locale.dart';
 
@@ -12,7 +12,7 @@ void main() {
       GenericController("test", DummyMapper("testdb"));
 
   ImplUtilityData implUtilityData = ImplUtilityData(storageController);
-  final Locale deCh = Locale.parse("de-ch");
+  //final Locale deCh = Locale.parse("de-ch");
   group("ImplUtilityData test", () {
     setUp(() async {
       //store countries
@@ -81,6 +81,7 @@ void main() {
 
       var exist = countries.where((element) => element.name == "switzerland");
       //loop once
+      // ignore: unused_local_variable
       for (Country country in exist) {
         _cert.add(Partner(location: s, names: ["NCSC Switzerland"]));
 
@@ -164,6 +165,7 @@ void main() {
       Country r = countries.firstWhere((element) => element.name == "romania");
 
       var exist = countries.where((element) => element.name == "switzerland");
+      // ignore: unused_local_variable
       for (Country country in exist) {
         profAss.add(Partner(location: s, names: [
           "Swiss Yoga Association",

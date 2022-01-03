@@ -1,4 +1,4 @@
-import 'package:geiger_toolbox/app/services/localStorage/abstract/utility_data.dart';
+import 'package:geiger_toolbox/app/services/helpers/abstract/utility_data.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'country.g.dart';
