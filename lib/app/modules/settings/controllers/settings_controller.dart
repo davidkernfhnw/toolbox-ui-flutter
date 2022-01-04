@@ -8,6 +8,7 @@ import 'package:geiger_toolbox/app/data/model/language.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
 import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
+import 'package:geiger_toolbox/app/services/helpers/implementation/geiger_data.dart';
 import 'package:geiger_toolbox/app/services/helpers/implementation/impl_utility_data.dart';
 import 'package:geiger_toolbox/app/services/helpers/implementation/impl_user_service.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
@@ -187,7 +188,7 @@ class SettingsController extends GetxController {
 
   //init util data
   Future<void> _initialUtilityData() async {
-    ImplUtilityData _utilityData = ImplUtilityData(_storageController);
+    GeigerData _utilityData = GeigerData(_storageController);
     //Todo fix problem with currentCountries not getting populating on time
     currentCountries.addAll(await _utilityData.getCountries());
     _profAss = await _utilityData.getProfessionAssociation();

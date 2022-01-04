@@ -18,11 +18,13 @@ class TermsAndConditionsController extends GetxController {
       LocalStorageController.instance;
 
   //declaring storageController
-  StorageController? _storageController;
+  late StorageController _storageController;
+  late UserService _userService;
 
   //initialize _storageController using _localStorage instance
   _initializeStorageController() {
     _storageController = _localStorageInstance.getStorageController;
+    _userService = UserService(_storageController);
   }
 
   // declaring variable for creativeness
@@ -36,10 +38,8 @@ class TermsAndConditionsController extends GetxController {
   //if false navigate to TermAndCondition view(screen).
   Future<bool> isTermsAccepted() async {
     try {
-      //instance of userService
-      UserService userService = UserService(_storageController!);
       //get user Info
-      User? userInfo = await userService.getUserInfo;
+      User? userInfo = await _userService.getUserInfo;
       if (userInfo != null) {
         // assign user term and condition
         TermsAndConditions userTermsAndConditions = userInfo.termsAndConditions;
@@ -69,7 +69,6 @@ class TermsAndConditionsController extends GetxController {
   //else navigate to Home view
   Future<void> acceptTerms() async {
     //instance of userService
-    UserService userService = UserService(_storageController!);
     if (ageCompliant.value == true &&
         signedConsent.value == true &&
         agreedPrivacy.value == true) {
@@ -77,17 +76,19 @@ class TermsAndConditionsController extends GetxController {
       errorMsg.value = false;
 
       //store user accepted term and conditions
-      bool success = await userService.storeTermsAndConditions(
+      bool success = await _userService.storeTermsAndConditions(
           termsAndConditions: TermsAndConditions(
               ageCompliant: ageCompliant.value,
               signedConsent: signedConsent.value,
               agreedPrivacy: agreedPrivacy.value));
       if (success) {
-        //store utility data
-        await _localStorageInstance.storeCountry();
-        await _localStorageInstance.storeProfAss();
-        await _localStorageInstance.storeCert();
-        await _localStorageInstance.storePublicKey();
+        await _userService.setNewUserStatus();
+
+        // //store utility data
+        // await _localStorageInstance.storeCountry();
+        // await _localStorageInstance.storeProfAss();
+        // await _localStorageInstance.storeCert();
+        // await _localStorageInstance.storePublicKey();
         Get.offNamed(Routes.HOME_VIEW);
       } else {
         //set errorMsg to true
@@ -102,7 +103,6 @@ class TermsAndConditionsController extends GetxController {
 
   @override
   void onInit() async {
-    super.onInit();
     //init storageController
     _initializeStorageController();
     // if (await isTermsAccepted() == true) {
@@ -118,6 +118,7 @@ class TermsAndConditionsController extends GetxController {
 
     //check if terms and condition were previously agreed
     //await checkExistingTerms();
+    super.onInit();
   }
 
   @override

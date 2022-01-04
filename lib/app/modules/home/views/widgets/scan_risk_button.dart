@@ -23,7 +23,8 @@ class ScanRiskButton extends StatelessWidget {
           animation: true,
           radius: 100.0,
           lineWidth: 3.0,
-          percent: controller.threatsScore.isEmpty ? 0.0 : 1.0,
+          percent:
+              controller.aggThreatsScore.value.threatScores.isEmpty ? 0.0 : 1.0,
           progressColor: warming == false ? Colors.green : null,
           center: ElevatedButton(
             style: ElevatedButton.styleFrom(

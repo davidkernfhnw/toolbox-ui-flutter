@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/data/model/threat.dart';
+
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
+import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:get/get.dart';
 import '../../../../shared_widgets/indicator_gauge.dart';
 
@@ -9,7 +10,7 @@ class ThreatsCard extends StatelessWidget {
   final IconData? icon;
   final double? indicatorScore;
   final String? routeName;
-  final Threat routeArguments;
+  final dummy.Threat routeArguments;
   const ThreatsCard(
       {Key? key,
       @required this.label,

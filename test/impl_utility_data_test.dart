@@ -3,6 +3,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geiger_toolbox/app/data/model/country.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
+import 'package:geiger_toolbox/app/services/helpers/implementation/geiger_data.dart';
 import 'package:geiger_toolbox/app/services/helpers/implementation/impl_utility_data.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/src/locale.dart';
@@ -11,7 +12,7 @@ void main() {
   final StorageController storageController =
       GenericController("test", DummyMapper("testdb"));
 
-  ImplUtilityData implUtilityData = ImplUtilityData(storageController);
+  ImplUtilityData implUtilityData = GeigerData(storageController);
   //final Locale deCh = Locale.parse("de-ch");
   group("ImplUtilityData test", () {
     setUp(() async {

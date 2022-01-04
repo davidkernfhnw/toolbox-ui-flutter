@@ -62,4 +62,12 @@ abstract class DeviceService extends LocalDevice {
       throw StorageException("Failed to retrieve the Local node\n $e", s);
     }
   }
+
+  @override
+  Future<List<String>> getListPairedDevices() async {
+    Node node = await storageController.get(":Devices");
+    List<String> ids =
+        await node.getChildNodesCsv().then((value) => value.split(','));
+    return ids;
+  }
 }

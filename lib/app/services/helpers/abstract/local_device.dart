@@ -18,8 +18,8 @@ abstract class LocalDevice {
   /// retrieve user from Local node
   Future<Device> get getDeviceInfo;
 
-//void storeGeigerScoreDevice({ Locale? locale,required GeigerScoreThreats geigerScoreThreats });
-//void storeGeigerScoreAggregate({ Locale? locale,required GeigerScoreThreats geigerScoreThreats });
+  /// @return Future<List<String>>
+  Future<List<String>> getListPairedDevices();
 
 // ----- Helpers
   Future<Node> getNode(String path, StorageController storageController) async {

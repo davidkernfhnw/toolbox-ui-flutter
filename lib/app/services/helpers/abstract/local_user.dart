@@ -26,5 +26,12 @@ abstract class LocalUser {
   /// @return Future<bool>
   Future<bool> updateUserInfo(User user);
 
-  Future<List<String>> getListPairedDevices();
+  ///set newUser to true
+  Future<void> setNewUserStatus({bool value});
+
+  ///update newUser to false
+  Future<void> updateNewUserStatus({bool value});
+
+  /// @return Future<bool>
+  Future<bool> checkNewUserStatus();
 }

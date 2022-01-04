@@ -2,13 +2,17 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:geiger_toolbox/app/data/model/geiger_aggregate_score.dart';
-import 'package:geiger_toolbox/app/data/model/threat.dart';
+
 import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
+import 'package:geiger_toolbox/app/services/dummyData/dummy_data_controller.dart';
+import 'package:geiger_toolbox/app/services/helpers/implementation/geiger_data.dart';
+import 'package:geiger_toolbox/app/services/helpers/implementation/impl_user_service.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:get/get.dart' as getX;
+import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
+import 'package:get_storage/get_storage.dart';
 
 class HomeController extends getX.GetxController {
   //an instance of HomeController
@@ -24,71 +28,101 @@ class HomeController extends getX.GetxController {
   final CloudReplicationController _cloudReplicationInstance =
       CloudReplicationController.instance;
 
-  StorageController? _storageController;
+  // dummy instance
+  final DummyStorageController _dummyStorageInstance =
+      DummyStorageController.instance;
+
+  late StorageController _storageController;
+  late UserService _userService;
+  late GeigerData _geigerUtilityData;
 
   var isScanning = false.obs;
-  var isLoading = false.obs;
+  var isLoadingServices = false.obs;
   var message = "".obs;
 
   //Todo: do pass of data from the localstorage to ui
-  //initial as an obs
-  getX.Rx<GeigerAggregateScore> geigerAggregateScore =
-      GeigerAggregateScore([], null, null).obs;
 
-  //initial as a private list obs
-  List<Threat> threatsScore = <Threat>[].obs;
+//initial aggregate threatScore
+  getX.Rx<dummy.GeigerScoreThreats> aggThreatsScore =
+      dummy.GeigerScoreThreats(threatScores: [], geigerScore: '').obs;
 
-  // populate static json data
-  Future<List<Threat>> _fetchGeigerAggregateScore() async {
-    const scoreAggJsonData = '''{
-        "threatScores": [ {"threatId":"1234ph", "name":"Phishing", "score":{"score":"40.20"}}, {"threatId":"1234ml", "name":"Malware", "score" :{"score":"80.23"}}],
-        "numberMetrics": "2",
-        "geigerScore" : "62.0"
-    }''';
-
-    //delay by 1sec
-    await Future.delayed(1000.milliseconds);
-    GeigerAggregateScore aggScore =
-        GeigerAggregateScore.fromJson(json.decode(scoreAggJsonData));
-    //assign decode GeigerAggregateScore json
-    geigerAggregateScore.value = aggScore;
-    return geigerAggregateScore.value.threatScores;
-  }
-
-  onScan() async {
-    await _init();
-    // _userNode = await dummy.UserNode(_storageController!);
-    // _deviceNode = await dummy.DeviceNode(_storageController!);
+  void onScanButtonPressed() async {
     isScanning.value = true;
-    threatsScore = await _fetchGeigerAggregateScore();
-    _getThreatWeight();
-    // log(await _geigerDummy.onBtnPressed(_storageController!));
-    // log(await _userNode!.getUserInfo
-    //     .then((value) async => value.deviceOwner.deviceId!));
-    // log(await _deviceNode!.getDeviceInfo
-    //     .then((value) async => value.deviceId!));
+    //set dummyData
+    await Future.delayed(Duration(seconds: 2));
+    await _initDummyData();
+    aggThreatsScore.value = await _getAggThreatScore();
+    _cachedData();
     isScanning.value = false;
   }
 
   emptyThreatScores() {
-    threatsScore = [];
+    aggThreatsScore.value.threatScores.clear();
   }
 
-  // initialize storageController before the ui loads
-  _init() async {
+  // only set Dummy data and other utilityData if user is a new user
+  Future<void> _initDummyData() async {
+    bool check = await _userService.checkNewUserStatus();
+    if (check == true) {
+      await _dummyStorageInstance.setDummyData();
+      await _geigerUtilityData.storeCountry();
+      await _geigerUtilityData.storeProfAss();
+      await _geigerUtilityData.storeCerts();
+      await _geigerUtilityData.setPublicKey();
+      return;
+    }
+  }
+
+  //returns aggregate of GeigerScoreThreats
+  Future<dummy.GeigerScoreThreats> _getAggThreatScore() async {
+    String currentUserId = await _userService.getUserId;
+    NodeValue? nodeValueG = await _storageController.getValue(
+        ":Users:${currentUserId}:gi:data:GeigerScoreAggregate", "GEIGER_score");
+    NodeValue? nodeValueT = await _storageController.getValue(
+        ":Users:${currentUserId}:gi:data:GeigerScoreAggregate",
+        "threats_score");
+    List<dummy.ThreatScore> t =
+        dummy.ThreatScore.convertFromJson(nodeValueT!.value);
+
+    return dummy.GeigerScoreThreats(
+        threatScores: t, geigerScore: nodeValueG!.value);
+  }
+
+  //**************cached data*******************
+  final box = GetStorage();
+
+  void _cachedData() {
+    box.write("aggThreat", jsonEncode(aggThreatsScore.value));
+  }
+
+  dummy.GeigerScoreThreats _getCachedData() {
+    var data = box.read("aggThreat");
+    var json = jsonDecode(data);
+    dummy.GeigerScoreThreats result = dummy.GeigerScoreThreats.fromJson(json);
+    return result;
+  }
+
+  //******************end***********************
+  //update newUserStatus to false onScanButtonPressed
+  void updateUserStatus() {
+    getX.once(
+        aggThreatsScore, (_) async => await _userService.updateNewUserStatus());
+  }
+
+  // initialize storageController and userService before the ui loads
+  Future<void> _initStorageController() async {
     //get StorageController from localStorageController instance
     _storageController = await _localStorageInstance.getStorageController;
+    _userService = UserService(_storageController);
+    _geigerUtilityData = GeigerData(_storageController);
   }
 
-  @override
-  void onInit() async {
-    bool check = await _termsAndConditionsController.isTermsAccepted();
-    if (check == false) {
-      return getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
-    }
+  Future<void> _initDummyStorageController() async {
+    await _dummyStorageInstance.initLocalStorageDummy();
+  }
 
-    isLoading.value = true;
-    await _init();
+  Future<void> _initReplication() async {
+    isLoadingServices.value = true;
     message.value = "Loading....";
 
     //initialReplication
@@ -96,12 +130,50 @@ class HomeController extends getX.GetxController {
 
     // only initialize replication only when terms and conditions are accepted
     await _cloudReplicationInstance.initialReplication();
-    log("isLoading is : $isLoading");
+    log("isLoading is : $isLoadingServices");
     message.value = "Almost done!";
-    isLoading.value = false;
-    log("done Loading : $isLoading");
+    isLoadingServices.value = false;
+    log("done Loading : $isLoadingServices");
+  }
 
+  // get data from cache if user has  press the scan button before
+
+  Future<void> _getCacheData() async {
+    bool isNewUser = await _userService.checkNewUserStatus();
+    log("new user : $isNewUser");
+    if (isNewUser == false) {
+      //aggThreatsScore.value = await _getAggThreatScore();
+      //update aggregate threatScore from cached data
+      aggThreatsScore.value = _getCachedData();
+    }
+  }
+
+  //check if termsAndConditions were accepted
+  // redirect to termAndCondition if false
+  Future<void> redirect() async {
+    bool check = await _termsAndConditionsController.isTermsAccepted();
+    if (check == false) {
+      return getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
+    } else {
+      await _initStorageController();
+      await _initDummyStorageController();
+      await _initReplication();
+
+      updateUserStatus();
+      return;
+    }
+  }
+
+  @override
+  void onInit() async {
+    await redirect();
     super.onInit();
+  }
+
+  @override
+  void onReady() async {
+    await _getCacheData();
+    super.onReady();
   }
 
   @override
@@ -109,15 +181,16 @@ class HomeController extends getX.GetxController {
     super.onClose();
   }
 
+  //Todo : add StorageListener
   //*********cloud replication
 
-  // testing purpose
+  // testing purpose for data stored by replication
   _getThreatWeight() async {
-    Node node = await _storageController!.get(":Global:ThreatWeight");
+    Node node = await _storageController.get(":Global:ThreatWeight");
     List<String> threatsId =
         await node.getChildNodesCsv().then((value) => value.split(','));
     for (String id in threatsId) {
-      Node threat = await _storageController!.get(":Global:ThreatWeight:$id");
+      Node threat = await _storageController.get(":Global:ThreatWeight:$id");
 
       String? result = await threat
           .getValue("threatJson")

@@ -7,6 +7,7 @@ import 'package:geiger_toolbox/app/data/model/user.dart';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_localstorage/src/visibility.dart' as vis;
+import 'package:geiger_toolbox/app/services/helpers/bool_parsing_extension.dart';
 
 import '../abstract/local_user.dart';
 import 'impl_device_service.dart';
@@ -118,10 +119,54 @@ class UserService extends DeviceService implements LocalUser {
   }
 
   @override
-  Future<List<String>> getListPairedDevices() async {
-    Node node = await storageController.get(":Devices");
-    List<String> ids =
-        await node.getChildNodesCsv().then((value) => value.split(','));
-    return ids;
+  Future<void> setNewUserStatus({bool value: true}) async {
+    try {
+      Node node = await storageController.get(":Local");
+      await node.addOrUpdateValue(NodeValueImpl("newUser", value.toString()));
+      //when creating my data
+      // add this to avoid error
+      // since on package are also getStorage
+      //await ExtendedTimestamp.initializeTimestamp(_storageControllerUi);
+      await storageController.addOrUpdate(node);
+      log("setNewUserStatus method: $node");
+    } catch (e, s) {
+      StorageException("Storage Error: $e", s);
+    }
+  }
+
+  @override
+  Future<void> updateNewUserStatus({bool value: false}) async {
+    try {
+      Node node = await storageController.get(":Local");
+      //Note: If nodeValue is already exist used updateValue() to update it
+      await node.updateValue(NodeValueImpl("newUser", value.toString()));
+      //when creating my data
+      // add this to avoid error
+      // since on package are also getStorage
+      //await ExtendedTimestamp.initializeTimestamp(_storageControllerUi);
+      await storageController.update(node);
+      print("updateNewUserStatus method: $node");
+    } catch (e, s) {
+      StorageException("Storage Error: $e", s);
+    }
+  }
+
+  @override
+  Future<bool> checkNewUserStatus() async {
+    try {
+      NodeValue? nodeValue =
+          await storageController.getValue(":Local", "newUser");
+      String newUser = nodeValue!.value;
+      bool isNewUser = newUser.parseBool();
+      log("checkNewUserStatus method: $newUser");
+      if (isNewUser == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      log("Error from storageControllerUi");
+      return false;
+    }
   }
 }

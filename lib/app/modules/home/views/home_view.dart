@@ -10,6 +10,8 @@ import 'package:geiger_toolbox/app/shared_widgets/showCircularProgress.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 import 'package:geiger_toolbox/app/util/geiger_icons.dart';
 
+import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
+
 import 'package:get/get.dart';
 
 class HomeView extends StatelessWidget {
@@ -25,10 +27,10 @@ class HomeView extends StatelessWidget {
         title: const Text('Geiger Toolbox'),
       ),
       body: Obx(() {
-        return controller.isLoading.value == true
+        return controller.isLoadingServices.value == true
             ? Center(
                 child: ShowCircularProgress(
-                    visible: controller.isLoading.value,
+                    visible: controller.isLoadingServices.value,
                     message: controller.message.value))
             : SingleChildScrollView(
                 padding:
@@ -39,38 +41,38 @@ class HomeView extends StatelessWidget {
                     children: [
                       TopScreen(
                         onScanPressed: () {
-                          //testing Geiger Aggregate score Model
-                          controller.emptyThreatScores();
-                          controller.onScan();
-                          log(controller.onScan().toString());
+                          //controller.emptyThreatScores();
+                          controller.onScanButtonPressed();
                         },
                         aggregratedScore: !controller.isScanning.value
-                            ? controller
-                                    .geigerAggregateScore.value.geigerScore ??
-                                ""
+                            ? controller.aggThreatsScore.value.geigerScore
                             : "",
                         warming: false,
                         isLoading: controller.isScanning.value,
                       ),
                       controller.isScanning.value
-                          ? const CircularProgressIndicator.adaptive(
-                              backgroundColor: Colors.green,
-                            )
-                          : controller.threatsScore.isEmpty
+                          ? ShowCircularProgress(
+                              visible: controller.isScanning.value)
+                          : controller
+                                  .aggThreatsScore.value.threatScores.isEmpty
                               ? const Center(
-                                  child: Text("NO DATA FOUND"),
+                                  child: Text(
+                                    "NO DATA FOUND",
+                                    style: TextStyle(color: Colors.red),
+                                  ),
                                 )
                               : Column(
-                                  children: controller.threatsScore
-                                      .map<ThreatsCard>((Threat e) {
+                                  children: controller
+                                      .aggThreatsScore.value.threatScores
+                                      .map<ThreatsCard>((dummy.ThreatScore t) {
                                     return ThreatsCard(
-                                      label: e.name,
-                                      icon: GeigerIcon
-                                          .iconsMap[e.name!.toLowerCase()],
-                                      indicatorScore: double.parse(
-                                          e.score!.score.toString()),
+                                      label: t.threat.name,
+                                      icon: GeigerIcon.iconsMap[
+                                          t.threat.name.toLowerCase()],
+                                      indicatorScore:
+                                          double.parse(t.score.toString()),
                                       routeName: Routes.RECOMMENDATION_VIEW,
-                                      routeArguments: e,
+                                      routeArguments: t.threat,
                                     );
                                   }).toList(),
                                 ),

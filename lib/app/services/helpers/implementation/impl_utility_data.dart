@@ -13,7 +13,7 @@ const String _CERT_PATH = ":Global:cert";
 const String _PROF_ASS_PATH = ":Global:professionAssociation";
 const String _NODE_OWNER = "geigerUi";
 
-class ImplUtilityData extends UtilityData {
+abstract class ImplUtilityData extends UtilityData {
   //final LocalStorageController _localStorage = LocalStorageController.instance;
   late Node _node;
   late NodeValue _nodeValue;

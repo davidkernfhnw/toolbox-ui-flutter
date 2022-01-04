@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
+import 'app/services/dummyData/dummy_data_controller.dart';
 import 'app/services/localStorage/local_storage_controller.dart';
 import 'app/translation/app_translation.dart';
 import 'app/util/theme/custom_theme_data.dart';
@@ -15,9 +17,12 @@ void main() async {
   await Get.put(GeigerApiConnector()).initLocalMasterPlugin();
   //initialize localStorage for ui
   await Get.put(LocalStorageController());
+  //initialize dummy
+  await Get.put(DummyStorageController());
   //initialize cloudReplicationController
   await Get.put<CloudReplicationController>(CloudReplicationController());
-
+  //cached data
+  await GetStorage.init();
   runApp(GeigerApp());
 }
 

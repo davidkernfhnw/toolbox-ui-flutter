@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:geiger_toolbox/app/services/helpers/implementation/geiger_data.dart';
 import 'package:geiger_toolbox/app/services/helpers/implementation/impl_utility_data.dart';
 import 'package:geiger_toolbox/app/services/helpers/implementation/impl_user_service.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
@@ -13,13 +14,13 @@ class QrCodeController extends GetxController {
       LocalStorageController.instance;
   late final StorageController _storageController;
 
-  late ImplUtilityData _utilityData;
+  late GeigerData _geigerUtilityData;
 
   var data = "".obs;
 
   void _storeDataAsQrCode({String agreementType: "both"}) async {
-    _utilityData = ImplUtilityData(_storageController);
-    String publicKey = await _utilityData.getPublicKey;
+    _geigerUtilityData = GeigerData(_storageController);
+    String publicKey = await _geigerUtilityData.getPublicKey;
     UserService userService = UserService(_storageController);
     String userId = await userService.getUserId;
     String body = jsonEncode(<String, dynamic>{
