@@ -18,8 +18,9 @@ class QrScannerController extends GetxController {
   Barcode? result;
   QRViewController? qrViewController;
 
-  final DeviceController deviceControllerInstance = DeviceController.instance;
-
+  //final DeviceController deviceControllerInstance = DeviceController.instance;
+  //Todo refactor
+  final DeviceController deviceControllerInstance = Get.put(DeviceController());
   var viewTitle = "".obs;
   var scanQrCodeData = "".obs;
   var isScanning = false.obs;

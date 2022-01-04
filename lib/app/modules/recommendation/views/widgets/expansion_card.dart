@@ -1,10 +1,10 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/data/model/recommendations_models.dart';
+import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 
 class ExpansionCard extends StatelessWidget {
-  final RecommendationModel recommendationData;
-  const ExpansionCard({Key? key, required this.recommendationData})
+  final dummy.Recommendations recommendations;
+  const ExpansionCard({Key? key, required this.recommendations})
       : super(key: key);
 
   @override
@@ -15,10 +15,10 @@ class ExpansionCard extends StatelessWidget {
         header: ListTile(
           leading: Checkbox(
             onChanged: (bool? value) {},
-            value: true,
+            value: false,
           ),
           title: Text(
-            recommendationData.header.toString(),
+            recommendations.description.shortDescription,
             softWrap: true,
             style: const TextStyle(),
           ),
@@ -30,7 +30,7 @@ class ExpansionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                recommendationData.body.toString(),
+                recommendations.description.longDescription ?? "",
                 softWrap: true,
               ),
               const SizedBox(height: 5),

@@ -48,29 +48,17 @@ class HomeController extends getX.GetxController {
 
   void onScanButtonPressed() async {
     isScanning.value = true;
-    //set dummyData
     await Future.delayed(Duration(seconds: 2));
-    await _initDummyData();
+
     aggThreatsScore.value = await _getAggThreatScore();
+
     _cachedData();
+
     isScanning.value = false;
   }
 
   emptyThreatScores() {
     aggThreatsScore.value.threatScores.clear();
-  }
-
-  // only set Dummy data and other utilityData if user is a new user
-  Future<void> _initDummyData() async {
-    bool check = await _userService.checkNewUserStatus();
-    if (check == true) {
-      await _dummyStorageInstance.setDummyData();
-      await _geigerUtilityData.storeCountry();
-      await _geigerUtilityData.storeProfAss();
-      await _geigerUtilityData.storeCerts();
-      await _geigerUtilityData.setPublicKey();
-      return;
-    }
   }
 
   //returns aggregate of GeigerScoreThreats
@@ -103,11 +91,6 @@ class HomeController extends getX.GetxController {
   }
 
   //******************end***********************
-  //update newUserStatus to false onScanButtonPressed
-  void updateUserStatus() {
-    getX.once(
-        aggThreatsScore, (_) async => await _userService.updateNewUserStatus());
-  }
 
   // initialize storageController and userService before the ui loads
   Future<void> _initStorageController() async {
@@ -137,7 +120,6 @@ class HomeController extends getX.GetxController {
   }
 
   // get data from cache if user has  press the scan button before
-
   Future<void> _getCacheData() async {
     bool isNewUser = await _userService.checkNewUserStatus();
     log("new user : $isNewUser");
@@ -145,7 +127,14 @@ class HomeController extends getX.GetxController {
       //aggThreatsScore.value = await _getAggThreatScore();
       //update aggregate threatScore from cached data
       aggThreatsScore.value = _getCachedData();
+      return;
     }
+  }
+
+  // only set Dummy data and other utilityData if user is a new user
+  Future<void> _initDummyData() async {
+    await _dummyStorageInstance.setDummyData();
+    return;
   }
 
   //check if termsAndConditions were accepted
@@ -155,24 +144,42 @@ class HomeController extends getX.GetxController {
     if (check == false) {
       return getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
     } else {
-      await _initStorageController();
-      await _initDummyStorageController();
+      bool check = await _userService.checkNewUserStatus();
+      if (check == true) {
+        isLoadingServices.value = true;
+        message.value = "Loading....";
+        //set dummyData
+        await _initDummyData();
+        await _geigerUtilityData.storeCountry();
+        await _geigerUtilityData.storeProfAss();
+        await _geigerUtilityData.storeCerts();
+        await _geigerUtilityData.setPublicKey();
+        await _initReplication();
+        isLoadingServices.value = false;
+
+        return;
+      }
       await _initReplication();
 
-      updateUserStatus();
       return;
     }
   }
 
   @override
   void onInit() async {
+    await _initStorageController();
+    await _initDummyStorageController();
+    //update newUserStatus to false onScanButtonPressed
+    getX.once(
+        aggThreatsScore, (_) async => await _userService.updateNewUserStatus());
+    log("${await _userService.checkNewUserStatus()}");
     await redirect();
+    await _getCacheData();
     super.onInit();
   }
 
   @override
   void onReady() async {
-    await _getCacheData();
     super.onReady();
   }
 
@@ -184,18 +191,18 @@ class HomeController extends getX.GetxController {
   //Todo : add StorageListener
   //*********cloud replication
 
-  // testing purpose for data stored by replication
-  _getThreatWeight() async {
-    Node node = await _storageController.get(":Global:ThreatWeight");
-    List<String> threatsId =
-        await node.getChildNodesCsv().then((value) => value.split(','));
-    for (String id in threatsId) {
-      Node threat = await _storageController.get(":Global:ThreatWeight:$id");
-
-      String? result = await threat
-          .getValue("threatJson")
-          .then((value) => value!.getValue("en"));
-      log(result!);
-    }
-  }
+  // // testing purpose for data stored by replication
+  // _getThreatWeight() async {
+  //   Node node = await _storageController.get(":Global:ThreatWeight");
+  //   List<String> threatsId =
+  //       await node.getChildNodesCsv().then((value) => value.split(','));
+  //   for (String id in threatsId) {
+  //     Node threat = await _storageController.get(":Global:ThreatWeight:$id");
+  //
+  //     String? result = await threat
+  //         .getValue("threatJson")
+  //         .then((value) => value!.getValue("en"));
+  //     log(result!);
+  //   }
+  // }
 }

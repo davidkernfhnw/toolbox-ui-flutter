@@ -33,6 +33,10 @@ class DummyStorageController extends GetxController {
     await _geigerDummy.initialGeigerDummyData();
   }
 
+  Future<void> storeRecom() async {
+    await _geigerDummy.storeData();
+  }
+
   @override
   void onInit() async {
     _initialGeigerDummy();

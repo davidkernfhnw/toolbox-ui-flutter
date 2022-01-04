@@ -7,7 +7,6 @@ class DeviceBinding extends Bindings {
   @override
   void dependencies() {
     Get.put<DeviceController>(DeviceController());
-
     Get.lazyPut<QrCodeController>(() => QrCodeController());
   }
 }
