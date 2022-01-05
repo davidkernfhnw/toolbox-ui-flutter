@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:get/get.dart';
-import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 class DummyStorageController extends GetxController {
   //instance

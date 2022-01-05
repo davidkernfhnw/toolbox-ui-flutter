@@ -4,6 +4,7 @@ import 'package:geiger_toolbox/app/modules/settings/controllers/settings_control
 import 'package:geiger_toolbox/app/modules/settings/views/widgets/data_protection_view.dart';
 import 'package:geiger_toolbox/app/modules/settings/views/widgets/edit_data_view.dart';
 import 'package:geiger_toolbox/app/modules/settings/views/widgets/profile_view.dart';
+import 'package:geiger_toolbox/app/shared_widgets/showCircularProgress.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 import 'package:get/get.dart';
 
@@ -43,14 +44,22 @@ class SettingsView extends StatelessWidget {
             ),
           ]),
         ),
-        body: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          children: [
-            ProfileView(controller: _controller),
-            DataProtectionView(),
-            EditDataView(),
-          ],
-        ),
+        body: Obx(() {
+          return _controller.isLoading.value == true
+              ? Center(
+                  child: ShowCircularProgress(
+                    visible: _controller.isLoading.value,
+                  ),
+                )
+              : TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    ProfileView(controller: _controller),
+                    DataProtectionView(),
+                    EditDataView(),
+                  ],
+                );
+        }),
       ),
     );
   }

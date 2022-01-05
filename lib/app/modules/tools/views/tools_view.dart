@@ -24,9 +24,9 @@ class ToolsView extends StatelessWidget {
                         //          <-- ListTile.divideTiles
                         context: context,
                         tiles: [
-                          Tools_card(),
-                          Tools_card(),
-                          Tools_card(),
+                          ToolCard(),
+                          ToolCard(),
+                          ToolCard(),
                         ]).toList(),
                   )),
               ElevatedButton(onPressed: null, child: Text("Add Tool"))

@@ -145,7 +145,7 @@ class UserService extends DeviceService implements LocalUser {
       // since on package are also getStorage
       //await ExtendedTimestamp.initializeTimestamp(_storageControllerUi);
       await storageController.update(node);
-      print("updateNewUserStatus method: $node");
+      log("updateNewUserStatus method: $node");
     } catch (e, s) {
       StorageException("Storage Error: $e", s);
     }

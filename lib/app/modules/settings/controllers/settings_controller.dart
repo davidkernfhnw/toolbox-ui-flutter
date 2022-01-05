@@ -9,7 +9,6 @@ import 'package:geiger_toolbox/app/data/model/partner.dart';
 import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
 import 'package:geiger_toolbox/app/services/helpers/implementation/geiger_data.dart';
-import 'package:geiger_toolbox/app/services/helpers/implementation/impl_utility_data.dart';
 import 'package:geiger_toolbox/app/services/helpers/implementation/impl_user_service.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
@@ -23,6 +22,8 @@ class SettingsController extends GetxController {
   late final StorageController _storageController;
   //userService
   late final UserService _userService;
+  late final GeigerData _geigerData;
+
   //getting instance of localStorageController
   final LocalStorageController _localStorage = LocalStorageController.instance;
 
@@ -42,7 +43,7 @@ class SettingsController extends GetxController {
   var currentDeviceName = "".obs;
   var currentUserName = "".obs;
   var isSuccess = true.obs;
-
+  var isLoading = false.obs;
   List certBaseOnCountrySelected = [].obs;
   List profAssBaseOnCountrySelected = [].obs;
   List currentCountries = [].obs;
@@ -184,19 +185,21 @@ class SettingsController extends GetxController {
   //init storageController
   Future<void> _initStorageController() async {
     _storageController = await _localStorage.getStorageController;
+    _geigerData = GeigerData(_storageController);
   }
 
   //init util data
   Future<void> _initialUtilityData() async {
-    GeigerData _utilityData = GeigerData(_storageController);
-    //Todo fix problem with currentCountries not getting populating on time
-    currentCountries.addAll(await _utilityData.getCountries());
-    _profAss = await _utilityData.getProfessionAssociation();
-    _cert = await _utilityData.getCert();
+    currentCountries = await _geigerData.getCountries();
+    _profAss = await _geigerData.getProfessionAssociation();
+    _cert = await _geigerData.getCert();
   }
 
   //initial User Data
   Future<void> _initUserData() async {
+    isLoading.value = true;
+
+    await _initialUtilityData();
     _userService = UserService(_storageController);
     userInfo.value = (await _userService.getUserInfo)!;
     //init value in ui
@@ -239,6 +242,7 @@ class SettingsController extends GetxController {
     log("profAss: ${currentProfAss.value}");
     log("userInfo: ${userInfo.value}");
     log("CurrentUserName :${currentUserName.value}");
+    isLoading.value = false;
   }
 
   //get name of the user device
@@ -276,9 +280,10 @@ class SettingsController extends GetxController {
 
   @override
   void onInit() async {
-    super.onInit();
     await _initStorageController();
     await _initialUtilityData();
+
     await _initUserData();
+    super.onInit();
   }
 }

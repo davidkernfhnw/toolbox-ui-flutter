@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/data/model/recommendations_models.dart';
 
 import 'package:geiger_toolbox/app/shared_widgets/indicator_gauge.dart';
-import 'package:get/get.dart';
 import 'expansion_card.dart';
 import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 

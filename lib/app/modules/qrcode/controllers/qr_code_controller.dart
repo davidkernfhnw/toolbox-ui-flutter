@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:geiger_toolbox/app/services/helpers/implementation/geiger_data.dart';
-import 'package:geiger_toolbox/app/services/helpers/implementation/impl_utility_data.dart';
 import 'package:geiger_toolbox/app/services/helpers/implementation/impl_user_service.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:get/get.dart';

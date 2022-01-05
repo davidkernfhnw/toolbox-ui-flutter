@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/data/model/threat.dart';
 import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
 import 'package:geiger_toolbox/app/modules/home/views/widgets/threats_card.dart';
 import 'package:geiger_toolbox/app/modules/home/views/widgets/top_screen.dart';
@@ -26,17 +23,18 @@ class HomeView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Geiger Toolbox'),
       ),
-      body: Obx(() {
-        return controller.isLoadingServices.value == true
-            ? Center(
-                child: ShowCircularProgress(
-                    visible: controller.isLoadingServices.value,
-                    message: controller.message.value))
-            : SingleChildScrollView(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                child: Obx(() {
-                  return Column(
+      body: Obx(
+        () {
+          return controller.isLoadingServices.value == true
+              ? Center(
+                  child: ShowCircularProgress(
+                      visible: controller.isLoadingServices.value,
+                      message: controller.message.value),
+                )
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 4.0, horizontal: 8.0),
+                  child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       TopScreen(
@@ -64,26 +62,100 @@ class HomeView extends StatelessWidget {
                               : Column(
                                   children: controller
                                       .aggThreatsScore.value.threatScores
-                                      .map<ThreatsCard>((dummy.ThreatScore t) {
-                                    return ThreatsCard(
-                                      label: t.threat.name,
-                                      icon: GeigerIcon.iconsMap[
-                                          t.threat.name.toLowerCase()],
-                                      indicatorScore:
-                                          double.parse(t.score.toString()),
-                                      routeName: Routes.RECOMMENDATION_VIEW,
-                                      routeArguments: t.threat,
-                                    );
-                                  }).toList(),
+                                      .map<ThreatsCard>(
+                                    (dummy.ThreatScore t) {
+                                      return ThreatsCard(
+                                        label: t.threat.name,
+                                        icon: GeigerIcon.iconsMap[
+                                            t.threat.name.toLowerCase()],
+                                        indicatorScore:
+                                            double.parse(t.score.toString()),
+                                        routeName: Routes.RECOMMENDATION_VIEW,
+                                        routeArguments: t.threat,
+                                      );
+                                    },
+                                  ).toList(),
                                 ),
                     ],
-                  );
-                }),
-              );
-      }),
+                  ),
+                );
+        },
+      ),
     );
   }
 }
+//with STACK
+// @override
+// Widget build(BuildContext context) {
+//   return Scaffold(
+//     drawer: const SideMenu(),
+//     appBar: AppBar(
+//       title: const Text('Geiger Toolbox'),
+//     ),
+//     body: SingleChildScrollView(
+//       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+//       child: Obx(
+//             () {
+//           return Stack(
+//             children: [
+//               controller.isLoadingServices.value == true
+//                   ? Positioned(
+//                 child: Center(
+//                   child: ShowCircularProgress(
+//                       visible: controller.isLoadingServices.value,
+//                       message: controller.message.value),
+//                 ),
+//               )
+//                   : SizedBox(),
+//               Column(
+//                 mainAxisSize: MainAxisSize.max,
+//                 children: [
+//                   TopScreen(
+//                     onScanPressed: () {
+//                       //controller.emptyThreatScores();
+//                       controller.onScanButtonPressed();
+//                     },
+//                     aggregratedScore: !controller.isScanning.value
+//                         ? controller.aggThreatsScore.value.geigerScore
+//                         : "",
+//                     warming: false,
+//                     isLoading: controller.isScanning.value,
+//                   ),
+//                   controller.isScanning.value
+//                       ? ShowCircularProgress(
+//                       visible: controller.isScanning.value)
+//                       : controller.aggThreatsScore.value.threatScores.isEmpty
+//                       ? const Center(
+//                     child: Text(
+//                       "NO DATA FOUND",
+//                       style: TextStyle(color: Colors.red),
+//                     ),
+//                   )
+//                       : Column(
+//                     children: controller
+//                         .aggThreatsScore.value.threatScores
+//                         .map<ThreatsCard>((dummy.ThreatScore t) {
+//                       return ThreatsCard(
+//                         label: t.threat.name,
+//                         icon: GeigerIcon
+//                             .iconsMap[t.threat.name.toLowerCase()],
+//                         indicatorScore:
+//                         double.parse(t.score.toString()),
+//                         routeName: Routes.RECOMMENDATION_VIEW,
+//                         routeArguments: t.threat,
+//                       );
+//                     }).toList(),
+//                   ),
+//                 ],
+//               ),
+//             ],
+//           );
+//         },
+//       ),
+//     ),
+//   );
+// }
+//
 
 //ListView.builder //
 

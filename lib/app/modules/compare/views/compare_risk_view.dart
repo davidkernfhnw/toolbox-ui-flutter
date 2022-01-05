@@ -27,7 +27,7 @@ class CompareRiskPage extends StatelessWidget {
                 animate: true,
                 barGroupingType: charts.BarGroupingType.groupedStacked,
                 //behaviors: [charts.SeriesLegend()],
-                animationDuration: Duration(seconds: 5),
+                // animationDuration: Duration(seconds: 1),
                 behaviors: [
                   charts.DatumLegend(
                     outsideJustification:
@@ -48,7 +48,6 @@ class CompareRiskPage extends StatelessWidget {
             Expanded(
               child: charts.LineChart(controller.seriesLineData,
                   animate: true,
-                  animationDuration: Duration(seconds: 2),
                   behaviors: [
                     new charts.ChartTitle('Months',
                         behaviorPosition: charts.BehaviorPosition.bottom,

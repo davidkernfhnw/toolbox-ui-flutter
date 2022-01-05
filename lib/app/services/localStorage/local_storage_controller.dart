@@ -8,8 +8,6 @@ import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_contro
 import 'package:get/get.dart';
 import 'package:geiger_api/geiger_api.dart';
 
-import '../helpers/implementation/impl_utility_data.dart';
-
 class LocalStorageController extends GetxController {
   //instance of LocalStorageController
   static LocalStorageController instance = Get.find<LocalStorageController>();
@@ -19,7 +17,6 @@ class LocalStorageController extends GetxController {
   //private variables
   late StorageController _storageController;
   late GeigerApi _api;
-  late ImplUtilityData _utilityData;
 
   StorageController get getStorageController {
     return _storageController;

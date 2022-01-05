@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:geiger_toolbox/app/data/model/threat.dart';
 import 'package:geiger_toolbox/app/services/helpers/implementation/impl_user_service.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;

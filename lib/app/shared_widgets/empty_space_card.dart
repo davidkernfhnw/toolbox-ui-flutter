@@ -8,16 +8,14 @@ class EmptySpaceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Container(
-        child: Card(
-          shape: RoundedRectangleBorder(
-            side: BorderSide(color: Colors.black54),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Container(
-            width: size,
-            child: child ?? Center(child: Text("coming soon")),
-          ),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.black54),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Container(
+          width: size,
+          child: child ?? Center(child: Text("coming soon")),
         ),
       ),
     );
