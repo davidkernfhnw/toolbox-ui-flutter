@@ -1,0 +1,33 @@
+import 'package:geiger_toolbox/app/data/model/related_threat_weight.dart';
+
+import 'package:json_annotation/json_annotation.dart';
+
+part 'global_recommendation.g.dart';
+
+@JsonSerializable(explicitToJson: true)
+class GlobalRecommendation {
+  String recommendationId;
+  String shortDescription;
+  String? longDescription;
+  String? action;
+  List<RelatedThreatWeight> relatedThreatsWeights;
+  String? costs;
+  String recommendationType;
+
+  GlobalRecommendation(
+      {required this.recommendationId,
+      required this.shortDescription,
+      this.longDescription,
+      this.action,
+      required this.relatedThreatsWeights,
+      this.costs,
+      required this.recommendationType});
+
+  factory GlobalRecommendation.fromJson(Map<String, dynamic> json) {
+    return _$GlobalRecommendationFromJson(json);
+  }
+
+  Map<String, dynamic> toJson() {
+    return _$GlobalRecommendationToJson(this);
+  }
+}
