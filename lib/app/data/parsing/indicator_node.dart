@@ -14,45 +14,69 @@ class GeigerNode extends GlobalNode{
   final StorageController storageController;
 
 
+  ///@return Future<GeigerScoreThreats>
+  ///@param required path ex: Users:uuid:gi:data:GeigerScoreAggregate
   Future<GeigerScoreThreats> getGeigerScoreThreats({required String path}) async {
   List<ThreatScore> threatsScore = [];
+  List<Threat> threats = await _getLimitedThreats();
   late String geigerScore;
     try {
-      NodeValue? nodeValueG = await storageController.getValue(
-          path,
-          "GEIGER_score");
 
-      geigerScore = nodeValueG!.value;
+      List<Node> nodes = await storageController
+          .search(SearchCriteria(searchPath: path));
+      for (Node node in  nodes) {
+        //check if node exist
+        if (node.parentPath == path) {
+          NodeValue? nodeValueG = await storageController.getValue(
+              path,
+              "GEIGER_score");
 
-      NodeValue? nodeValueT = await storageController.getValue(
-          path
-          "threats_score");
+          geigerScore = nodeValueG!.value;
 
-      String threatScore = nodeValueT!.value;
+          NodeValue? nodeValueT = await storageController.getValue(
+              path
+              "threats_score");
 
-      List<String> splitThreatScores =
-      threatScore.split(";"); // split on semi-colon
+          String threatScore = nodeValueT!.value;
 
-      for (String splitThreatScore in splitThreatScores) {
-        List<String> tS = splitThreatScore.split(",");
-        String threatId = tS[0];
-        String score = tS[1];
-        //return only phishing and malware
-        List<Threat> threats = await _getLimitedThreats();
+          List<String> splitThreatScores =
+          threatScore.split(";"); // split on semi-colon
 
-        //filter
-        Threat threat =
-        threats.where((Threat element) => element.threatId == threatId).toList().first;
-        ThreatScore t = ThreatScore(threat: threat, score: score);
-        //add to threatsScore
-        threatsScore.add(t);
+
+
+          for (String splitThreatScore in splitThreatScores) {
+            List<String> tS = splitThreatScore.split(",");
+            String threatId = tS[0];
+            String score = tS[1];
+
+
+            //filter
+            List<Threat> threat =
+                threats.where((Threat element) => element.threatId == threatId).toList();
+            for(Threat t in threat){
+              ThreatScore ts = ThreatScore(threat: t, score: score);
+
+              //add to threatsScore
+              threatsScore.add(ts);
+            }
+
+
+          }
+
+
+        }
+        else {
+          log("$path => NODE PATH DOES NOT EXIST");
+        }
       }
-      return GeigerScoreThreats(
-          threatScores: threatsScore, geigerScore: geigerScore);
+
+
     }
-    on StorageException{
-      rethrow;
+    on Error catch(e){
+      log('Got Exception while fetching data from this $path\n $e');
     }
+  return GeigerScoreThreats(
+      threatScores: threatsScore, geigerScore: geigerScore);
   }
 
   //return only phishing and malware
@@ -61,8 +85,8 @@ class GeigerNode extends GlobalNode{
     List<Threat> t = [];
     try{
       //search
-      Threat phishing = threats.where((Threat value) => value.name.toLowerCase() == "phishing").toList().first;
-      Threat malware = threats.where((Threat value) => value.name.toLowerCase() == "malware").toList().first;
+      Threat phishing = threats.firstWhere((Threat value) => value.name.toLowerCase().contains("phishing"));
+      Threat malware = threats.firstWhere((Threat value) => value.name.toLowerCase().contains("malware") );
       t.add(phishing);
       t.add(malware);
     }
@@ -80,34 +104,46 @@ class GeigerNode extends GlobalNode{
   Future<List<IndicatorRecommendation>> _getIndicatorRecommendation({required String path, required String threatId}) async{
     List<IndicatorRecommendation> indicatorRecommendation = [];
     try{
-      NodeValue? nodeValueI = await storageController.getValue(
-          path, threatId);
-      
 
-      String reco = nodeValueI!.value;
+      List<Node> nodes = await storageController.search(SearchCriteria(searchPath: path));
 
-      //check if empty
-      if(reco.isEmpty){
-        // return empty indicatorRecommendation list
-        return indicatorRecommendation;
-      }
-      else{
-        List<String> recoSplit = reco.split(";");//split on semi-colon
-        log("indicatorRecommendation: $recoSplit");
+      for(Node node in nodes){
+        if(node.parentPath == path){
+          NodeValue? nodeValueI = await storageController.getValue(
+              path, threatId);
 
-        for(String reco in recoSplit){
-          List<String> rI = reco.split(",");
-          String recomId = rI[0];//recomId
-          String weight = rI[1];// weight Level
-          indicatorRecommendation.add(IndicatorRecommendation(recommendationId: recomId, weight: weight));
+
+          String reco = nodeValueI!.value;
+
+          //check if empty
+          if(reco.isEmpty){
+            // return empty indicatorRecommendation list
+            return indicatorRecommendation;
+          }
+          else{
+            List<String> recoSplit = reco.split(";");//split on semi-colon
+            log("indicatorRecommendation: $recoSplit");
+
+            for(String reco in recoSplit){
+              List<String> rI = reco.split(",");//split on colon
+              String recomId = rI[0];//recomId
+              String weight = rI[1];// weight Level
+              indicatorRecommendation.add(IndicatorRecommendation(recommendationId: recomId, weight: weight));
+            }
+
+          }
+
         }
-
+        else {
+          log("$path => NODE PATH DOES NOT EXIST");
+        }
       }
-      return indicatorRecommendation;
+
     }
-    on StorageException{
-      rethrow;
+    on Error catch(e){
+      log('Got Exception while fetching data from this $path\n $e');
     }
+    return indicatorRecommendation;
   }
   
   
@@ -120,8 +156,11 @@ class GeigerNode extends GlobalNode{
     if(indicatorRecommendations.isNotEmpty){
       for(IndicatorRecommendation indicatorRecommendation in indicatorRecommendations){
 
-        GlobalRecommendation recommendation = globalRecommendation.where((GlobalRecommendation value) => value.recommendationId == indicatorRecommendation.recommendationId).toList().first;
-        r.add(recommendation);
+        List<GlobalRecommendation> recommendations = globalRecommendation.where((GlobalRecommendation value) => value.recommendationId == indicatorRecommendation.recommendationId).toList();
+        for(GlobalRecommendation recommendation in recommendations){
+          r.add(recommendation);
+        }
+
       }
       return r;
     }
