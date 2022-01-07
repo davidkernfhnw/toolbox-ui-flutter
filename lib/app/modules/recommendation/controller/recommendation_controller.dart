@@ -1,10 +1,10 @@
 import 'dart:developer';
 
-import 'package:geiger_toolbox/app/services/helpers/implementation/impl_user_service.dart';
-import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
-import 'package:get/get.dart' as getX;
 import 'package:geiger_localstorage/geiger_localstorage.dart';
+import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/impl_user_service.dart';
+import 'package:get/get.dart' as getX;
 
 class RecommendationController extends getX.GetxController {
   //an instance of RecommendationController

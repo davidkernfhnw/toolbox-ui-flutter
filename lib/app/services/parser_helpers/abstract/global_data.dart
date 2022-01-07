@@ -5,8 +5,8 @@ import 'package:geiger_toolbox/app/data/model/global_recommendation.dart';
 import 'package:geiger_toolbox/app/data/model/related_threat_weight.dart';
 import 'package:geiger_toolbox/app/data/model/threat.dart';
 
-abstract class GlobalNode {
-  GlobalNode(this.storageController);
+abstract class GlobalData {
+  GlobalData(this.storageController);
 
   final StorageController storageController;
 

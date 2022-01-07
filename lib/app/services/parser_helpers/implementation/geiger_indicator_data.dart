@@ -6,10 +6,11 @@ import 'package:geiger_toolbox/app/data/model/global_recommendation.dart';
 import 'package:geiger_toolbox/app/data/model/indicator_recommendation.dart';
 import 'package:geiger_toolbox/app/data/model/threat.dart';
 import 'package:geiger_toolbox/app/data/model/threat_score.dart';
-import 'package:geiger_toolbox/app/data/parsing/global_node.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/abstract/global_data.dart';
 
-class GeigerNode extends GlobalNode{
-  GeigerNode(this.storageController) : super(storageController);
+
+class GeigerIndicatorData extends GlobalData{
+  GeigerIndicatorData(this.storageController) : super(storageController);
 
   final StorageController storageController;
 

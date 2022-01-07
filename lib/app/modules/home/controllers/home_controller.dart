@@ -1,17 +1,16 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-
 import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/dummyData/dummy_data_controller.dart';
-import 'package:geiger_toolbox/app/services/helpers/implementation/geiger_data.dart';
-import 'package:geiger_toolbox/app/services/helpers/implementation/impl_user_service.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_data.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/impl_user_service.dart';
 import 'package:get/get.dart' as getX;
-import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:get_storage/get_storage.dart';
 
 class HomeController extends getX.GetxController {

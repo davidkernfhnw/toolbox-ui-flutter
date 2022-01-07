@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
-import 'package:geiger_toolbox/app/services/helpers/implementation/impl_user_service.dart';
-import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
-import 'package:get/get.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
+import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
+import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/impl_user_service.dart';
+import 'package:get/get.dart';
 
 class DeviceController extends GetxController {
   static final DeviceController instance = Get.find<DeviceController>();

@@ -1,5 +1,5 @@
 import 'package:geiger_toolbox/app/data/model/country.dart';
-import 'package:geiger_toolbox/app/services/helpers/abstract/utility_data.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/abstract/utility_data.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'partner.g.dart';

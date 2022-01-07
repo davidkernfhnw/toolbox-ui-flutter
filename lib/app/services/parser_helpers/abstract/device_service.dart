@@ -1,19 +1,19 @@
-import 'package:geiger_toolbox/app/data/model/device.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-
-import '../abstract/local_device.dart';
+import 'package:geiger_toolbox/app/data/model/device.dart';
 
 const String _PATH = ":Local";
 const String _DEVICE_KEY = "deviceInfo";
 
-abstract class DeviceService extends LocalDevice {
+abstract class DeviceService {
   DeviceService(this.storageController);
 
   StorageController storageController;
   late NodeValue _nodeValue;
 
   // ----------- getters ------------------
-  @override
+  /// @return deviceId as a Future<String>
+  /// from the Local node
+
   Future<String> get getDeviceId async {
     try {
       _nodeValue =
@@ -24,7 +24,10 @@ abstract class DeviceService extends LocalDevice {
     }
   }
 
-  @override
+  /// @param Device object
+  /// @return Future<bool>
+  /// store in the Local node
+
   Future<Device> get getDeviceInfo async {
     try {
       _nodeValue = (await storageController.getValue(":Local", "deviceInfo"))!;
@@ -40,7 +43,9 @@ abstract class DeviceService extends LocalDevice {
 
   //store device related information
 
-  @override
+  /// @return Future<Device>
+  /// retrieve user from Local node
+
   //stores deviceId into Device object
   Future<bool> storeDeviceInfo(Device device) async {
     try {
@@ -63,11 +68,16 @@ abstract class DeviceService extends LocalDevice {
     }
   }
 
-  @override
+  /// @return Future<List<String>>
   Future<List<String>> getListPairedDevices() async {
     Node node = await storageController.get(":Devices");
     List<String> ids =
         await node.getChildNodesCsv().then((value) => value.split(','));
     return ids;
+  }
+
+// ----- Helpers
+  Future<Node> getNode(String path, StorageController storageController) async {
+    return await storageController.get(path);
   }
 }

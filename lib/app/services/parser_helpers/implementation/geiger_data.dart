@@ -1,8 +1,9 @@
 import 'package:geiger_localstorage/src/storage_controller.dart';
 import 'package:geiger_toolbox/app/data/model/country.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
-import 'package:geiger_toolbox/app/services/helpers/implementation/impl_utility_data.dart';
 import 'package:intl/src/locale.dart';
+
+import 'impl_utility_data.dart';
 
 class GeigerData extends ImplUtilityData {
   GeigerData(StorageController storageController) : super(storageController);

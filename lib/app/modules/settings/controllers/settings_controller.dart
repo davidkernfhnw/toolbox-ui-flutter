@@ -3,15 +3,15 @@ import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
+import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/consent.dart';
 import 'package:geiger_toolbox/app/data/model/language.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
 import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
-import 'package:geiger_toolbox/app/services/helpers/implementation/geiger_data.dart';
-import 'package:geiger_toolbox/app/services/helpers/implementation/impl_user_service.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
-import 'package:geiger_localstorage/geiger_localstorage.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_data.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/impl_user_service.dart';
 import 'package:geiger_toolbox/app/translation/suppored_language.dart';
 import 'package:get/get.dart';
 
