@@ -2,11 +2,10 @@
 
 import 'dart:developer';
 
+import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:get/get.dart';
-import 'package:geiger_api/geiger_api.dart';
 
 class LocalStorageController extends GetxController {
   //instance of LocalStorageController
@@ -43,7 +42,7 @@ class LocalStorageController extends GetxController {
   @override
   void onClose() async {
     super.onClose();
-    await _api.close();
+    //await _api.close();
   }
 }
 

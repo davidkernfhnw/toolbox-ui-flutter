@@ -1,17 +1,17 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-
 import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/dummyData/dummy_data_controller.dart';
+import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:geiger_toolbox/app/services/helpers/implementation/geiger_data.dart';
 import 'package:geiger_toolbox/app/services/helpers/implementation/impl_user_service.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:get/get.dart' as getX;
-import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:get_storage/get_storage.dart';
 
 class HomeController extends getX.GetxController {
@@ -27,6 +27,7 @@ class HomeController extends getX.GetxController {
 
   final CloudReplicationController _cloudReplicationInstance =
       CloudReplicationController.instance;
+  final GeigerApiConnector geigerApiInstance = GeigerApiConnector.instance;
 
   // dummy instance
   final DummyStorageController _dummyStorageInstance =
@@ -46,9 +47,16 @@ class HomeController extends getX.GetxController {
   getX.Rx<dummy.GeigerScoreThreats> aggThreatsScore =
       dummy.GeigerScoreThreats(threatScores: [], geigerScore: '').obs;
 
+  //notify external tool that a scan is about to start
+  void requestScan() async {
+    await geigerApiInstance.getLocalMaster.scanButtonPressed();
+  }
+
   void onScanButtonPressed() async {
     //begin scanning
     isScanning.value = true;
+
+    requestScan();
     await Future.delayed(Duration(seconds: 2));
 
     aggThreatsScore.value = await _getAggThreatScore();
