@@ -19,7 +19,7 @@ class GeigerIndicatorData extends GlobalData{
   ///@param required path ex: Users:uuid:gi:data:GeigerScoreAggregate
   Future<GeigerScoreThreats> getGeigerScoreThreats({required String path}) async {
   List<ThreatScore> threatsScore = [];
-  List<Threat> threats = await _getLimitedThreats();
+  List<Threat> threats = await getLimitedThreats();
   late String geigerScore;
     try {
 
@@ -27,7 +27,8 @@ class GeigerIndicatorData extends GlobalData{
           .search(SearchCriteria(searchPath: path));
       for (Node node in  nodes) {
         //check if node exist
-        if (node.parentPath == path) {
+        //Todo : test this
+        if (node.parentPath == ":") {
           NodeValue? nodeValueG = await storageController.getValue(
               path,
               "GEIGER_score");
@@ -80,26 +81,6 @@ class GeigerIndicatorData extends GlobalData{
       threatScores: threatsScore, geigerScore: geigerScore);
   }
 
-  //return only phishing and malware
-  Future<List<Threat>> _getLimitedThreats()async{
-    List<Threat> threats = await getGlobalThreats();
-    List<Threat> t = [];
-    try{
-      //search
-      Threat phishing = threats.firstWhere((Threat value) => value.name.toLowerCase().contains("phishing"));
-      Threat malware = threats.firstWhere((Threat value) => value.name.toLowerCase().contains("malware") );
-      t.add(phishing);
-      t.add(malware);
-    }
-    catch(e){
-      log("Phishing and malware not found in the database");
-
-    }
-
-    return t;
-
-
-  }
 
 
   Future<List<IndicatorRecommendation>> _getIndicatorRecommendation({required String path, required String threatId}) async{
@@ -109,7 +90,8 @@ class GeigerIndicatorData extends GlobalData{
       List<Node> nodes = await storageController.search(SearchCriteria(searchPath: path));
 
       for(Node node in nodes){
-        if(node.parentPath == path){
+        //Todo : test this
+        if(node.parentPath == ":"){
           NodeValue? nodeValueI = await storageController.getValue(
               path, threatId);
 

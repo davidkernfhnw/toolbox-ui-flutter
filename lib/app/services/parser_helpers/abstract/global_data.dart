@@ -22,10 +22,11 @@ abstract class GlobalData {
           .search(SearchCriteria(searchPath: GLOBAL_THREAT_PATH));
 
       //return _node!.getChildNodesCsv();
-
+      //print(nodes.toString());
       for (Node node in await nodes) {
         //check if path exist
-        if (node.parentPath == "$GLOBAL_THREAT_PATH") {
+        log("${node.parentPath}");
+        if (node.parentPath == ":Global") {
           String children = await node.getChildNodesCsv();
           List<String> threatIds = children.split(',');
           for (String threatId in threatIds) {
@@ -38,11 +39,12 @@ abstract class GlobalData {
                     .getValue("name")
                     .then((value) => value!.getValue(locale)!)));
           }
-        } else {
-          log("$GLOBAL_THREAT_PATH => NODE PATH DOES NOT EXIST");
         }
+        // else {
+        //   print("$GLOBAL_THREAT_PATH => NODE PATH DOES NOT EXIST");
+        // }
       }
-    } on Error catch (e) {
+    } catch (e) {
       log('Got Exception while fetching list of threats: $e');
     }
     return t;
@@ -57,7 +59,7 @@ abstract class GlobalData {
           .search(SearchCriteria(searchPath: GLOBAL_RECOMMENDATION_PATH));
       for (Node node in await nodes) {
         //check first path exist
-        if (node.parentPath == "$GLOBAL_RECOMMENDATION_PATH") {
+        if (node.parentPath == ":Global") {
           String children = await node.getChildNodesCsv();
           List<String> recommendationIds = children.split(',');
           //check if path exist
@@ -115,13 +117,33 @@ abstract class GlobalData {
                 relatedThreatsWeights: tW,
                 action: action));
           }
-        } else {
-          log("$GLOBAL_RECOMMENDATION_PATH => NODE PATH DOES NOT EXIST");
         }
+        // else {
+        //   log("$GLOBAL_RECOMMENDATION_PATH => NODE PATH DOES NOT EXIST");
+        // }
       }
     } on Error catch (e) {
       log('Got Exception while fetching list of global recommendation: $e');
     }
     return r;
+  }
+
+  //return only phishing and malware
+  Future<List<Threat>> getLimitedThreats() async {
+    List<Threat> threats = await getGlobalThreats();
+    List<Threat> t = [];
+    try {
+      //search
+      Threat phishing = threats.firstWhere(
+          (Threat value) => value.name.toLowerCase().contains("phishing"));
+      Threat malware = threats.firstWhere(
+          (Threat value) => value.name.toLowerCase().contains("malware"));
+      t.add(phishing);
+      t.add(malware);
+    } catch (e) {
+      log("Phishing and malware not found in the database");
+    }
+
+    return t;
   }
 }
