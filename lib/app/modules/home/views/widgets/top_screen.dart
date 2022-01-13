@@ -6,14 +6,14 @@ import 'scan_risk_button.dart';
 class TopScreen extends StatelessWidget {
   final String? aggregratedScore;
   final void Function()? onScanPressed;
-  final bool? warming;
+  final bool? warning;
   final bool isLoading;
 
   const TopScreen(
       {Key? key,
       @required this.aggregratedScore,
       @required this.onScanPressed,
-      @required this.warming,
+      @required this.warning,
       required this.isLoading})
       : super(key: key);
   @override
@@ -39,7 +39,7 @@ class TopScreen extends StatelessWidget {
         const SizedBox(height: 5.0),
         ScanRiskButton(
           onScanPressed: onScanPressed,
-          warming: warming,
+          warming: warning,
         ),
         const SizedBox(height: 10.0),
         Row(

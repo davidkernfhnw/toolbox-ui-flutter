@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:geiger_api/geiger_api.dart';
 import 'package:get/get.dart';
 
@@ -6,10 +8,17 @@ class GeigerApiConnector extends GetxController {
   static GeigerApiConnector instance = Get.find<GeigerApiConnector>();
 
   //private variables
-  late GeigerApi _localMaster;
+  late final GeigerApi _localMaster;
+  late final PluginEventListener _pluginEventListener;
+
+  List<MessageType> handledEvents = [];
 
   GeigerApi get getLocalMaster {
     return _localMaster;
+  }
+
+  PluginEventListener get getPluginListener {
+    return _pluginEventListener;
   }
 
   /// initialize this method before the start of the app
@@ -20,67 +29,75 @@ class GeigerApiConnector extends GetxController {
         (await getGeigerApi("", GeigerApi.masterId, Declaration.doShareData))!;
     //clear existing state
     //await _localMaster.zapState();
+    await _registerExternalPluginListener(GeigerApi.masterId);
   }
 
-  // Future<void> registerLocalMasterListener() async {
-  //   List<MessageType> allEvents = MessageType.getAllValues();
-  //   EventListener localMasterListener = EventListener('master');
-  //   await _localMaster.registerListener(allEvents, localMasterListener);
-  // }
-  //
-  // Future<void> initGeigerIndicatorPlugin() async {}
-  // Future<void> registerGeigerIndicatorListener() async {}
+  Future<void> _registerExternalPluginListener(String id) async {
+    List<MessageType> allEvents = MessageType.getAllValues();
+    _pluginEventListener = PluginEventListener(id);
+    await _localMaster.registerListener(allEvents, _pluginEventListener);
+    log('Plugin ${_pluginEventListener.hashCode} has been registered and activated');
+  }
+
+  // Dynamically define the handler for each message type
+  void addMessageHandler(MessageType type, Function handler, String id) {
+    _pluginEventListener = PluginEventListener('PluginListener-$id');
+    log('PluginListener: ${_pluginEventListener.hashCode}');
+    handledEvents.add(type);
+    _pluginEventListener.addMessageHandler(type, handler);
+  }
+
+  List<Message> getEvents() {
+    return _pluginEventListener.getEvents();
+  }
 }
 
-// class EventListener implements PluginListener {
-//   List<Message> events = [];
-//
-//   final String _id;
-//
-//   EventListener(this._id);
-//
-//   @override
-//   void pluginEvent(GeigerUrl? url, Message msg) {
-//     events.add(msg);
-//     print(
-//         '## SimpleEventListener "$_id" received event ${msg.type} it currently has: ${events.length.toString()} events');
-//   }
-//
-//   List<Message> getEvents() {
-//     return events;
-//   }
-//
-//   @override
-//   String toString() {
-//     String ret = '';
-//     ret += 'EventListener "$_id" contains {\r\n';
-//     getEvents().forEach((element) {
-//       ret += '  ${element.toString()}\r\n';
-//     });
-//     ret += '}\r\n';
-//     return ret;
-//   }
-// }
-//
-// class Event {
-//   final geigerLocalStorage.EventType _event;
-//   final Node? _old;
-//   final Node? _new;
-//
-//   Event(this._event, this._old, this._new);
-//
-//   geigerLocalStorage.EventType get type => _event;
-//
-//   Node? get oldNode => _old;
-//
-//   Node? get newNode => _new;
-//
-//   @override
-//   String toString() {
-//     return '${type.toString()} ${oldNode.toString()}=>${newNode.toString()}';
-//   }
-// }
+class PluginEventListener implements PluginListener {
+  List<Message> events = [];
+  Map<MessageType, Function> messageHandler = {};
+  int numberReceivedMessages = 0;
+  int numberHandledMessages = 0;
+  final String _id;
 
-//Todo
-// registered plugin(masterPlugin registered)
-//listen to plugin (is this necessary)
+  PluginEventListener(this._id);
+
+  /// Add a handler for a special message type
+  /// If the message type has been handled by one handler, the old handler will be overwrided by the new one
+  void addMessageHandler(MessageType type, Function handler) {
+    messageHandler[type] = handler;
+  }
+
+  @override
+  void pluginEvent(GeigerUrl? url, Message msg) {
+    log('[Eventlistener "$_id"] received a new event ${msg.type} (source: ${msg.sourceId}, target: ${msg.targetId}');
+    numberReceivedMessages++;
+    events.add(msg);
+    Function? handler = messageHandler[msg.type];
+    if (handler != null) {
+      numberHandledMessages++;
+      handler(msg);
+    } else {
+      log('EventListener $_id does not handle message type ${msg.type}');
+    }
+
+    log('[Listener "$_id"] received a new event ${msg.type} (source: ${msg.sourceId}, target: ${msg.targetId}');
+    log('Message: ${msg.toString()}');
+    log('Total events: ${events.length.toString()} events');
+  }
+
+  List<Message> getEvents() {
+    log("List of events=>  $events");
+    return events;
+  }
+
+  @override
+  String toString() {
+    String ret = '';
+    ret +=
+        'EventListener "$_id" has received $numberReceivedMessages messages\n';
+    ret += 'EventListener "$_id" has handled $numberHandledMessages messages\n';
+    ret +=
+        'EventListener "$_id" has dropped ${numberReceivedMessages - numberHandledMessages} messages\n';
+    return ret;
+  }
+}

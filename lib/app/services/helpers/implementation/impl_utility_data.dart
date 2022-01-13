@@ -1,10 +1,10 @@
 import 'dart:developer';
 
+import 'package:geiger_localstorage/geiger_localstorage.dart';
+import 'package:geiger_localstorage/src/visibility.dart' as vis;
 import 'package:geiger_toolbox/app/data/model/country.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
-import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/src/locale.dart';
-import 'package:geiger_localstorage/src/visibility.dart' as vis;
 
 import '../abstract/utility_data.dart';
 
@@ -128,8 +128,8 @@ abstract class ImplUtilityData extends UtilityData {
         }
 
         //await _node.addOrUpdateValue(_nodeValue);
-        await _node.addOrUpdateValue(_nodeLocation);
-        await _node.addOrUpdateValue(_nodeLocationName);
+        await _node.updateValue(_nodeLocation);
+        await _node.updateValue(_nodeLocationName);
         await storageController.update(_node);
       }
       return true;
@@ -190,7 +190,7 @@ abstract class ImplUtilityData extends UtilityData {
         _n = await storageController.get("$_LOCATION_PATH:${country.id}");
         _nV = await _n.getValue("name");
         _nV!.setValue(country.name, locale);
-        await _n.addOrUpdateValue(_nV);
+        await _n.updateValue(_nV);
         await storageController.update(_n);
         // _nodeValue = await n.getValue('name');
         // _nodeValue!.setValue(e.value, locale);
@@ -228,9 +228,9 @@ abstract class ImplUtilityData extends UtilityData {
           _nodeLocationName.setValue(profAss.location.name, locale);
         }
 
-        await _node.addOrUpdateValue(_nodeValue);
-        await _node.addOrUpdateValue(_nodeLocation);
-        await _node.addOrUpdateValue(_nodeLocationName);
+        await _node.updateValue(_nodeValue);
+        await _node.updateValue(_nodeLocation);
+        await _node.updateValue(_nodeLocationName);
         await storageController.update(_node);
       }
       return true;

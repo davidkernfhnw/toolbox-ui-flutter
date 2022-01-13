@@ -40,7 +40,7 @@ class HomeController extends getX.GetxController {
   var isScanning = false.obs;
   var isLoadingServices = false.obs;
   var message = "".obs;
-
+  var scanRequired = false.obs;
   //Todo: do pass of data from the localstorage to ui
 
 //initial aggregate threatScore
@@ -48,15 +48,17 @@ class HomeController extends getX.GetxController {
       dummy.GeigerScoreThreats(threatScores: [], geigerScore: '').obs;
 
   //notify external tool that a scan is about to start
-  void requestScan() async {
+  void _requestScan() async {
     await geigerApiInstance.getLocalMaster.scanButtonPressed();
+    //await geigerApiInstance.getEvents();
   }
 
   void onScanButtonPressed() async {
     //begin scanning
     isScanning.value = true;
 
-    requestScan();
+    _requestScan();
+    scanRequired.value = false;
     await Future.delayed(Duration(seconds: 2));
 
     aggThreatsScore.value = await _getAggThreatScore();
@@ -64,12 +66,29 @@ class HomeController extends getX.GetxController {
     //cached data when the user press the scan button
     _cachedData();
     //scanning is done
+
     isScanning.value = false;
   }
 
   //clear existing data before starting a new scan
   emptyThreatScores() {
     aggThreatsScore.value.threatScores.clear();
+  }
+
+  Future<bool> _listenToChangesOnLocalStorage() async {
+    String currentUserId = await _userService.getUserId;
+    Node _node = await _storageController
+        .get(":Users:${currentUserId}:gi:data:GeigerScoreAggregate");
+    EventType? eventType = await _localStorageInstance.listenToStorage(_node);
+    log("EventType from home controller: $eventType");
+    if (eventType != null) {
+      scanRequired.value = true;
+      log("scanRequired is => $scanRequired");
+      return true;
+    } else {
+      scanRequired.value = false;
+      return false;
+    }
   }
 
   //returns aggregate of GeigerScoreThreats
@@ -151,32 +170,43 @@ class HomeController extends getX.GetxController {
   //check if termsAndConditions were accepted
   // redirect to termAndCondition if false
   Future<void> redirect() async {
+    isLoadingServices.value = true;
+    message.value = "Loading..";
     bool checkTerms = await _termsAndConditionsController.isTermsAccepted();
     if (checkTerms == false) {
       return getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
     } else {
       bool checkUser = await _userService.checkNewUserStatus();
-      //Todo: fixed Bug
+
       // when hot reload is executed before the user pressed
       // the scan button after accepting terms and conditions
       // this check always be true
       if (checkUser == true) {
-        isLoadingServices.value = true;
-        message.value = "Loading..";
+        //Future.delayed(Duration(seconds: 2));
+
         //set dummyData
+        //Todo can't pair when data is in the localStorage
+        //Todo check on Alberto
         await _initDummyData();
+        //Todo: fixed Bug:
+        // StoreCountry always creating different
+        // ids for country when called multiply times
+
         await _geigerUtilityData.storeCountry();
         await _geigerUtilityData.storeProfAss();
         await _geigerUtilityData.storeCerts();
         await _geigerUtilityData.setPublicKey();
+        await Future.delayed(Duration(seconds: 2));
         await _initReplication();
         isLoadingServices.value = false;
-
+        await _listenToChangesOnLocalStorage();
         return;
       }
       //replication will not run again when a user press the scan button
-      //await _initReplication();
-
+      await _initReplication();
+      //listener
+      await _listenToChangesOnLocalStorage();
+      isLoadingServices.value = false;
       return;
     }
   }

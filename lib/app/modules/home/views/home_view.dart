@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
 import 'package:geiger_toolbox/app/modules/home/views/widgets/threats_card.dart';
 import 'package:geiger_toolbox/app/modules/home/views/widgets/top_screen.dart';
@@ -6,9 +7,6 @@ import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/shared_widgets/showCircularProgress.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 import 'package:geiger_toolbox/app/util/geiger_icons.dart';
-
-import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
-
 import 'package:get/get.dart';
 
 class HomeView extends StatelessWidget {
@@ -38,6 +36,7 @@ class HomeView extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       TopScreen(
+                        warning: controller.scanRequired.value,
                         onScanPressed: () {
                           //controller.emptyThreatScores();
                           controller.onScanButtonPressed();
@@ -45,7 +44,6 @@ class HomeView extends StatelessWidget {
                         aggregratedScore: !controller.isScanning.value
                             ? controller.aggThreatsScore.value.geigerScore
                             : "",
-                        warming: false,
                         isLoading: controller.isScanning.value,
                       ),
                       controller.isScanning.value

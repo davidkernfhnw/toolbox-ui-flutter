@@ -1,5 +1,5 @@
-import 'package:geiger_toolbox/app/data/model/device.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
+import 'package:geiger_toolbox/app/data/model/device.dart';
 
 import '../abstract/local_device.dart';
 
