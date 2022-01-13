@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:geiger_localstorage/geiger_localstorage.dart';
+import 'package:geiger_toolbox/app/data/model/geiger_score_threats.dart';
+import 'package:geiger_toolbox/app/data/model/global_recommendation.dart';
+import 'package:geiger_toolbox/app/data/model/threat.dart';
 import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
@@ -10,6 +12,7 @@ import 'package:geiger_toolbox/app/services/dummyData/dummy_data_controller.dart
 import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_data.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_indicator_data.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/impl_user_service.dart';
 import 'package:get/get.dart' as getX;
 import 'package:get_storage/get_storage.dart';
@@ -36,6 +39,7 @@ class HomeController extends getX.GetxController {
   late StorageController _storageController;
   late UserService _userService;
   late GeigerData _geigerUtilityData;
+  late GeigerIndicatorData _geigerIndicatorData;
 
   var isScanning = false.obs;
   var isLoadingServices = false.obs;
@@ -44,8 +48,8 @@ class HomeController extends getX.GetxController {
   //Todo: do pass of data from the localstorage to ui
 
 //initial aggregate threatScore
-  getX.Rx<dummy.GeigerScoreThreats> aggThreatsScore =
-      dummy.GeigerScoreThreats(threatScores: [], geigerScore: '').obs;
+  getX.Rx<GeigerScoreThreats> aggThreatsScore =
+      GeigerScoreThreats(threatScores: [], geigerScore: '').obs;
 
   void onScanButtonPressed() async {
     //begin scanning
@@ -66,19 +70,15 @@ class HomeController extends getX.GetxController {
   }
 
   //returns aggregate of GeigerScoreThreats
-  Future<dummy.GeigerScoreThreats> _getAggThreatScore() async {
+  Future<GeigerScoreThreats> _getAggThreatScore() async {
     String currentUserId = await _userService.getUserId;
     String indicatorId = _indicatorControllerInstance.indicatorId;
-    NodeValue? nodeValueG = await _storageController.getValue(
-        ":Users:${currentUserId}:gi:data:GeigerScoreAggregate", "GEIGER_score");
-    NodeValue? nodeValueT = await _storageController.getValue(
-        ":Users:${currentUserId}:gi:data:GeigerScoreAggregate",
-        "threats_score");
-    List<dummy.ThreatScore> t =
-        dummy.ThreatScore.convertFromJson(nodeValueT!.value);
+    String path =
+        ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
+    GeigerScoreThreats geigerScoreThreats =
+        await _geigerIndicatorData.getGeigerScoreThreats(path: path);
 
-    return dummy.GeigerScoreThreats(
-        threatScores: t, geigerScore: nodeValueG!.value);
+    return geigerScoreThreats;
   }
 
   // initialize storageController and userService before the ui loads
@@ -87,6 +87,7 @@ class HomeController extends getX.GetxController {
     _storageController = await _localStorageInstance.getStorageController;
     _userService = UserService(_storageController);
     _geigerUtilityData = GeigerData(_storageController);
+    _geigerIndicatorData = GeigerIndicatorData(_storageController);
   }
 
   Future<void> _initDummyStorageController() async {
@@ -100,10 +101,10 @@ class HomeController extends getX.GetxController {
     box.write("aggThreat", jsonEncode(aggThreatsScore.value));
   }
 
-  dummy.GeigerScoreThreats _getCachedData() {
+  GeigerScoreThreats _getCachedData() {
     var data = box.read("aggThreat");
     var json = jsonDecode(data);
-    dummy.GeigerScoreThreats result = dummy.GeigerScoreThreats.fromJson(json);
+    GeigerScoreThreats result = GeigerScoreThreats.fromJson(json);
     return result;
   }
 
@@ -142,36 +143,42 @@ class HomeController extends getX.GetxController {
     return;
   }
 
+  //load utility data
+  void loadUtilityData() async {
+    await _geigerUtilityData.storeCountry();
+    await _geigerUtilityData.storeProfAss();
+    await _geigerUtilityData.storeCerts();
+    await _geigerUtilityData.setPublicKey();
+  }
+
   //check if termsAndConditions were accepted
   // redirect to termAndCondition if false
   Future<void> redirect() async {
     bool checkTerms = await _termsAndConditionsController.isTermsAccepted();
     if (checkTerms) {
       bool checkUser = await _userService.checkNewUserStatus();
-      //Todo: fixed Bug
       // when hot reload is executed before the user pressed
       // the scan button after accepting terms and conditions
       // this check always be true
-      if (checkUser == true) {
+      if (checkUser) {
         isLoadingServices.value = true;
         message.value = "Loading..";
         //set dummyData
         //await _initDummyData();
+        await Future.delayed(Duration(seconds: 1));
         //start indicator
         await _indicatorControllerInstance.initGeigerIndicator();
-        await _geigerUtilityData.storeCountry();
-        await _geigerUtilityData.storeProfAss();
-        await _geigerUtilityData.storeCerts();
-        await _geigerUtilityData.setPublicKey();
-        await _initReplication();
+        loadUtilityData();
+
+        //await _initReplication();
         isLoadingServices.value = false;
 
         return;
+      } else {
+        //replication will not run again when a user press the scan button
+        //await _initReplication();
+        return;
       }
-      //replication will not run again when a user press the scan button
-      //await _initReplication();
-
-      return;
     } else {
       return getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
     }
@@ -188,9 +195,14 @@ class HomeController extends getX.GetxController {
     await redirect();
     //populate data from cached
     await _getCacheData();
+
     super.onInit();
   }
 
+  @override
+  void onReady() {
+    _getThreat();
+  }
   //Todo : add StorageListener
   //*********cloud replication
 
@@ -207,5 +219,16 @@ class HomeController extends getX.GetxController {
           .then((value) => value!.getValue("en"));
       log(result!);
     }
+  }
+
+  _getThreat() async {
+    List<Threat> r = await _geigerIndicatorData.getGlobalThreats();
+    List<Threat> l = await _geigerIndicatorData.getLimitedThreats();
+    List<GlobalRecommendation> g =
+        await _geigerIndicatorData.getGlobalRecommendations();
+    log("******Global********");
+    log("Global Threats ==> $r");
+    log("Limited Global Threats ==> $l");
+    log("Global Recommendations ==> $g");
   }
 }

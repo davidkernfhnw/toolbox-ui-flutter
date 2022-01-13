@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geiger_toolbox/app/data/model/threat_score.dart';
 import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
 import 'package:geiger_toolbox/app/modules/home/views/widgets/threats_card.dart';
 import 'package:geiger_toolbox/app/modules/home/views/widgets/top_screen.dart';
@@ -6,9 +7,6 @@ import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/shared_widgets/showCircularProgress.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 import 'package:geiger_toolbox/app/util/geiger_icons.dart';
-
-import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
-
 import 'package:get/get.dart';
 
 class HomeView extends StatelessWidget {
@@ -19,7 +17,16 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const SideMenu(),
+      drawer: Obx(() {
+        return controller.isLoadingServices.value == true
+            ? Visibility(
+                maintainSize: true,
+                maintainState: true,
+                visible: true,
+                child: SizedBox(),
+              )
+            : const SideMenu();
+      }),
       appBar: AppBar(
         title: const Text('Geiger Toolbox'),
       ),
@@ -63,7 +70,7 @@ class HomeView extends StatelessWidget {
                                   children: controller
                                       .aggThreatsScore.value.threatScores
                                       .map<ThreatsCard>(
-                                    (dummy.ThreatScore t) {
+                                    (ThreatScore t) {
                                       return ThreatsCard(
                                         label: t.threat.name,
                                         icon: GeigerIcon.iconsMap[

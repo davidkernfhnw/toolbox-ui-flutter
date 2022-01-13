@@ -9,8 +9,13 @@ class Partner {
   final String? id;
   Country location;
   List<String> names;
+  String locale;
 
-  Partner({String? id, required this.location, required this.names})
+  Partner(
+      {String? id,
+      required this.location,
+      required this.names,
+      this.locale: "en"})
       : id = id ?? Uuids.uuid;
 
   factory Partner.fromJson(Map<String, dynamic> json) {
@@ -24,6 +29,6 @@ class Partner {
   @override
   String toString() {
     super.toString();
-    return '{"id":$id, "location":$location, "names":$names}';
+    return '{"id":$id, "location":$location, "names":$names, "locale"$locale}';
   }
 }

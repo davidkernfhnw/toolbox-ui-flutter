@@ -114,7 +114,7 @@ abstract class ImplUtilityData extends UtilityData {
   }
 
   @override
-  Future<bool> storeCert({Locale? locale, required List<Partner> certs}) async {
+  Future<bool> storeCert({required List<Partner> certs}) async {
     try {
       for (Partner cert in certs) {
         _node = await storageController.get("$_CERT_PATH:${cert.id}");
@@ -124,9 +124,8 @@ abstract class ImplUtilityData extends UtilityData {
         NodeValue _nodeLocation = NodeValueImpl("location", cert.location.id!);
         NodeValue _nodeLocationName =
             NodeValueImpl("locationName", cert.location.name);
-        if (locale != null) {
-          _nodeValue.setValue(cert.names.join(","), locale);
-        }
+
+        _nodeValue.setValue(cert.names.join(","), Locale.parse(cert.locale));
 
         //await _node.addOrUpdateValue(_nodeValue);
         await _node.addOrUpdateValue(_nodeLocation);
@@ -151,11 +150,11 @@ abstract class ImplUtilityData extends UtilityData {
               NodeValueImpl("locationName", cert.location.name);
 
           //translation
-          if (locale != null) {
-            certName.setValue(cert.names.join(","), locale);
-            _nodeLocation.setValue(cert.location.id!, locale);
-            _nodeLocationName.setValue(cert.location.name, locale);
-          }
+
+          certName.setValue(cert.names.join(","), Locale.parse(cert.locale));
+          _nodeLocation.setValue(cert.location.id!, Locale.parse(cert.locale));
+          _nodeLocationName.setValue(
+              cert.location.name, Locale.parse(cert.locale));
 
           await idNode.addOrUpdateValue(certName);
           await idNode.addOrUpdateValue(_nodeLocation);
@@ -173,8 +172,7 @@ abstract class ImplUtilityData extends UtilityData {
   }
 
   @override
-  Future<bool> storeCountries(
-      {required Locale locale, required List<Country> countries}) async {
+  Future<bool> storeCountries({required List<Country> countries}) async {
     Node _n;
     NodeValue? _nV;
     //create Node path
@@ -190,21 +188,18 @@ abstract class ImplUtilityData extends UtilityData {
       try {
         _n = await storageController.get("$_LOCATION_PATH:${country.id}");
         _nV = await _n.getValue("name");
-        _nV!.setValue(country.name, locale);
-        await _n.addOrUpdateValue(_nV);
-        await storageController.update(_n);
-        // _nodeValue = await n.getValue('name');
-        // _nodeValue!.setValue(e.value, locale);
+
+        _nV!.setValue(country.name.toLowerCase(), Locale.parse(country.locale));
+        // await _n.addOrUpdateValue(_nV);
+        // await storageController.update(_n);
 
       } on StorageException {
         _n = NodeImpl("$_LOCATION_PATH:${country.id}", _NODE_OWNER);
         //_n.visibility = vis.Visibility.white;
         _nV = NodeValueImpl("name", country.name.toLowerCase());
-        await _n.addOrUpdateValue(_nV);
-        await storageController.addOrUpdate(_n);
       }
-      // create node
-
+      await _n.addOrUpdateValue(_nV);
+      await storageController.addOrUpdate(_n);
     }
 
     return true;
@@ -212,7 +207,7 @@ abstract class ImplUtilityData extends UtilityData {
 
   @override
   Future<bool> storeProfessionAssociation(
-      {Locale? locale, required List<Partner> professionAssociation}) async {
+      {required List<Partner> professionAssociation}) async {
     try {
       for (Partner profAss in professionAssociation) {
         _node = await storageController.get("$_PROF_ASS_PATH:${profAss.id}");
@@ -223,11 +218,13 @@ abstract class ImplUtilityData extends UtilityData {
             NodeValueImpl("location", profAss.location.id!);
         NodeValue _nodeLocationName =
             NodeValueImpl("locationName", profAss.location.name);
-        if (locale != null) {
-          _nodeValue.setValue(profAss.names.join(","), locale);
-          _nodeLocation.setValue(profAss.location.id!, locale);
-          _nodeLocationName.setValue(profAss.location.name, locale);
-        }
+
+        _nodeValue.setValue(
+            profAss.names.join(","), Locale.parse(profAss.locale));
+        _nodeLocation.setValue(
+            profAss.location.id!, Locale.parse(profAss.locale));
+        _nodeLocationName.setValue(
+            profAss.location.name, Locale.parse(profAss.locale));
 
         await _node.addOrUpdateValue(_nodeValue);
         await _node.addOrUpdateValue(_nodeLocation);
@@ -252,17 +249,19 @@ abstract class ImplUtilityData extends UtilityData {
               NodeValueImpl("locationName", profAss.location.name);
 
           //translation
-          if (locale != null) {
-            certName.setValue(profAss.names.join(","), locale);
-            _nodeLocation.setValue(profAss.location.id!, locale);
-            _nodeLocationName.setValue(profAss.location.name, locale);
-          }
+
+          certName.setValue(
+              profAss.names.join(","), Locale.parse(profAss.locale));
+          _nodeLocation.setValue(
+              profAss.location.id!, Locale.parse(profAss.locale));
+          _nodeLocationName.setValue(
+              profAss.location.name, Locale.parse(profAss.locale));
 
           await idNode.addOrUpdateValue(certName);
           await idNode.addOrUpdateValue(_nodeLocation);
           await idNode.addOrUpdateValue(_nodeLocationName);
           await storageController.update(idNode);
-          //print(idNode);
+          log(idNode.toString());
         }
         return true;
       } catch (e) {

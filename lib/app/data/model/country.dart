@@ -1,4 +1,3 @@
-import 'package:geiger_toolbox/app/services/parser_helpers/abstract/utility_data.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/uuid.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -8,8 +7,10 @@ part 'country.g.dart';
 class Country {
   final String? id;
   String name;
+  String locale;
 
-  Country({String? id, required this.name}) : id = id ?? Uuids.uuid;
+  Country({String? id, required this.name, this.locale: "en"})
+      : id = id ?? Uuids.uuid;
 
   factory Country.fromJson(Map<String, dynamic> json) {
     return _$CountryFromJson(json);

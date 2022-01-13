@@ -11,7 +11,7 @@ abstract class GlobalData {
   final StorageController storageController;
 
   static const String GLOBAL_THREAT_PATH = ":Global:threats";
-  static const String GLOBAL_RECOMMENDATION_PATH = "Global:Recommendations";
+  static const String GLOBAL_RECOMMENDATION_PATH = ":Global:recommendations";
 
   ///@param optional language as string
   ///@return  list of threats from localStorage
@@ -25,7 +25,7 @@ abstract class GlobalData {
       //print(nodes.toString());
       for (Node node in await nodes) {
         //check if path exist
-        log("${node.parentPath}");
+        //log("${node.parentPath}");
         if (node.parentPath == ":Global") {
           String children = await node.getChildNodesCsv();
           List<String> threatIds = children.split(',');
@@ -57,15 +57,19 @@ abstract class GlobalData {
     try {
       List<Node> nodes = await storageController
           .search(SearchCriteria(searchPath: GLOBAL_RECOMMENDATION_PATH));
+      // Node node = await storageController.get(GLOBAL_RECOMMENDATION_PATH);
+      // log("Global => $node");
       for (Node node in await nodes) {
         //check first path exist
         if (node.parentPath == ":Global") {
           String children = await node.getChildNodesCsv();
+
           List<String> recommendationIds = children.split(',');
           //check if path exist
           for (String recommendationId in recommendationIds) {
             Node recommendationNode = await storageController
                 .get("$GLOBAL_RECOMMENDATION_PATH:$recommendationId");
+            log(recommendationNode.toString());
             String shortDescription = await recommendationNode
                 .getValue("short")
                 .then((value) => value!.getValue(locale)!);

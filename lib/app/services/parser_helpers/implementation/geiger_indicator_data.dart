@@ -20,15 +20,17 @@ class GeigerIndicatorData extends GlobalData{
   Future<GeigerScoreThreats> getGeigerScoreThreats({required String path}) async {
   List<ThreatScore> threatsScore = [];
   List<Threat> threats = await getLimitedThreats();
-  late String geigerScore;
+  String geigerScore = "";
     try {
 
+      Node node = await storageController.get(path);
+      log(node.toString());
       List<Node> nodes = await storageController
           .search(SearchCriteria(searchPath: path));
       for (Node node in  nodes) {
         //check if node exist
         //Todo : test this
-        if (node.parentPath == ":") {
+        if (node.path == path) {
           NodeValue? nodeValueG = await storageController.getValue(
               path,
               "GEIGER_score");
@@ -68,14 +70,14 @@ class GeigerIndicatorData extends GlobalData{
 
         }
         else {
-          log("$path => NODE PATH DOES NOT EXIST");
+          log("$path => NODE PATH NOT FOUND");
         }
       }
 
 
     }
-    on Error catch(e){
-      log('Got Exception while fetching data from this $path\n $e');
+    on Error catch(e,s){
+      log('Got Exception while fetching data from this $path\n $e\n $s');
     }
   return GeigerScoreThreats(
       threatScores: threatsScore, geigerScore: geigerScore);

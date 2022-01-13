@@ -30,7 +30,7 @@ class CustomDropdownLanguage extends StatelessWidget {
       hint: Text(hintText),
       items: listItems
           .map((Language item) => DropdownMenuItem(
-                value: item.symbol,
+                value: item.locale,
                 child: Text(item.language),
               ))
           .toList(),

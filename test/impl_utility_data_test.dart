@@ -6,7 +6,6 @@ import 'package:geiger_toolbox/app/data/model/country.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_data.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/impl_utility_data.dart';
-import 'package:intl/src/locale.dart';
 
 void main() {
   final StorageController storageController =
@@ -33,13 +32,12 @@ void main() {
     });
 
     test("test storeCountries in multiple locale", () async {
-      await implUtilityData
-          .storeCountries(locale: Locale.parse("en"), countries: [
+      bool r = await implUtilityData.storeCountries(countries: [
         Country(name: "switzerland"),
         Country(name: "netherlands"),
         Country(name: "romania")
       ]);
-
+      expect(r, isTrue);
       // await implUtilityData
       //     .storeCountries(locale: Locale.parse("nl-nl"), countries: [
       //   Country(name: "Switzerland"),
@@ -47,11 +45,11 @@ void main() {
       //   Country(name: "Romania")
       // ]);
       //
-      // await implUtilityData.storeCountries(countries: [
-      //   Country(name: "Switzerland in de"),
-      //   Country(name: "Netherlands in de"),
-      //   Country(name: "Romania sin de")
-      // ], locale: Locale.parse("de-de"));
+      await implUtilityData.storeCountries(countries: [
+        Country(name: "Switzerland in de", locale: "de-de"),
+        Country(name: "Netherlands in de", locale: "de-de"),
+        Country(name: "Romania sin de", locale: "de-de")
+      ]);
     });
     test("test getCountries when stored", () async {
       List<Country> c = await implUtilityData.getCountries();
