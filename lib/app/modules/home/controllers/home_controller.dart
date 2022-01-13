@@ -146,9 +146,7 @@ class HomeController extends getX.GetxController {
   // redirect to termAndCondition if false
   Future<void> redirect() async {
     bool checkTerms = await _termsAndConditionsController.isTermsAccepted();
-    if (checkTerms == false) {
-      return getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
-    } else {
+    if (checkTerms) {
       bool checkUser = await _userService.checkNewUserStatus();
       //Todo: fixed Bug
       // when hot reload is executed before the user pressed
@@ -174,6 +172,8 @@ class HomeController extends getX.GetxController {
       //await _initReplication();
 
       return;
+    } else {
+      return getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
     }
   }
 

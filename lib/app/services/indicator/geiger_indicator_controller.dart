@@ -1,13 +1,12 @@
 import 'dart:developer';
 
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/uuid.dart';
 import 'package:get/get.dart';
 import 'package:toolbox_indicator_test/indicator.dart';
 
 class GeigerIndicatorController extends GetxController {
   static final GeigerIndicatorController instance = Get.find();
 
-  final String indicatorId = Uuids.uuid;
+  final String indicatorId = "1234-1234-1234";
 
   Future<void> initGeigerIndicator() async {
     try {
