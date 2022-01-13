@@ -1,10 +1,11 @@
 import 'dart:developer';
 
+import 'package:geiger_localstorage/geiger_localstorage.dart';
+import 'package:geiger_localstorage/src/visibility.dart' as vis;
 import 'package:geiger_toolbox/app/data/model/country.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
-import 'package:geiger_localstorage/geiger_localstorage.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/uuid.dart';
 import 'package:intl/src/locale.dart';
-import 'package:geiger_localstorage/src/visibility.dart' as vis;
 
 import '../abstract/utility_data.dart';
 
@@ -276,7 +277,7 @@ abstract class ImplUtilityData extends UtilityData {
   Future<bool> storePublicKey() async {
     try {
       Node node = await getNode(":Keys", storageController);
-      String uuid = UtilityData.uuid;
+      String uuid = Uuids.uuid;
       await node.addValue(NodeValueImpl("publicKey", uuid));
       await storageController.addOrUpdate(node);
 

@@ -1,16 +1,9 @@
+import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/country.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
-import 'package:uuid/uuid.dart';
-import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/locale.dart';
 
 abstract class UtilityData {
-  // ----- Helpers
-  static String get uuid {
-    ///Generate a v4 (random) id
-    return Uuid().v4();
-  }
-
   Future<bool> storeCountries(
       {required Locale locale, required List<Country> countries});
 

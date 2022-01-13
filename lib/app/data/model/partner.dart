@@ -1,5 +1,5 @@
 import 'package:geiger_toolbox/app/data/model/country.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/abstract/utility_data.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/uuid.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'partner.g.dart';
@@ -11,7 +11,7 @@ class Partner {
   List<String> names;
 
   Partner({String? id, required this.location, required this.names})
-      : id = id ?? UtilityData.uuid;
+      : id = id ?? Uuids.uuid;
 
   factory Partner.fromJson(Map<String, dynamic> json) {
     return _$PartnerFromJson(json);

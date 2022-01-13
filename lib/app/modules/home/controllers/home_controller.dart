@@ -7,6 +7,7 @@ import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/dummyData/dummy_data_controller.dart';
+import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_data.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/impl_user_service.dart';
@@ -26,7 +27,8 @@ class HomeController extends getX.GetxController {
 
   final CloudReplicationController _cloudReplicationInstance =
       CloudReplicationController.instance;
-
+  final GeigerIndicatorController _indicatorControllerInstance =
+      GeigerIndicatorController.instance;
   // dummy instance
   final DummyStorageController _dummyStorageInstance =
       DummyStorageController.instance;
@@ -66,6 +68,7 @@ class HomeController extends getX.GetxController {
   //returns aggregate of GeigerScoreThreats
   Future<dummy.GeigerScoreThreats> _getAggThreatScore() async {
     String currentUserId = await _userService.getUserId;
+    String indicatorId = _indicatorControllerInstance.indicatorId;
     NodeValue? nodeValueG = await _storageController.getValue(
         ":Users:${currentUserId}:gi:data:GeigerScoreAggregate", "GEIGER_score");
     NodeValue? nodeValueT = await _storageController.getValue(
@@ -155,7 +158,9 @@ class HomeController extends getX.GetxController {
         isLoadingServices.value = true;
         message.value = "Loading..";
         //set dummyData
-        await _initDummyData();
+        //await _initDummyData();
+        //start indicator
+        await _indicatorControllerInstance.initGeigerIndicator();
         await _geigerUtilityData.storeCountry();
         await _geigerUtilityData.storeProfAss();
         await _geigerUtilityData.storeCerts();
@@ -190,17 +195,17 @@ class HomeController extends getX.GetxController {
   //*********cloud replication
 
   // // testing purpose for data stored by replication
-  // _getThreatWeight() async {
-  //   Node node = await _storageController.get(":Global:ThreatWeight");
-  //   List<String> threatsId =
-  //       await node.getChildNodesCsv().then((value) => value.split(','));
-  //   for (String id in threatsId) {
-  //     Node threat = await _storageController.get(":Global:ThreatWeight:$id");
-  //
-  //     String? result = await threat
-  //         .getValue("threatJson")
-  //         .then((value) => value!.getValue("en"));
-  //     log(result!);
-  //   }
-  // }
+  _getThreatWeight() async {
+    Node node = await _storageController.get(":Global:threats");
+    List<String> threatsId =
+        await node.getChildNodesCsv().then((value) => value.split(','));
+    for (String id in threatsId) {
+      Node threat = await _storageController.get(":Global:threats:$id");
+
+      String? result = await threat
+          .getValue("threatJson")
+          .then((value) => value!.getValue("en"));
+      log(result!);
+    }
+  }
 }

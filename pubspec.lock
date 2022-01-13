@@ -15,6 +15,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.7.0"
+  android_intent_plus:
+    dependency: transitive
+    description:
+      name: android_intent_plus
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.2"
   archive:
     dependency: transitive
     description:
@@ -323,7 +330,7 @@ packages:
       name: geiger_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.5"
+    version: "0.6.0"
   geiger_dummy_data:
     dependency: "direct main"
     description:
@@ -589,7 +596,7 @@ packages:
       name: pointycastle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.4.0"
+    version: "3.5.0"
   pool:
     dependency: transitive
     description:
@@ -763,6 +770,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  toolbox_indicator_test:
+    dependency: "direct main"
+    description:
+      name: toolbox_indicator_test
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   typed_data:
     dependency: transitive
     description:
