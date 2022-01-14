@@ -54,11 +54,11 @@ class GeigerIndicatorData extends GlobalData{
             List<String> tS = splitThreatScore.split(",");
 
 
-              log(splitThreatScore.toString());
+              //log(splitThreatScore.toString());
               if(splitThreatScore.isNotEmpty) {
                 String threatId = tS[0];
                 String score = tS[1];
-                log(tS.isEmpty.toString());
+                //log(tS.isEmpty.toString());
 
 
                 //filter

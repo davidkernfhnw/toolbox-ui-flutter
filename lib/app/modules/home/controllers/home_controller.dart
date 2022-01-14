@@ -196,7 +196,9 @@ class HomeController extends getX.GetxController {
     await redirect();
     //populate data from cached
     await _getCacheData();
-
+    log("${await _userService.getUserId}");
+    log("Dump*****************");
+    log("${await _storageController.dump(":")}");
     super.onInit();
   }
 
@@ -223,7 +225,7 @@ class HomeController extends getX.GetxController {
   // }
 
   //for testing Indicator data
-  _getThreat() async {
+  void _getThreat() async {
     List<Threat> r = await _geigerIndicatorData.getGlobalThreats();
     List<Threat> l = await _geigerIndicatorData.getLimitedThreats();
     List<GlobalRecommendation> g =
