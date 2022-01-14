@@ -776,7 +776,7 @@ packages:
       name: toolbox_indicator_test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   typed_data:
     dependency: transitive
     description:

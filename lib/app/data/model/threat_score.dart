@@ -16,4 +16,9 @@ class ThreatScore {
   Map<String, dynamic> toJson() {
     return _$ThreatScoreToJson(this);
   }
+
+  @override
+  String toString() {
+    return "{threat:$threat, score:$score}";
+  }
 }

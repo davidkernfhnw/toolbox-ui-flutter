@@ -1,5 +1,4 @@
 import 'package:geiger_toolbox/app/data/model/threat.dart';
-
 import 'package:json_annotation/json_annotation.dart';
 
 part 'related_threat_weight.g.dart';
@@ -17,5 +16,10 @@ class RelatedThreatWeight {
 
   Map<String, dynamic> toJson() {
     return _$RelatedThreatWeightToJson(this);
+  }
+
+  @override
+  String toString() {
+    return '{"threat:$threat, threatWeight:$threatWeight"}';
   }
 }

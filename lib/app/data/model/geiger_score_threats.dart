@@ -17,4 +17,9 @@ class GeigerScoreThreats {
   Map<String, dynamic> toJson() {
     return _$GeigerScoreThreatsToJson(this);
   }
+
+  @override
+  String toString() {
+    return '{threatScore:$threatScores, geigerScore:$geigerScore}';
+  }
 }

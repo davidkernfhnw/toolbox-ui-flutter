@@ -4,10 +4,11 @@ import 'dart:developer';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_score_threats.dart';
 import 'package:geiger_toolbox/app/data/model/global_recommendation.dart';
+import 'package:geiger_toolbox/app/data/model/recommendation.dart';
 import 'package:geiger_toolbox/app/data/model/threat.dart';
+import 'package:geiger_toolbox/app/data/model/user.dart';
 import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
-import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/dummyData/dummy_data_controller.dart';
 import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
@@ -28,8 +29,8 @@ class HomeController extends getX.GetxController {
   final TermsAndConditionsController _termsAndConditionsController =
       TermsAndConditionsController.instance;
 
-  final CloudReplicationController _cloudReplicationInstance =
-      CloudReplicationController.instance;
+  // final CloudReplicationController _cloudReplicationInstance =
+  //     CloudReplicationController.instance;
   final GeigerIndicatorController _indicatorControllerInstance =
       GeigerIndicatorController.instance;
   // dummy instance
@@ -122,26 +123,26 @@ class HomeController extends getX.GetxController {
 
   //******************end***********************
 
-  Future<void> _initReplication() async {
-    isLoadingServices.value = true;
-    message.value = "Update....";
-
-    //initialReplication
-    message.value = "Preparing geigerToolbox...";
-
-    // only initialize replication only when terms and conditions are accepted
-    await _cloudReplicationInstance.initialReplication();
-    log("isLoading is : $isLoadingServices");
-    message.value = "Almost done!";
-    isLoadingServices.value = false;
-    log("done Loading : $isLoadingServices");
-  }
+  // Future<void> _initReplication() async {
+  //   isLoadingServices.value = true;
+  //   message.value = "Update....";
+  //
+  //   //initialReplication
+  //   message.value = "Preparing geigerToolbox...";
+  //
+  //   // only initialize replication only when terms and conditions are accepted
+  //   await _cloudReplicationInstance.initialReplication();
+  //   log("isLoading is : $isLoadingServices");
+  //   message.value = "Almost done!";
+  //   isLoadingServices.value = false;
+  //   log("done Loading : $isLoadingServices");
+  // }
 
   // only set Dummy data and other utilityData if user is a new user
-  Future<void> _initDummyData() async {
-    await _dummyStorageInstance.setDummyData();
-    return;
-  }
+  // Future<void> _initDummyData() async {
+  //   await _dummyStorageInstance.setDummyData();
+  //   return;
+  // }
 
   //load utility data
   void loadUtilityData() async {
@@ -207,20 +208,21 @@ class HomeController extends getX.GetxController {
   //*********cloud replication
 
   // // testing purpose for data stored by replication
-  _getThreatWeight() async {
-    Node node = await _storageController.get(":Global:threats");
-    List<String> threatsId =
-        await node.getChildNodesCsv().then((value) => value.split(','));
-    for (String id in threatsId) {
-      Node threat = await _storageController.get(":Global:threats:$id");
+  // _getThreatWeight() async {
+  //   Node node = await _storageController.get(":Global:threats");
+  //   List<String> threatsId =
+  //       await node.getChildNodesCsv().then((value) => value.split(','));
+  //   for (String id in threatsId) {
+  //     Node threat = await _storageController.get(":Global:threats:$id");
+  //
+  //     String? result = await threat
+  //         .getValue("threatJson")
+  //         .then((value) => value!.getValue("en"));
+  //     log(result!);
+  //   }
+  // }
 
-      String? result = await threat
-          .getValue("threatJson")
-          .then((value) => value!.getValue("en"));
-      log(result!);
-    }
-  }
-
+  //for testing Indicator data
   _getThreat() async {
     List<Threat> r = await _geigerIndicatorData.getGlobalThreats();
     List<Threat> l = await _geigerIndicatorData.getLimitedThreats();
@@ -230,5 +232,47 @@ class HomeController extends getX.GetxController {
     log("Global Threats ==> $r");
     log("Limited Global Threats ==> $l");
     log("Global Recommendations ==> $g");
+    GeigerScoreThreats u = await _getUserThreatScore();
+    log("user threats ==> $u");
+    // GeigerScoreThreats d = await _getDeviceThreatScore();
+    // log("device threats ==> $d");
+    List<Recommendation> uR = await _getUserRecommendation();
+    log("User recommendation ==> $uR");
+  }
+
+  //returns user of GeigerScoreThreats
+  Future<GeigerScoreThreats> _getUserThreatScore() async {
+    User? currentUser = await _userService.getUserInfo;
+    String indicatorId = _indicatorControllerInstance.indicatorId;
+    String path =
+        ":Users:${currentUser!.userId}:$indicatorId:data:GeigerScoreUser";
+    GeigerScoreThreats geigerScoreThreats =
+        await _geigerIndicatorData.getGeigerScoreThreats(path: path);
+
+    return geigerScoreThreats;
+  }
+
+  //returns device of GeigerScoreThreats
+  Future<GeigerScoreThreats> _getDeviceThreatScore() async {
+    User? currentUser = await _userService.getUserInfo;
+    String indicatorId = _indicatorControllerInstance.indicatorId;
+    String path =
+        ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
+    GeigerScoreThreats geigerScoreThreats =
+        await _geigerIndicatorData.getGeigerScoreThreats(path: path);
+
+    return geigerScoreThreats;
+  }
+
+  Future<List<Recommendation>> _getUserRecommendation() async {
+    User? currentUser = await _userService.getUserInfo;
+    String indicatorId = _indicatorControllerInstance.indicatorId;
+    String path =
+        ":Users:${currentUser!.userId}:$indicatorId:data:recommendations";
+    List<Recommendation> geigerScoreThreats =
+        await _geigerIndicatorData.getGeigerRecommendations(
+            path: path, threatId: '80efffaf-98a1-4e0a-8f5e-gr89388350ma');
+
+    return geigerScoreThreats;
   }
 }

@@ -11,7 +11,7 @@ abstract class GlobalData {
   final StorageController storageController;
 
   static const String GLOBAL_THREAT_PATH = ":Global:threats";
-  static const String GLOBAL_RECOMMENDATION_PATH = ":Global:recommendations";
+  static const String GLOBAL_RECOMMENDATION_PATH = ":Global:Recommendations";
 
   ///@param optional language as string
   ///@return  list of threats from localStorage
@@ -54,11 +54,13 @@ abstract class GlobalData {
       {String locale: "en"}) async {
     List<GlobalRecommendation> r = [];
     List<RelatedThreatWeight> tW = [];
+    String longDescription = "";
+    String action = "";
     try {
       List<Node> nodes = await storageController
           .search(SearchCriteria(searchPath: GLOBAL_RECOMMENDATION_PATH));
       // Node node = await storageController.get(GLOBAL_RECOMMENDATION_PATH);
-      // log("Global => $node");
+      // log("Global Recommendation => $node");
       for (Node node in await nodes) {
         //check first path exist
         if (node.parentPath == ":Global") {
@@ -69,19 +71,21 @@ abstract class GlobalData {
           for (String recommendationId in recommendationIds) {
             Node recommendationNode = await storageController
                 .get("$GLOBAL_RECOMMENDATION_PATH:$recommendationId");
-            log(recommendationNode.toString());
+            //log("Global Recommendation ==> ${recommendationNode}");
             String shortDescription = await recommendationNode
                 .getValue("short")
                 .then((value) => value!.getValue(locale)!);
-            String longDescription = await recommendationNode
-                .getValue("long")
-                .then((value) => value!.getValue(locale)!);
-            String action = await recommendationNode
-                .getValue("action")
-                .then((value) => value!.getValue(locale)!);
+            NodeValue? long = await recommendationNode.getValue("long");
+            if (long != null) {
+              longDescription = long.getValue(locale)!;
+            }
+            NodeValue? a = await recommendationNode.getValue("action");
+            if (a != null) {
+              action = a.getValue(locale)!;
+            }
 
             String recommendationType = await recommendationNode
-                .getValue("recommendationType")
+                .getValue("RecommendationType")
                 .then((value) => value!.getValue(locale)!);
 
             //relatedThreats is separated by , and ;
@@ -91,7 +95,7 @@ abstract class GlobalData {
 
             List<String> relThreatsWeight =
                 relatedThreats.split(";"); //split on semi-colon
-            log("Global recommendation: $relThreatsWeight");
+            //log("Global recommendation: $relThreatsWeight");
 
             for (String relThreatWeight in relThreatsWeight) {
               List<String> tw = relThreatWeight.split(",");
@@ -126,8 +130,8 @@ abstract class GlobalData {
         //   log("$GLOBAL_RECOMMENDATION_PATH => NODE PATH DOES NOT EXIST");
         // }
       }
-    } on Error catch (e) {
-      log('Got Exception while fetching list of global recommendation: $e');
+    } on Error catch (e, s) {
+      log('Got Exception while fetching list of global recommendation: $e \n $s');
     }
     return r;
   }

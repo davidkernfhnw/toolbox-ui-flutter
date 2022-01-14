@@ -1,5 +1,4 @@
 import 'package:geiger_toolbox/app/data/model/related_threat_weight.dart';
-
 import 'package:json_annotation/json_annotation.dart';
 
 part 'global_recommendation.g.dart';
@@ -29,5 +28,10 @@ class GlobalRecommendation {
 
   Map<String, dynamic> toJson() {
     return _$GlobalRecommendationToJson(this);
+  }
+
+  @override
+  String toString() {
+    return '{recommendationID:$recommendationId, shortDescription:$shortDescription,longDescription:$longDescription, action:$action, relatedThreatsWeights:$relatedThreatsWeights, recommendationType:$recommendationType}';
   }
 }
