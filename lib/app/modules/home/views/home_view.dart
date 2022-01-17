@@ -32,6 +32,11 @@ class HomeView extends StatelessWidget {
       ),
       body: Obx(
         () {
+          //convert to geiger_score aggregate to double
+          double a = double.parse(controller.aggThreatsScore.value.geigerScore);
+          //back to String with precision
+          String agg = a.toPrecision(1).toString();
+
           return controller.isLoadingServices.value == true
               ? Center(
                   child: ShowCircularProgress(
@@ -49,9 +54,8 @@ class HomeView extends StatelessWidget {
                           //controller.emptyThreatScores();
                           controller.onScanButtonPressed();
                         },
-                        aggregratedScore: !controller.isScanning.value
-                            ? controller.aggThreatsScore.value.geigerScore
-                            : "",
+                        aggregratedScore:
+                            !controller.isScanning.value ? agg : "",
                         warming: false,
                         isLoading: controller.isScanning.value,
                       ),

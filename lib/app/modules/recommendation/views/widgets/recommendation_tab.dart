@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
-
+import 'package:geiger_toolbox/app/data/model/recommendation.dart';
 import 'package:geiger_toolbox/app/shared_widgets/indicator_gauge.dart';
+import 'package:geiger_toolbox/app/util/style.dart';
+
 import 'expansion_card.dart';
-import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 
 class RecommendationTab extends StatelessWidget {
   final String label;
   final double score;
   final String threatTitle;
+  final String? recommendationLabel;
   final String? recommendationType;
-  final List<dummy.Recommendations> recommendations;
+  final List<Recommendation> recommendations;
 
-  const RecommendationTab({
-    Key? key,
-    required this.recommendations,
-    required this.label,
-    required this.score,
-    required this.threatTitle,
-    this.recommendationType,
-  }) : super(key: key);
+  const RecommendationTab(
+      {Key? key,
+      required this.recommendations,
+      required this.label,
+      required this.score,
+      required this.threatTitle,
+      this.recommendationLabel,
+      this.recommendationType})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,7 @@ class RecommendationTab extends StatelessWidget {
       child: Column(
         children: [
           IndicatorGauge(score: score.toDouble()),
-          Text(label),
+          boldText(label),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -44,22 +47,22 @@ class RecommendationTab extends StatelessWidget {
               OutlinedButton(
                 onPressed: null,
                 child: Row(
-                  children: const [
+                  children: [
                     Icon(Icons.warning_rounded),
                     SizedBox(width: 5),
-                    Text("About Device"),
+                    Text("About ${recommendationType ?? ""}"),
                   ],
                 ),
               ),
             ],
           ),
           const SizedBox(height: 5),
-          recommendationType == null
-              ? const SizedBox()
+          recommendations.isEmpty
+              ? SizedBox()
               : Row(
                   children: [
                     Text(
-                      recommendationType!,
+                      recommendationLabel ?? "",
                       style: const TextStyle(color: Colors.grey),
                     ),
                   ],
@@ -67,12 +70,19 @@ class RecommendationTab extends StatelessWidget {
           const SizedBox(
             height: 5,
           ),
-          Column(
-            // animationDuration: Duration(seconds: 2),
-            children: recommendations.map<Widget>((dummy.Recommendations e) {
-              return ExpansionCard(recommendations: e);
-            }).toList(),
-          ),
+          recommendations.isEmpty
+              ? Center(
+                  child: Text(
+                    "No Recommendation Found",
+                    style: TextStyle(color: Colors.red),
+                  ),
+                )
+              : Column(
+                  // animationDuration: Duration(seconds: 2),
+                  children: recommendations.map<Widget>((Recommendation e) {
+                    return ExpansionCard(recommendation: e);
+                  }).toList(),
+                ),
         ],
       ),
     );

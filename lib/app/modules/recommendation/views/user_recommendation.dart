@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/modules/recommendation/views/widgets/recommendation_tab.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/controller/recommendation_controller.dart';
-
+import 'package:geiger_toolbox/app/modules/recommendation/views/widgets/recommendation_tab.dart';
 import 'package:get/get.dart';
 
 class UserRecommendation extends StatelessWidget {
@@ -15,11 +14,11 @@ class UserRecommendation extends StatelessWidget {
       child: Obx(() {
         return RecommendationTab(
           threatTitle: controller.userThreatScore.value.threat.name,
-          score: double.parse("${controller.userGeigerScore.value}.0"),
-          label: 'Current user',
-          recommendations:
-              controller.userGeigerRecommendations.value.recommendations,
-          recommendationType: "Personal Recommendations",
+          score: double.parse("${controller.userGeigerScore.value}"),
+          label: controller.userName.value,
+          recommendations: controller.userGeigerRecommendations,
+          recommendationLabel: "Personal Recommendations",
+          recommendationType: "User",
         );
       }),
     );

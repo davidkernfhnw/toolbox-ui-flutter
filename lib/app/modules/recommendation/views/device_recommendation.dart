@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'package:geiger_toolbox/app/modules/recommendation/views/widgets/recommendation_tab.dart';
-
 import 'package:geiger_toolbox/app/modules/recommendation/controller/recommendation_controller.dart';
+import 'package:geiger_toolbox/app/modules/recommendation/views/widgets/recommendation_tab.dart';
 
 class DeviceRecommendation extends StatelessWidget {
   final RecommendationController controller;
@@ -14,11 +12,11 @@ class DeviceRecommendation extends StatelessWidget {
     return SingleChildScrollView(
       child: RecommendationTab(
         threatTitle: controller.deviceThreatScore.value.threat.name,
-        score: double.parse("${controller.deviceGeigerScore.value}.0"),
-        label: 'Current device',
-        recommendations:
-            controller.deviceGeigerRecommendations.value.recommendations,
-        recommendationType: "Device Recommendations",
+        score: double.parse("${controller.deviceGeigerScore.value}"),
+        label: controller.userName.value,
+        recommendations: controller.deviceGeigerRecommendations,
+        recommendationLabel: "Device Recommendations",
+        recommendationType: "Device",
       ),
     );
   }

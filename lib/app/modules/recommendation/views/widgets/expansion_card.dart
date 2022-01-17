@@ -1,10 +1,10 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
+import 'package:geiger_toolbox/app/data/model/recommendation.dart';
 
 class ExpansionCard extends StatelessWidget {
-  final dummy.Recommendations recommendations;
-  const ExpansionCard({Key? key, required this.recommendations})
+  final Recommendation recommendation;
+  const ExpansionCard({Key? key, required this.recommendation})
       : super(key: key);
 
   @override
@@ -18,22 +18,30 @@ class ExpansionCard extends StatelessWidget {
             value: false,
           ),
           title: Text(
-            recommendations.description.shortDescription,
+            recommendation.shortDescription,
             softWrap: true,
             style: const TextStyle(),
           ),
-          trailing: const Text("high"),
+          trailing: Text(
+            checkWeight(recommendation.weight!),
+            style: TextStyle(color: showWeightColor(recommendation.weight!)),
+          ),
         ),
         collapsed: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                recommendations.description.longDescription ?? "",
+                recommendation.longDescription!,
                 softWrap: true,
               ),
-              const SizedBox(height: 5),
+              recommendation.longDescription == ""
+                  ? const SizedBox(
+                      height: 0,
+                    )
+                  : const SizedBox(height: 5),
               const Text(
                 "Required Tool:",
                 style: TextStyle(color: Colors.black45),
@@ -58,5 +66,26 @@ class ExpansionCard extends StatelessWidget {
         expanded: Container(),
       ),
     );
+  }
+
+  String checkWeight(String weight) {
+    if (weight == '0.1') {
+      return "Low";
+    } else if (weight == '0.5') {
+      return "Medium";
+    } else {
+      return "High";
+    }
+  }
+
+  Color showWeightColor(String level) {
+    String weight = checkWeight(level);
+    if (weight == "Low") {
+      return Colors.green;
+    } else if (weight == "Medium") {
+      return Colors.orangeAccent;
+    } else {
+      return Colors.red;
+    }
   }
 }

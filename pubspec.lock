@@ -344,7 +344,7 @@ packages:
       name: geiger_localstorage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.21"
+    version: "0.6.22"
   get:
     dependency: "direct main"
     description:
@@ -713,7 +713,7 @@ packages:
       name: sqlite3
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.0"
+    version: "1.5.1"
   sqlite3_flutter_libs:
     dependency: "direct main"
     description:
@@ -776,7 +776,7 @@ packages:
       name: toolbox_indicator_test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.3"
+    version: "1.0.5"
   typed_data:
     dependency: transitive
     description:

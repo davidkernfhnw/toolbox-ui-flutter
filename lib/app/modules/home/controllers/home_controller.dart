@@ -3,13 +3,8 @@ import 'dart:developer';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_score_threats.dart';
-import 'package:geiger_toolbox/app/data/model/global_recommendation.dart';
-import 'package:geiger_toolbox/app/data/model/recommendation.dart';
-import 'package:geiger_toolbox/app/data/model/threat.dart';
-import 'package:geiger_toolbox/app/data/model/user.dart';
 import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
-import 'package:geiger_toolbox/app/services/dummyData/dummy_data_controller.dart';
 import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_data.dart';
@@ -33,9 +28,6 @@ class HomeController extends getX.GetxController {
   //     CloudReplicationController.instance;
   final GeigerIndicatorController _indicatorControllerInstance =
       GeigerIndicatorController.instance;
-  // dummy instance
-  final DummyStorageController _dummyStorageInstance =
-      DummyStorageController.instance;
 
   late StorageController _storageController;
   late UserService _userService;
@@ -50,7 +42,7 @@ class HomeController extends getX.GetxController {
 
 //initial aggregate threatScore
   getX.Rx<GeigerScoreThreats> aggThreatsScore =
-      GeigerScoreThreats(threatScores: [], geigerScore: '').obs;
+      GeigerScoreThreats(threatScores: [], geigerScore: '0.0').obs;
 
   void onScanButtonPressed() async {
     //begin scanning
@@ -58,10 +50,11 @@ class HomeController extends getX.GetxController {
     await Future.delayed(Duration(seconds: 2));
 
     aggThreatsScore.value = await _getAggThreatScore();
-
     //cached data when the user press the scan button
     _cachedData();
     //scanning is done
+    log("Dump*****************");
+    log("${await _storageController.dump(":")}");
     isScanning.value = false;
   }
 
@@ -89,10 +82,6 @@ class HomeController extends getX.GetxController {
     _userService = UserService(_storageController);
     _geigerUtilityData = GeigerData(_storageController);
     _geigerIndicatorData = GeigerIndicatorData(_storageController);
-  }
-
-  Future<void> _initDummyStorageController() async {
-    await _dummyStorageInstance.initLocalStorageDummy();
   }
 
   //**************cached data*******************
@@ -188,7 +177,7 @@ class HomeController extends getX.GetxController {
   @override
   void onInit() async {
     await _initStorageController();
-    await _initDummyStorageController();
+
     //update newUserStatus to false onScanButtonPressed
     getX.once(
         aggThreatsScore, (_) async => await _userService.updateNewUserStatus());
@@ -203,9 +192,7 @@ class HomeController extends getX.GetxController {
   }
 
   @override
-  void onReady() {
-    _getThreat();
-  }
+  void onReady() {}
   //Todo : add StorageListener
   //*********cloud replication
 
@@ -225,56 +212,5 @@ class HomeController extends getX.GetxController {
   // }
 
   //for testing Indicator data
-  void _getThreat() async {
-    List<Threat> r = await _geigerIndicatorData.getGlobalThreats();
-    List<Threat> l = await _geigerIndicatorData.getLimitedThreats();
-    List<GlobalRecommendation> g =
-        await _geigerIndicatorData.getGlobalRecommendations();
-    log("******Global********");
-    log("Global Threats ==> $r");
-    log("Limited Global Threats ==> $l");
-    log("Global Recommendations ==> $g");
-    GeigerScoreThreats u = await _getUserThreatScore();
-    log("user threats ==> $u");
-    // GeigerScoreThreats d = await _getDeviceThreatScore();
-    // log("device threats ==> $d");
-    List<Recommendation> uR = await _getUserRecommendation();
-    log("User recommendation ==> $uR");
-  }
 
-  //returns user of GeigerScoreThreats
-  Future<GeigerScoreThreats> _getUserThreatScore() async {
-    User? currentUser = await _userService.getUserInfo;
-    String indicatorId = _indicatorControllerInstance.indicatorId;
-    String path =
-        ":Users:${currentUser!.userId}:$indicatorId:data:GeigerScoreUser";
-    GeigerScoreThreats geigerScoreThreats =
-        await _geigerIndicatorData.getGeigerScoreThreats(path: path);
-
-    return geigerScoreThreats;
-  }
-
-  //returns device of GeigerScoreThreats
-  Future<GeigerScoreThreats> _getDeviceThreatScore() async {
-    User? currentUser = await _userService.getUserInfo;
-    String indicatorId = _indicatorControllerInstance.indicatorId;
-    String path =
-        ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
-    GeigerScoreThreats geigerScoreThreats =
-        await _geigerIndicatorData.getGeigerScoreThreats(path: path);
-
-    return geigerScoreThreats;
-  }
-
-  Future<List<Recommendation>> _getUserRecommendation() async {
-    User? currentUser = await _userService.getUserInfo;
-    String indicatorId = _indicatorControllerInstance.indicatorId;
-    String path =
-        ":Users:${currentUser!.userId}:$indicatorId:data:recommendations";
-    List<Recommendation> geigerScoreThreats =
-        await _geigerIndicatorData.getGeigerRecommendations(
-            path: path, threatId: '80efffaf-98a1-4e0a-8f5e-gr89388350ma');
-
-    return geigerScoreThreats;
-  }
 }

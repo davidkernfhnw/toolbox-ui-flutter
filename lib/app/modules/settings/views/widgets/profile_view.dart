@@ -95,8 +95,11 @@ class ProfileView extends StatelessWidget {
                         if (_formKey.currentState!.validate()) {
                           controller.updateUserInfo(controller.userInfo.value);
                           if (controller.isSuccess.value == true) {
-                            Get.snackbar("Success", "Updated SuccessFully.",
-                                backgroundColor: Colors.greenAccent);
+                            if (!Get.isSnackbarOpen) {
+                              Get.snackbar("Success", "Updated SuccessFully.",
+                                  backgroundColor: Colors.greenAccent,
+                                  snackPosition: SnackPosition.BOTTOM);
+                            }
                           } else {
                             Get.snackbar("Message Alert",
                                 "Updated Failed!!!.. contact the Developer",
