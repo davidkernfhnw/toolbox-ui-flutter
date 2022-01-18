@@ -54,8 +54,11 @@ class HomeView extends StatelessWidget {
                           //controller.emptyThreatScores();
                           controller.onScanButtonPressed();
                         },
-                        aggregratedScore:
-                            !controller.isScanning.value ? agg : "",
+                        aggregratedScore: !controller.isScanning.value
+                            ? agg == "0.0"
+                                ? ""
+                                : agg
+                            : "",
                         warming: false,
                         isLoading: controller.isScanning.value,
                       ),

@@ -4,8 +4,12 @@ import 'package:geiger_toolbox/app/data/model/recommendation.dart';
 
 class ExpansionCard extends StatelessWidget {
   final Recommendation recommendation;
-  const ExpansionCard({Key? key, required this.recommendation})
-      : super(key: key);
+  final void Function()? onPressedGetTool;
+  ExpansionCard({
+    Key? key,
+    required this.recommendation,
+    required this.onPressedGetTool,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +18,9 @@ class ExpansionCard extends StatelessWidget {
         controller: ExpandableController(initialExpanded: true),
         header: ListTile(
           leading: Checkbox(
-            onChanged: (bool? value) {},
-            value: false,
+            fillColor: MaterialStateProperty.all(Colors.green),
+            onChanged: null,
+            value: recommendation.implemented,
           ),
           title: Text(
             recommendation.shortDescription,
@@ -34,7 +39,8 @@ class ExpansionCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                recommendation.longDescription!,
+                // recommendation.longDescription!,
+                recommendation.recommendationId,
                 softWrap: true,
               ),
               recommendation.longDescription == ""
@@ -48,16 +54,13 @@ class ExpansionCard extends StatelessWidget {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: const [
+                children: [
                   OutlinedButton(
                     onPressed: null,
                     child: Text("Get Help"),
                   ),
                   SizedBox(width: 10),
-                  OutlinedButton(
-                    onPressed: null,
-                    child: Text("Get Tool"),
-                  ),
+                  _buildGetToolButton(recommendation, onPressedGetTool),
                 ],
               ),
             ],
@@ -66,6 +69,16 @@ class ExpansionCard extends StatelessWidget {
         expanded: Container(),
       ),
     );
+  }
+
+  Widget _buildGetToolButton(
+      Recommendation r, void Function()? onPressedGetTool) {
+    return new ElevatedButton(
+        child: new Text(recommendation.implemented ? "Active" : "Get Tool"),
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(
+                recommendation.implemented ? Colors.grey : Colors.green)),
+        onPressed: recommendation.implemented ? null : onPressedGetTool);
   }
 
   String checkWeight(String weight) {

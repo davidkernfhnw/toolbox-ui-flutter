@@ -19,6 +19,7 @@ class UserRecommendation extends StatelessWidget {
           recommendations: controller.userGeigerRecommendations,
           recommendationLabel: "Personal Recommendations",
           recommendationType: "User",
+          controller: controller,
         );
       }),
     );

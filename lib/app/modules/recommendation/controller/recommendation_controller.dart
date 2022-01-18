@@ -18,62 +18,75 @@ class RecommendationController extends getX.GetxController {
     return getX.Get.find();
   }
 
+  //******* start of instance **********
   final LocalStorageController _storageControllerInstance =
       LocalStorageController.instance;
 
   final GeigerIndicatorController _indicatorControllerInstance =
       GeigerIndicatorController.instance;
 
+  //**** end of instance
+
+  //**** late variables ******
   late final StorageController _storageController;
   late final UserService _userService;
   late GeigerIndicatorData _geigerIndicatorData;
+  // *** end of late variables ****
 
+  //**** observable variable ****
   var isLoading = false.obs;
-  var userName = "CurrentUser".obs;
-
-  getX.Rx<ThreatScore> userThreatScore =
-      ThreatScore(score: "", threat: Threat(threatId: "", name: "")).obs;
+  var userName = "".obs;
   var userGeigerScore = "0.0".obs;
-
-//device score
-  getX.Rx<ThreatScore> deviceThreatScore =
-      ThreatScore(score: "", threat: Threat(threatId: "", name: "")).obs;
   var deviceGeigerScore = "0.0".obs;
+  //**** end of observable variable ***
 
-//user recommendation
+  //*** observable object *****
+  getX.Rx<ThreatScore> userThreatScore =
+      ThreatScore(score: "0.0", threat: Threat(threatId: "", name: "")).obs;
+
+  //device score
+  getX.Rx<ThreatScore> deviceThreatScore =
+      ThreatScore(score: "0.0", threat: Threat(threatId: "", name: "")).obs;
+
+  //user recommendation
   getX.RxList<Recommendation> userGeigerRecommendations =
       <Recommendation>[].obs;
-//device recommendation
+  //device recommendation
   getX.RxList<Recommendation> deviceGeigerRecommendations =
       <Recommendation>[].obs;
 
-  //retrieve arguments from Routes
-  Threat argument = getX.Get.arguments;
+  //*** end observable  object *****
 
+  //retrieve threat<Threat> from Routes when user pressed the improve button
+  Threat threat = getX.Get.arguments;
+
+  //************* start of private methods ***********************
+
+  //show user threat score
   Future<void> _showUserThreat() async {
-    log(getX.Get.arguments.name.toString());
+    //get userThreatScore
     GeigerScoreThreats geigerUserScore = await _getUserThreatScore();
-
-    log(userThreatScore.value.toString());
+    log("GeigerUserScore => $geigerUserScore");
+    //geiger userScore
     userGeigerScore.value = geigerUserScore.geigerScore;
 
-    //filter to get a single Threat
-    log("GeigerUserScore => $geigerUserScore");
+    //filter to get a userThreatScore by using threat<Threat>
+
     userThreatScore.value = geigerUserScore.threatScores.firstWhere(
-        (ThreatScore element) =>
-            element.threat.threatId.contains(argument.threatId));
+        (ThreatScore value) => value.threat.threatId.contains(threat.threatId));
   }
 
   Future<void> _showDeviceThreat() async {
     GeigerScoreThreats geigerDeviceScore = await _getDeviceThreatScore();
 
     log("GeigerDeviceScore => $geigerDeviceScore");
-    //filter to get single threat
+    //geiger deviceScore
+    deviceGeigerScore.value = geigerDeviceScore.geigerScore;
+
+    //filter to get a deviceThreatScore by using threat<Threat>
     deviceThreatScore.value = geigerDeviceScore.threatScores.firstWhere(
         (ThreatScore element) =>
-            element.threat.threatId.contains(argument.threatId));
-    deviceGeigerScore.value = geigerDeviceScore.geigerScore;
-    log(userThreatScore.value.toString());
+            element.threat.threatId.contains(threat.threatId));
   }
 
   //returns user of GeigerScoreThreats
@@ -82,6 +95,7 @@ class RecommendationController extends getX.GetxController {
     String indicatorId = _indicatorControllerInstance.indicatorId;
     String path =
         ":Users:${currentUser!.userId}:$indicatorId:data:GeigerScoreUser";
+    //get user geigerScoreThreats
     GeigerScoreThreats geigerScoreThreats =
         await _geigerIndicatorData.getGeigerScoreThreats(path: path);
 
@@ -94,6 +108,7 @@ class RecommendationController extends getX.GetxController {
     String indicatorId = _indicatorControllerInstance.indicatorId;
     String path =
         ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
+    //get device geigerScoreThreats
     GeigerScoreThreats geigerScoreThreats =
         await _geigerIndicatorData.getGeigerScoreThreats(path: path);
 
@@ -103,21 +118,39 @@ class RecommendationController extends getX.GetxController {
   Future<List<Recommendation>> _getUserRecommendation() async {
     User? currentUser = await _userService.getUserInfo;
     String indicatorId = _indicatorControllerInstance.indicatorId;
-    String path =
+    String userRecommendationPath =
         ":Users:${currentUser!.userId}:$indicatorId:data:recommendations";
-    List<Recommendation> geigerScoreThreats = await _geigerIndicatorData
-        .getGeigerRecommendations(path: path, threatId: argument.threatId);
+
+    String geigerScoreUserPath =
+        ":Users:${currentUser.userId}:$indicatorId:data:GeigerScoreUser";
+
+    List<Recommendation> geigerScoreThreats =
+        await _geigerIndicatorData.getGeigerRecommendationsLoung(
+            recommendationPath: userRecommendationPath,
+            threatId: threat.threatId,
+            geigerScorePath: geigerScoreUserPath);
+
+    //set observable variable
     userGeigerRecommendations.value = geigerScoreThreats;
+
     return geigerScoreThreats;
   }
 
   Future<List<Recommendation>> _getDeviceRecommendation() async {
     User? currentUser = await _userService.getUserInfo;
     String indicatorId = _indicatorControllerInstance.indicatorId;
-    String path =
+    String deviceRecommendationpath =
         ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:recommendations";
-    List<Recommendation> deviceRecommendation = await _geigerIndicatorData
-        .getGeigerRecommendations(path: path, threatId: argument.threatId);
+
+    String geigerScoreDevicePath =
+        ":Devices:${currentUser.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
+
+    List<Recommendation> deviceRecommendation =
+        await _geigerIndicatorData.getGeigerRecommendationsLoung(
+            recommendationPath: deviceRecommendationpath,
+            threatId: threat.threatId,
+            geigerScorePath: geigerScoreDevicePath);
+    //set observable variable
     deviceGeigerRecommendations.value = deviceRecommendation;
     log("Device Recommendation => $deviceGeigerRecommendations");
     return deviceRecommendation;
@@ -125,70 +158,101 @@ class RecommendationController extends getX.GetxController {
 
   void _showUserName() async {
     User? currentUser = await _userService.getUserInfo;
-    userName.value = currentUser!.userName!;
+    //set observable variable
+
+    userName.value = currentUser!.userName ?? "";
   }
 
-  void _implementRecommendation(
-      String recommendationId, String recommendationType) async {
-    List<String> recommendationIds = [];
-
-    String indicatorId = _indicatorControllerInstance.indicatorId;
-    User? currentUser = await _userService.getUserInfo;
+  Future<void> _implementRecommendation(
+      {required String recommendationId, required String path}) async {
+    String recommendationIds = "";
     String key = "implementedRecommendations";
-    if (recommendationType.toLowerCase() == "user") {
-      String userPath =
-          ":Users:${currentUser!.userId}:$indicatorId:data:GeigerScoreUser";
 
-      NodeValue? nodeValue = await _storageController.getValue(userPath, key);
-      String? existImplRecom = nodeValue?.value;
-      if (existImplRecom != null) {
-        List<String> r = existImplRecom.split(",");
-        recommendationIds.addAll(r);
+    NodeValue? nodeValue = await _storageController.getValue(path, key);
+    String? existImplRecom = nodeValue?.value;
+
+    if (existImplRecom != "" && existImplRecom != null) {
+      recommendationIds = "," + existImplRecom;
+      log("£xisting => $recommendationIds");
+    }
+    String r = recommendationId + recommendationIds;
+
+    nodeValue!.setValue("${r}");
+    await _storageController.updateValue(path, nodeValue);
+
+    isLoading.value = false;
+    log("${await _storageController.dump(path)}");
+  }
+
+  void _setCheckBox(
+      List<Recommendation> recommendations, Recommendation recommendation) {
+    for (Recommendation r in recommendations) {
+      log("recommendation ==> $r");
+      if (r.recommendationId == recommendation.recommendationId) {
+        log("Implemented value => ${recommendation.implemented}");
+        //set checkbox to true
+        r.implemented = true;
+        log("Recommendation after set implemented => $r");
       }
-      recommendationIds.add(recommendationId);
-      nodeValue!.setValue(recommendationIds.toString());
-      _storageController.updateValue(userPath, nodeValue);
-    } else {
-      String devicePath =
-          ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
-      recommendationIds.add(recommendationId);
-      NodeValue? nodeValue = await _storageController.getValue(devicePath, key);
-      String? existImplRecom = nodeValue?.value;
-      if (existImplRecom != null) {
-        List<String> r = existImplRecom.split(",");
-        recommendationIds.addAll(r);
-      }
-      recommendationIds.add(recommendationId);
-      nodeValue!.setValue(recommendationIds.toString());
-      _storageController.updateValue(devicePath, nodeValue);
     }
   }
 
-  //storageController
+  //init storageController, userService and geigerIndicatorData
   Future<void> _init() async {
     _storageController = _storageControllerInstance.getStorageController;
     _userService = UserService(_storageController);
     _geigerIndicatorData = GeigerIndicatorData(_storageController);
   }
 
+  //***** end of private method ******
+
+  //****** start of public method *****
+  void implementRecommendation({required Recommendation recommendation}) async {
+    // set isLoading true
+    //has it take some millsec to complete
+    isLoading.value = true;
+    log("recommendations => $recommendation");
+    String indicatorId = _indicatorControllerInstance.indicatorId;
+    User? currentUser = await _userService.getUserInfo;
+    String userPath =
+        ":Users:${currentUser!.userId}:$indicatorId:data:GeigerScoreUser";
+    String devicePath =
+        ":Devices:${currentUser.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
+
+    if (recommendation.recommendationType.toLowerCase() == "users") {
+      //implement user recommendation
+      await _implementRecommendation(
+          recommendationId: recommendation.recommendationId, path: userPath);
+
+      // set user Recommendations
+      _setCheckBox(userGeigerRecommendations, recommendation);
+    } else {
+      //set device recommendation
+      await _implementRecommendation(
+          recommendationId: recommendation.recommendationId, path: devicePath);
+      //set device Recommendations
+      _setCheckBox(deviceGeigerRecommendations, recommendation);
+    }
+    isLoading.value = false;
+  }
+
+  //*** end public method *****
+
   @override
   onInit() async {
     isLoading.value = true;
     await _init();
-    //await Future.delayed(Duration(seconds: 1));
     _showUserName();
     await _showUserThreat();
     await _showDeviceThreat();
     await _getUserRecommendation();
     await _getDeviceRecommendation();
-
     isLoading.value = false;
     super.onInit();
   }
 
   @override
   onReady() async {
-    //log(threatScore.value.threat.toString());
     super.onReady();
   }
 }

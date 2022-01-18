@@ -46,8 +46,7 @@ dependencies:
 
   flutter_form_builder: ^7.0.0
   device_info: ^2.0.3
-  geiger_dummy_data:
-    path: ../geiger_dummy_data/
+
   cloud_replication_package:
     path: ../toolbox-replication/
 

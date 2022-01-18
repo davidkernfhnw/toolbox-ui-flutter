@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/data/model/recommendation.dart';
+import 'package:geiger_toolbox/app/modules/recommendation/controller/recommendation_controller.dart';
 import 'package:geiger_toolbox/app/shared_widgets/indicator_gauge.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
 
@@ -10,19 +11,21 @@ class RecommendationTab extends StatelessWidget {
   final double score;
   final String threatTitle;
   final String? recommendationLabel;
-  final String? recommendationType;
+  final String recommendationType;
   final List<Recommendation> recommendations;
+  final RecommendationController controller;
 
-  const RecommendationTab(
-      {Key? key,
-      required this.recommendations,
-      required this.label,
-      required this.score,
-      required this.threatTitle,
-      this.recommendationLabel,
-      this.recommendationType})
-      : super(key: key);
-
+  RecommendationTab({
+    Key? key,
+    required this.recommendations,
+    required this.label,
+    required this.score,
+    required this.threatTitle,
+    required this.controller,
+    required this.recommendationType,
+    this.recommendationLabel,
+  }) : super(key: key);
+  final GlobalKey expansionTile = new GlobalKey();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -50,7 +53,7 @@ class RecommendationTab extends StatelessWidget {
                   children: [
                     Icon(Icons.warning_rounded),
                     SizedBox(width: 5),
-                    Text("About ${recommendationType ?? ""}"),
+                    Text("About ${recommendationType}"),
                   ],
                 ),
               ),
@@ -79,8 +82,15 @@ class RecommendationTab extends StatelessWidget {
                 )
               : Column(
                   // animationDuration: Duration(seconds: 2),
-                  children: recommendations.map<Widget>((Recommendation e) {
-                    return ExpansionCard(recommendation: e);
+                  children: recommendations.map<Widget>((Recommendation r) {
+                    return ExpansionCard(
+                      recommendation: r,
+                      onPressedGetTool: () {
+                        controller.implementRecommendation(
+                          recommendation: r,
+                        );
+                      },
+                    );
                   }).toList(),
                 ),
         ],
