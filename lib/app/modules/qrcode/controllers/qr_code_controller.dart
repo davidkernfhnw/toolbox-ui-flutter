@@ -13,12 +13,12 @@ class QrCodeController extends GetxController {
       LocalStorageController.instance;
   late final StorageController _storageController;
 
-  late GeigerData _geigerUtilityData;
+  late GeigerUtilityData _geigerUtilityData;
 
   var data = "".obs;
 
   void _storeDataAsQrCode({String agreementType: "both"}) async {
-    _geigerUtilityData = GeigerData(_storageController);
+    _geigerUtilityData = GeigerUtilityData(_storageController);
     String publicKey = await _geigerUtilityData.getPublicKey;
     UserService userService = UserService(_storageController);
     String userId = await userService.getUserId;

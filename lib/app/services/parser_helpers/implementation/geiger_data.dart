@@ -4,8 +4,9 @@ import 'package:geiger_toolbox/app/data/model/partner.dart';
 
 import 'impl_utility_data.dart';
 
-class GeigerData extends ImplUtilityData {
-  GeigerData(StorageController storageController) : super(storageController);
+class GeigerUtilityData extends ImplUtilityData {
+  GeigerUtilityData(StorageController storageController)
+      : super(storageController);
 
   //store list of countries
   // they are store in lowerCase and english

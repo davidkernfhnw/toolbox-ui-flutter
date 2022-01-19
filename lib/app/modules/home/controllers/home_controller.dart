@@ -1,18 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_score_threats.dart';
 import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
-import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
-import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
-import 'package:geiger_toolbox/app/routes/app_routes.dart';
-import 'package:geiger_toolbox/app/services/dummyData/dummy_data_controller.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
-import 'package:geiger_toolbox/app/services/helpers/implementation/geiger_data.dart';
-import 'package:geiger_toolbox/app/services/helpers/implementation/impl_user_service.dart';
+import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_data.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_indicator_data.dart';
@@ -42,50 +36,42 @@ class HomeController extends getX.GetxController {
   //**** end of instance
 
   //**** late variables ******
-  late StorageController _storageController;
-  late UserService _userService;
-  late GeigerData _geigerUtilityData;
-  late GeigerIndicatorData _geigerIndicatorData;
+  late final StorageController _storageController;
+  late final UserService _userService;
+  late final GeigerUtilityData _geigerUtilityData;
+  late final GeigerIndicatorHelper _geigerIndicatorHelper;
   // *** end of late variables ****
 
   //**** observable variable ****
   var isScanning = false.obs;
   var isLoadingServices = false.obs;
   var message = "".obs;
+  var scanRequired = false.obs;
   //**** end of observable variable ***
 
   //*** observable object *****
-  var scanRequired = false.obs;
-  //Todo: do pass of data from the localstorage to ui
-
   // aggregate threatScore
   getX.Rx<GeigerScoreThreats> aggThreatsScore =
       GeigerScoreThreats(threatScores: [], geigerScore: '0.0').obs;
+
+  //**** end of observable object***
 
   //****** start of public method *****
   void onScanButtonPressed() async {
     //begin scanning
     isScanning.value = true;
-    //delay for 2secs
-  //notify external tool that a scan is about to start
-  void _requestScan() async {
-    await geigerApiInstance.getLocalMaster.scanButtonPressed();
-    //await geigerApiInstance.getEvents();
-  }
-
-  void onScanButtonPressed() async {
-    //begin scanning
-    isScanning.value = true;
-
+    //send a broadcast to external tool
     _requestScan();
-    scanRequired.value = false;
-    await Future.delayed(Duration(seconds: 2));
     //set observable aggregate threatScore
     aggThreatsScore.value = await _getAggThreatScore();
     //cached data when the user press the scan button
     _cachedData();
     //scanning is done
-    log("Dump*****************");
+    //a delay
+    await Future.delayed(Duration(seconds: 2));
+    //set scanRequired to false if true
+    scanRequired.value = false;
+    log("Dump => after onPressed Button *****************");
     log("${await _storageController.dump(":")}");
 
     isScanning.value = false;
@@ -95,21 +81,44 @@ class HomeController extends getX.GetxController {
 
   //************* start of private methods ***********************
 
-  Future<void> _registerLocalStorageUserListener() async {
-    String currentUserId = await _userService.getUserId;
-    String path = ":Users:$currentUserId:gi:data";
-    String searchKey = "currentUser";
-    Node _node = await _storageController.get(path);
-    await _localStorageInstance.registerListener(_node, ":Local", searchKey);
+  void _requestScan() async {
+    log("ScanButtonPressed called");
+    await geigerApiInstance.getLocalMaster.scanButtonPressed();
+    //await geigerApiInstance.getEvents();
   }
 
-  Future<bool> _triggerLocalStorageUserListener() async {
+  //returns aggregate of GeigerScoreThreats
+  Future<GeigerScoreThreats> _getAggThreatScore() async {
     String currentUserId = await _userService.getUserId;
-    String path = ":Users:$currentUserId:gi:data";
+    String indicatorId = _indicatorControllerInstance.indicatorId;
+    String path =
+        ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
+    GeigerScoreThreats geigerScoreThreats =
+        await _geigerIndicatorHelper.getGeigerScoreThreats(path: path);
+
+    return geigerScoreThreats;
+  }
+
+  // ******start  StorageListener method
+  Future<void> _registerLocalStorageUserListener() async {
+    log("registeredLocalStorageListener called");
+    String currentUserId = await _userService.getUserId;
+    String indicatorId = _indicatorControllerInstance.indicatorId;
+    String path = ":Users";
     String searchKey = "currentUser";
     Node _node = await _storageController.get(path);
-    return await _localStorageInstance.triggerListener(
-        _node, ":Local", searchKey);
+    await _localStorageInstance.registerListener(_node, path, searchKey);
+  }
+
+  //trigger
+  Future<bool> _triggerLocalStorageUserListener() async {
+    log("triggerLocalStorageUserListener called");
+    String currentUserId = await _userService.getUserId;
+    String indicatorId = _indicatorControllerInstance.indicatorId;
+    String path = ":Users";
+    String searchKey = "currentUser";
+    Node _node = await _storageController.get(path);
+    return await _localStorageInstance.triggerListener(_node, path, searchKey);
   }
 
   //called this when ui is ready
@@ -137,111 +146,41 @@ class HomeController extends getX.GetxController {
     }
   }
 
-  //returns aggregate of GeigerScoreThreats
-  Future<GeigerScoreThreats> _getAggThreatScore() async {
-    String currentUserId = await _userService.getUserId;
-    String indicatorId = _indicatorControllerInstance.indicatorId;
-    String path =
-        ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
-    GeigerScoreThreats geigerScoreThreats =
-        await _geigerIndicatorData.getGeigerScoreThreats(path: path);
-
-    return geigerScoreThreats;
-  }
+  //**********end of storageListener method
 
   //check if termsAndConditions were accepted
   // redirect to termAndCondition if false
   Future<void> _redirect() async {
     bool checkTerms = await _termsAndConditionsController.isTermsAccepted();
-    if (checkTerms) {
-      bool checkUser = await _userService.checkNewUserStatus();
-      // when hot reload is executed before the user pressed
-      // the scan button after accepting terms and conditions
-      // this check always be true
-      if (checkUser) {
-        isLoadingServices.value = true;
-        message.value = "Loading..";
-        //set dummyData
-        //await _initDummyData();
-        await Future.delayed(Duration(seconds: 1));
-        //start indicator
-        await _indicatorControllerInstance.initGeigerIndicator();
-        _loadUtilityData();
-
-        //await _initReplication();
-        isLoadingServices.value = false;
-
-        return;
-      } else {
-        //replication will not run again when a user press the scan button
-        //await _initReplication();
-        return;
-      }
-    } else {
+    if (checkTerms == false) {
       return getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
     }
   }
 
-  // Future<void> _initReplication() async {
-  //   isLoadingServices.value = true;
-  //   message.value = "Update....";
-  //
-  //   //initialReplication
-  //   message.value = "Preparing geigerToolbox...";
-  //
-  //   // only initialize replication only when terms and conditions are accepted
-  //   await _cloudReplicationInstance.initialReplication();
-  //   log("isLoading is : $isLoadingServices");
-  //   message.value = "Almost done!";
-  //   isLoadingServices.value = false;
-  //   log("done Loading : $isLoadingServices");
-  // }
+  Future<void> _initGeigerIndicator() async {
+    log("initGeigerIndicator called");
+    //start indicator
+    await _indicatorControllerInstance.initGeigerIndicator();
+  }
 
-  // only set Dummy data and other utilityData if user is a new user
-  // Future<void> _initDummyData() async {
-  //   await _dummyStorageInstance.setDummyData();
-  //   return;
-  // }
-
-  //********* start initial resouces ***********
+  //********* start initial resources ***********
 
   //load utility data
-  void _loadUtilityData() async {
+  Future<void> _loadUtilityData() async {
     await _geigerUtilityData.storeCountry();
     await _geigerUtilityData.storeProfAss();
     await _geigerUtilityData.storeCerts();
     await _geigerUtilityData.setPublicKey();
   }
 
-  // initialize storageController and userService before the ui loads
-  Future<void> _initStorageController() async {
+  Future<void> _initStorageResources() async {
     //get StorageController from localStorageController instance
     _storageController = await _localStorageInstance.getStorageController;
     _userService = UserService(_storageController);
-    _geigerUtilityData = GeigerData(_storageController);
-    _geigerIndicatorData = GeigerIndicatorData(_storageController);
+    _geigerUtilityData = GeigerUtilityData(_storageController);
+    _geigerIndicatorHelper = GeigerIndicatorHelper(_storageController);
   }
-
-  //********* end of initial resouces ***********
-
-  //************* end of private methods ***********************
-
-  @override
-  void onInit() async {
-    await _initStorageController();
-
-    //update newUserStatus to false onScanButtonPressed
-    getX.once(
-        aggThreatsScore, (_) async => await _userService.updateNewUserStatus());
-    log("${await _userService.checkNewUserStatus()}");
-    await _redirect();
-    //populate data from cached
-    await _getCacheData();
-    log("${await _userService.getUserId}");
-    log("Dump*****************");
-    log("${await _storageController.dump(":")}");
-    super.onInit();
-  }
+  //********* end of initial resources ***********
 
   //**************cached data*******************
   final box = GetStorage();
@@ -269,112 +208,71 @@ class HomeController extends getX.GetxController {
     }
   }
 
-  //******************end cached data***********************
+  Future<void> _loadPlugin() async {
+    isLoadingServices.value = true;
+    message.value = "Loading Toolbox..";
 
-  @override
-  void onReady() {}
-  //******************end***********************
-
-  // Future<void> _initReplication() async {
-  //   isLoadingServices.value = true;
-  //   message.value = "Update....";
-  //
-  //   //initialReplication
-  //   message.value = "Preparing geigerToolbox...";
-  //
-  //   // only initialize replication only when terms and conditions are accepted
-  //   await _cloudReplicationInstance.initialReplication();
-  //   log("isLoading is : $isLoadingServices");
-  //   message.value = "Almost done!";
-  //   isLoadingServices.value = false;
-  //   log("done Loading : $isLoadingServices");
-  // }
-
-  // only set Dummy data and other utilityData if user is a new user
-  Future<void> _initDummyData() async {
-    log("_initDummyData called");
+    await Future.delayed(Duration(seconds: 1));
+    // bool checkUser = await _userService.checkNewUserStatus();
+    // when hot reload is executed before the user pressed
+    // the scan button after accepting terms and conditions
+    // this check always be true
+    //if (checkUser) {
+    // isLoadingServices.value = true;
+    // message.value = "Update..";
+    //init indicator
 
     //register listener
-    log("registeredLocalStorageListener called");
     await _registerLocalStorageUserListener();
+    await _initGeigerIndicator();
 
-    log("setDummyData called");
-    await _dummyStorageInstance.setDummyData();
-
-    log("TriggerLocalStorageListener called");
     await _triggerLocalStorageUserListener();
+    //register listener
+
+    //load utilityData
+    await _loadUtilityData();
+    //await Future.delayed(Duration(seconds: 1));
+
+    message.value = "Updating Toolbox..";
+
+    //await _initReplication();
+    isLoadingServices.value = false;
   }
 
-  //check if termsAndConditions were accepted
-  // redirect to termAndCondition if false
-  Future<void> redirect() async {
-    isLoadingServices.value = true;
-    message.value = "Loading..";
-    bool checkTerms = await _termsAndConditionsController.isTermsAccepted();
-    if (checkTerms == false) {
-      return getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
-    } else {
-      bool checkUser = await _userService.checkNewUserStatus();
+  //******************end cached data***********************
 
-      // when hot reload is executed before the user pressed
-      // the scan button after accepting terms and conditions
-      // this check always be true
-      if (checkUser == true) {
-        //Future.delayed(Duration(seconds: 2));
-
-        //set dummyData
-        //Todo can't pair when data is in the localStorage
-        //Todo check on Alberto
-        // await _initDummyData();
-        //Todo: fixed Bug:
-        // StoreCountry always creating different
-        // ids for country when called multiply times
-
-        await _geigerUtilityData.storeCountry();
-        await _geigerUtilityData.storeProfAss();
-        await _geigerUtilityData.storeCerts();
-        await _geigerUtilityData.setPublicKey();
-        await Future.delayed(Duration(seconds: 2));
-
-        await _initDummyData();
-
-        //await _initReplication();
-        //listener
-        // await _listenToLocalStorage();
-        isLoadingServices.value = false;
-
-        return;
-      }
-      //replication will not run again when a user press the scan button
-      //await _initReplication();
-      await _initDummyData();
-      isLoadingServices.value = false;
-      return;
-    }
-  }
+  //************* end of private methods ***********************
 
   @override
   void onInit() async {
-    await _initStorageController();
-    await _initDummyStorageController();
+    await _redirect();
+    //load resources
+    await _initStorageResources();
+
+    //load local Plugin
+    await _loadPlugin();
+
     //update newUserStatus to false onScanButtonPressed
     getX.once(
         aggThreatsScore, (_) async => await _userService.updateNewUserStatus());
     log("${await _userService.checkNewUserStatus()}");
-    await redirect();
-    log("DUMP => ${await _storageController.dump(":")}");
+
     //populate data from cached
     await _getCacheData();
+    log("${await _userService.getUserId}");
+    log("Dump after loading*****************");
+    log("${await _storageController.dump(":")}");
+
     super.onInit();
   }
 
   @override
   void onReady() async {
-    await _listenToLocalStorageUser();
+    //await _triggerLocalStorageUserListener();
+    //await _listenToLocalStorageUser();
     super.onReady();
   }
 
-  //Todo : add StorageListener
   //*********cloud replication
 
   // // testing purpose for data stored by replication
@@ -392,6 +290,19 @@ class HomeController extends getX.GetxController {
   //   }
   // }
 
-  //for testing Indicator data
+// Future<void> _initReplication() async {
+//   isLoadingServices.value = true;
+//   message.value = "Update....";
+//
+//   //initialReplication
+//   message.value = "Preparing geigerToolbox...";
+//
+//   // only initialize replication only when terms and conditions are accepted
+//   await _cloudReplicationInstance.initialReplication();
+//   log("isLoading is : $isLoadingServices");
+//   message.value = "Almost done!";
+//   isLoadingServices.value = false;
+//   log("done Loading : $isLoadingServices");
+// }
 
 }

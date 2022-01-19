@@ -22,7 +22,7 @@ class SettingsController extends GetxController {
   late final StorageController _storageController;
   //userService
   late final UserService _userService;
-  late final GeigerData _geigerData;
+  late final GeigerUtilityData _geigerData;
 
   //getting instance of localStorageController
   final LocalStorageController _localStorage = LocalStorageController.instance;
@@ -185,7 +185,7 @@ class SettingsController extends GetxController {
   //init storageController
   Future<void> _initStorageController() async {
     _storageController = await _localStorage.getStorageController;
-    _geigerData = GeigerData(_storageController);
+    _geigerData = GeigerUtilityData(_storageController);
   }
 
   //init util data

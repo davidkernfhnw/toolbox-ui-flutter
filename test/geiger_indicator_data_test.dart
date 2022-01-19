@@ -6,7 +6,8 @@ void main() {
   final StorageController storageController =
       GenericController("test", DummyMapper("testdb"));
 
-  final GeigerIndicatorData _global = GeigerIndicatorData(storageController);
+  final GeigerIndicatorHelper _global =
+      GeigerIndicatorHelper(storageController);
 
   //final dummy.ThreatNode _geigerDummy = dummy.ThreatNode(storageController);
   group("test GlobalThreat", () {

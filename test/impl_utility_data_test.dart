@@ -11,7 +11,7 @@ void main() {
   final StorageController storageController =
       GenericController("test", DummyMapper("testdb"));
 
-  ImplUtilityData implUtilityData = GeigerData(storageController);
+  ImplUtilityData implUtilityData = GeigerUtilityData(storageController);
   //final Locale deCh = Locale.parse("de-ch");
   group("ImplUtilityData test", () {
     setUp(() async {

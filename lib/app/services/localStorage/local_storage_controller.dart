@@ -45,11 +45,13 @@ class LocalStorageController extends getX.GetxController {
 
   //called this first
   // 3 node path
-  Future<void> registerListener(
-      Node node, String path, String searchKey) async {
+  Future<void> registerListener(Node node, String path,
+      [String? searchKey]) async {
     _localStorageListener = LocalStorageListener();
     SearchCriteria s = SearchCriteria(searchPath: path);
-    s.set(Field.key, searchKey);
+    if (searchKey != null) {
+      s.set(Field.key, searchKey);
+    }
     await _storageController.registerChangeListener(_localStorageListener, s);
   }
 
@@ -105,7 +107,7 @@ class LocalStorageListener implements StorageListener {
     Event e = Event(event, oldNode, newNode);
     events.add(e);
     // ignore: avoid_print
-    print('got event ${e.toString()}');
+    print('got event for ui ${e.toString()}');
   }
 
   //called this in the ui

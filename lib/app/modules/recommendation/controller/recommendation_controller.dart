@@ -30,7 +30,7 @@ class RecommendationController extends getX.GetxController {
   //**** late variables ******
   late final StorageController _storageController;
   late final UserService _userService;
-  late GeigerIndicatorData _geigerIndicatorData;
+  late GeigerIndicatorHelper _geigerIndicatorData;
   // *** end of late variables ****
 
   //**** observable variable ****
@@ -201,7 +201,7 @@ class RecommendationController extends getX.GetxController {
   Future<void> _init() async {
     _storageController = _storageControllerInstance.getStorageController;
     _userService = UserService(_storageController);
-    _geigerIndicatorData = GeigerIndicatorData(_storageController);
+    _geigerIndicatorData = GeigerIndicatorHelper(_storageController);
   }
 
   //***** end of private method ******
