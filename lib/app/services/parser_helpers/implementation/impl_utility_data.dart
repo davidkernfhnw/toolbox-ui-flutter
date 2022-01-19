@@ -128,8 +128,8 @@ abstract class ImplUtilityData extends UtilityData {
         _nodeValue.setValue(cert.names.join(","), Locale.parse(cert.locale));
 
         //await _node.addOrUpdateValue(_nodeValue);
-        await _node.addOrUpdateValue(_nodeLocation);
-        await _node.addOrUpdateValue(_nodeLocationName);
+        await _node.updateValue(_nodeLocation);
+        await _node.updateValue(_nodeLocationName);
         await storageController.update(_node);
       }
       return true;
@@ -226,9 +226,9 @@ abstract class ImplUtilityData extends UtilityData {
         _nodeLocationName.setValue(
             profAss.location.name, Locale.parse(profAss.locale));
 
-        await _node.addOrUpdateValue(_nodeValue);
-        await _node.addOrUpdateValue(_nodeLocation);
-        await _node.addOrUpdateValue(_nodeLocationName);
+        await _node.updateValue(_nodeValue);
+        await _node.updateValue(_nodeLocation);
+        await _node.updateValue(_nodeLocationName);
         await storageController.update(_node);
       }
       return true;

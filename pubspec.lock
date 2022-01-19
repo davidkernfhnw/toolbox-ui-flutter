@@ -318,19 +318,19 @@ packages:
     source: hosted
     version: "2.1.2"
   geiger_api:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: geiger_api
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.0"
   geiger_localstorage:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: geiger_localstorage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.22"
+    version: "0.6.23"
   get:
     dependency: "direct main"
     description:

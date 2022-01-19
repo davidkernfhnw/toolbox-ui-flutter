@@ -50,6 +50,7 @@ class HomeView extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       TopScreen(
+                        warning: controller.scanRequired.value,
                         onScanPressed: () {
                           //controller.emptyThreatScores();
                           controller.onScanButtonPressed();
@@ -59,7 +60,6 @@ class HomeView extends StatelessWidget {
                                 ? ""
                                 : agg
                             : "",
-                        warming: false,
                         isLoading: controller.isScanning.value,
                       ),
                       controller.isScanning.value
