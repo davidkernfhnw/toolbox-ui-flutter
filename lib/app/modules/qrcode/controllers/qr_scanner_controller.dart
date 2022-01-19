@@ -39,7 +39,7 @@ class QrScannerController extends GetxController {
       log(scanQrCodeData.value);
       if (viewTitle.value != "Add an employee") {
         isScanning.value = true;
-        // bool result = await deviceControllerInstance.pair(scanQrCodeData.value);
+        bool result = await deviceControllerInstance.pair(scanQrCodeData.value);
         isScanning.value = false;
         controller.dispose();
         await Get.delete<DeviceController>();

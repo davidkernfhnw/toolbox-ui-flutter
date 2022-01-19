@@ -5,6 +5,7 @@ import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_score_threats.dart';
 import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
+import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
@@ -26,8 +27,8 @@ class HomeController extends getX.GetxController {
   final TermsAndConditionsController _termsAndConditionsController =
       TermsAndConditionsController.instance;
 
-  // final CloudReplicationController _cloudReplicationInstance =
-  //     CloudReplicationController.instance;
+  final CloudReplicationController _cloudReplicationInstance =
+      CloudReplicationController.instance;
 
   final GeigerIndicatorController _indicatorControllerInstance =
       GeigerIndicatorController.instance;
@@ -115,8 +116,9 @@ class HomeController extends getX.GetxController {
     log("triggerLocalStorageUserListener called");
     String currentUserId = await _userService.getUserId;
     String indicatorId = _indicatorControllerInstance.indicatorId;
-    String path = ":Users";
-    String searchKey = "currentUser";
+    String path =
+        ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
+    String searchKey = "GEIGER_score";
     Node _node = await _storageController.get(path);
     return await _localStorageInstance.triggerListener(_node, path, searchKey);
   }
@@ -150,11 +152,13 @@ class HomeController extends getX.GetxController {
 
   //check if termsAndConditions were accepted
   // redirect to termAndCondition if false
-  Future<void> _redirect() async {
+  Future<bool> _redirect() async {
     bool checkTerms = await _termsAndConditionsController.isTermsAccepted();
     if (checkTerms == false) {
-      return getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
+      await getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
+      return false;
     }
+    return true;
   }
 
   Future<void> _initGeigerIndicator() async {
@@ -171,6 +175,20 @@ class HomeController extends getX.GetxController {
     await _geigerUtilityData.storeProfAss();
     await _geigerUtilityData.storeCerts();
     await _geigerUtilityData.setPublicKey();
+  }
+
+  Future<void> _initReplication() async {
+    log("replication called");
+    message.value = "Update....";
+
+    //initialReplication
+    message.value = "Preparing geigerToolbox...";
+
+    // only initialize replication only when terms and conditions are accepted
+    await _cloudReplicationInstance.initialReplication();
+    await Future.delayed(Duration(seconds: 2));
+    log("isLoading is : $isLoadingServices");
+    message.value = "Almost done!";
   }
 
   Future<void> _initStorageResources() async {
@@ -208,6 +226,8 @@ class HomeController extends getX.GetxController {
     }
   }
 
+  //************* end ************
+
   Future<void> _loadPlugin() async {
     isLoadingServices.value = true;
     message.value = "Loading Toolbox..";
@@ -222,20 +242,14 @@ class HomeController extends getX.GetxController {
     // message.value = "Update..";
     //init indicator
 
-    //register listener
-    await _registerLocalStorageUserListener();
     await _initGeigerIndicator();
-
-    await _triggerLocalStorageUserListener();
-    //register listener
-
     //load utilityData
     await _loadUtilityData();
     //await Future.delayed(Duration(seconds: 1));
 
     message.value = "Updating Toolbox..";
 
-    //await _initReplication();
+    await _initReplication();
     isLoadingServices.value = false;
   }
 
@@ -245,12 +259,19 @@ class HomeController extends getX.GetxController {
 
   @override
   void onInit() async {
-    await _redirect();
-    //load resources
+    //init resources
     await _initStorageResources();
 
-    //load local Plugin
-    await _loadPlugin();
+    bool isRedirect = await _redirect();
+    if (isRedirect) {
+      //register listener
+      await _registerLocalStorageUserListener();
+      //load local Plugin
+      await _loadPlugin();
+
+      //triggerEvent
+      await _triggerLocalStorageUserListener();
+    }
 
     //update newUserStatus to false onScanButtonPressed
     getX.once(
@@ -289,20 +310,5 @@ class HomeController extends getX.GetxController {
   //     log(result!);
   //   }
   // }
-
-// Future<void> _initReplication() async {
-//   isLoadingServices.value = true;
-//   message.value = "Update....";
-//
-//   //initialReplication
-//   message.value = "Preparing geigerToolbox...";
-//
-//   // only initialize replication only when terms and conditions are accepted
-//   await _cloudReplicationInstance.initialReplication();
-//   log("isLoading is : $isLoadingServices");
-//   message.value = "Almost done!";
-//   isLoadingServices.value = false;
-//   log("done Loading : $isLoadingServices");
-// }
 
 }
