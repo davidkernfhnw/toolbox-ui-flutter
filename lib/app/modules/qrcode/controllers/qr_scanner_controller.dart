@@ -1,12 +1,10 @@
 import 'dart:async';
-
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/device/controllers/device_controller.dart';
-
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:get/get.dart';
-import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -41,7 +39,7 @@ class QrScannerController extends GetxController {
       log(scanQrCodeData.value);
       if (viewTitle.value != "Add an employee") {
         isScanning.value = true;
-        bool result = await deviceControllerInstance.pair(scanQrCodeData.value);
+        // bool result = await deviceControllerInstance.pair(scanQrCodeData.value);
         isScanning.value = false;
         controller.dispose();
         await Get.delete<DeviceController>();
