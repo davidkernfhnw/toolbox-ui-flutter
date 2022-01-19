@@ -18,9 +18,19 @@ class LocalStorageController extends getX.GetxController {
   //private variables
   late StorageController _storageController;
   late GeigerApi _api;
+  late LocalStorageListener _localStorageListener;
 
   StorageController get getStorageController {
     return _storageController;
+  }
+
+  LocalStorageListener get getLocalStorageListener {
+    try {
+      return _localStorageListener;
+    } catch (e) {
+      log("LocalStorageListener has not be initialized \n$e");
+      rethrow;
+    }
   }
 
   Future<void> _initLocalStorage() async {
@@ -33,25 +43,24 @@ class LocalStorageController extends getX.GetxController {
     }
   }
 
-  Future<EventType?> listenToStorage(Node node) async {
-    LocalStorageListener l = LocalStorageListener();
-    SearchCriteria s = SearchCriteria(searchPath: ":");
-    //listen to dummy storage
-    _storageController.registerChangeListener(l, s);
-    Node _node = await node.deepClone();
-    //
-    List<Event> e = await _storageController
-        .update(_node)
-        .then((_) async => await l.events);
+  //called this first
+  // 3 node path
+  Future<void> registerListener(
+      Node node, String path, String searchKey) async {
+    _localStorageListener = LocalStorageListener();
+    SearchCriteria s = SearchCriteria(searchPath: path);
+    s.set(Field.key, searchKey);
+    await _storageController.registerChangeListener(_localStorageListener, s);
+  }
 
-    log("Length of the Event ${e.length}");
-    if (e.length > 0) {
-      for (Event event in e) {
-        if (event.type == EventType.update) return event.type;
-        log("EventType: ${event.type}");
-      }
-    }
-    return null;
+  //called this after
+  //one Node path
+  Future<bool> triggerListener(Node node, String path, String searchKey) async {
+    SearchCriteria s = SearchCriteria(searchPath: path);
+    s.set(Field.key, searchKey);
+    bool e = await s.evaluate(node);
+    log("Triggerlistener => $e");
+    return e;
   }
 
   @override
@@ -68,8 +77,6 @@ class LocalStorageController extends getX.GetxController {
   }
 }
 
-//Todo
-// registered storageListener
 class Event {
   final EventType _event;
   final Node? _old;
@@ -93,13 +100,15 @@ class LocalStorageListener implements StorageListener {
   List<Event> events = <Event>[];
 
   @override
-  void gotStorageChange(EventType event, Node? oldNode, Node? newNode) {
+  Future<void> gotStorageChange(
+      EventType event, Node? oldNode, Node? newNode) async {
     Event e = Event(event, oldNode, newNode);
     events.add(e);
     // ignore: avoid_print
     print('got event ${e.toString()}');
   }
 
+  //called this in the ui
   Future<List<Event>> getNumEvents(int num, [int timeout = 2000]) async {
     int start = DateTime.now().millisecondsSinceEpoch;
     List<Event> ret = await Future.doWhile(() =>

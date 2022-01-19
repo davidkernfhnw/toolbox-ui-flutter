@@ -56,7 +56,8 @@ dependencies:
   #cache data
   get_storage: ^2.0.3
   charts_flutter: ^0.12.0
-
+  geiger_api: ^0.6.2
+  geiger_localstorage: ^0.6.23
 
 dev_dependencies:
   flutter_test:

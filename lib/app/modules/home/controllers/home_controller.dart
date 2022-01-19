@@ -5,7 +5,6 @@ import 'package:geiger_dummy_data/geiger_dummy_data.dart' as dummy;
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
-import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/dummyData/dummy_data_controller.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:geiger_toolbox/app/services/helpers/implementation/geiger_data.dart';
@@ -25,8 +24,8 @@ class HomeController extends getX.GetxController {
   final TermsAndConditionsController _termsAndConditionsController =
       TermsAndConditionsController.instance;
 
-  final CloudReplicationController _cloudReplicationInstance =
-      CloudReplicationController.instance;
+  // final CloudReplicationController _cloudReplicationInstance =
+  //     CloudReplicationController.instance;
   final GeigerApiConnector geigerApiInstance = GeigerApiConnector.instance;
 
   // dummy instance
@@ -75,19 +74,45 @@ class HomeController extends getX.GetxController {
     aggThreatsScore.value.threatScores.clear();
   }
 
-  Future<bool> _listenToChangesOnLocalStorage() async {
+  Future<void> _registerLocalStorageUserListener() async {
     String currentUserId = await _userService.getUserId;
-    Node _node = await _storageController
-        .get(":Users:${currentUserId}:gi:data:GeigerScoreAggregate");
-    EventType? eventType = await _localStorageInstance.listenToStorage(_node);
-    log("EventType from home controller: $eventType");
-    if (eventType != null) {
-      scanRequired.value = true;
-      log("scanRequired is => $scanRequired");
-      return true;
+    String path = ":Users:$currentUserId:gi:data";
+    String searchKey = "currentUser";
+    Node _node = await _storageController.get(path);
+    await _localStorageInstance.registerListener(_node, ":Local", searchKey);
+  }
+
+  Future<bool> _triggerLocalStorageUserListener() async {
+    String currentUserId = await _userService.getUserId;
+    String path = ":Users:$currentUserId:gi:data";
+    String searchKey = "currentUser";
+    Node _node = await _storageController.get(path);
+    return await _localStorageInstance.triggerListener(
+        _node, ":Local", searchKey);
+  }
+
+  //called this when ui is ready
+  Future<void> _listenToLocalStorageUser() async {
+    log("listToLocalStorage called");
+    bool t = await _triggerLocalStorageUserListener();
+
+    if (t == false) {
+      List<Event> event =
+          await _localStorageInstance.getLocalStorageListener.events;
+      log("Events => $event");
+      try {
+        EventType update = event
+            .firstWhere((Event element) => element.type == EventType.update)
+            .type;
+        log("Event Listener Type => $update");
+        scanRequired.value = true;
+      } catch (e) {
+        scanRequired.value = false;
+        log("Opp Something went wrong ==> $e");
+      }
     } else {
+      log("No changes is localStorage");
       scanRequired.value = false;
-      return false;
     }
   }
 
@@ -146,25 +171,34 @@ class HomeController extends getX.GetxController {
 
   //******************end***********************
 
-  Future<void> _initReplication() async {
-    isLoadingServices.value = true;
-    message.value = "Update....";
-
-    //initialReplication
-    message.value = "Preparing geigerToolbox...";
-
-    // only initialize replication only when terms and conditions are accepted
-    await _cloudReplicationInstance.initialReplication();
-    log("isLoading is : $isLoadingServices");
-    message.value = "Almost done!";
-    isLoadingServices.value = false;
-    log("done Loading : $isLoadingServices");
-  }
+  // Future<void> _initReplication() async {
+  //   isLoadingServices.value = true;
+  //   message.value = "Update....";
+  //
+  //   //initialReplication
+  //   message.value = "Preparing geigerToolbox...";
+  //
+  //   // only initialize replication only when terms and conditions are accepted
+  //   await _cloudReplicationInstance.initialReplication();
+  //   log("isLoading is : $isLoadingServices");
+  //   message.value = "Almost done!";
+  //   isLoadingServices.value = false;
+  //   log("done Loading : $isLoadingServices");
+  // }
 
   // only set Dummy data and other utilityData if user is a new user
   Future<void> _initDummyData() async {
+    log("_initDummyData called");
+
+    //register listener
+    log("registeredLocalStorageListener called");
+    await _registerLocalStorageUserListener();
+
+    log("setDummyData called");
     await _dummyStorageInstance.setDummyData();
-    return;
+
+    log("TriggerLocalStorageListener called");
+    await _triggerLocalStorageUserListener();
   }
 
   //check if termsAndConditions were accepted
@@ -187,7 +221,7 @@ class HomeController extends getX.GetxController {
         //set dummyData
         //Todo can't pair when data is in the localStorage
         //Todo check on Alberto
-        await _initDummyData();
+        // await _initDummyData();
         //Todo: fixed Bug:
         // StoreCountry always creating different
         // ids for country when called multiply times
@@ -197,15 +231,19 @@ class HomeController extends getX.GetxController {
         await _geigerUtilityData.storeCerts();
         await _geigerUtilityData.setPublicKey();
         await Future.delayed(Duration(seconds: 2));
-        await _initReplication();
+
+        await _initDummyData();
+
+        //await _initReplication();
+        //listener
+        // await _listenToLocalStorage();
         isLoadingServices.value = false;
-        await _listenToChangesOnLocalStorage();
+
         return;
       }
       //replication will not run again when a user press the scan button
-      await _initReplication();
-      //listener
-      await _listenToChangesOnLocalStorage();
+      //await _initReplication();
+      await _initDummyData();
       isLoadingServices.value = false;
       return;
     }
@@ -220,9 +258,16 @@ class HomeController extends getX.GetxController {
         aggThreatsScore, (_) async => await _userService.updateNewUserStatus());
     log("${await _userService.checkNewUserStatus()}");
     await redirect();
+    log("DUMP => ${await _storageController.dump(":")}");
     //populate data from cached
     await _getCacheData();
     super.onInit();
+  }
+
+  @override
+  void onReady() async {
+    await _listenToLocalStorageUser();
+    super.onReady();
   }
 
   //Todo : add StorageListener

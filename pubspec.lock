@@ -15,6 +15,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.7.0"
+  android_intent_plus:
+    dependency: transitive
+    description:
+      name: android_intent_plus
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.2"
   archive:
     dependency: transitive
     description:
@@ -318,12 +325,12 @@ packages:
     source: hosted
     version: "2.1.2"
   geiger_api:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: geiger_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.5"
+    version: "0.6.2"
   geiger_dummy_data:
     dependency: "direct main"
     description:
@@ -332,12 +339,12 @@ packages:
     source: path
     version: "0.3.6"
   geiger_localstorage:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: geiger_localstorage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.21"
+    version: "0.6.23"
   get:
     dependency: "direct main"
     description:
@@ -706,7 +713,7 @@ packages:
       name: sqlite3
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.0"
+    version: "1.5.1"
   sqlite3_flutter_libs:
     dependency: "direct main"
     description:
