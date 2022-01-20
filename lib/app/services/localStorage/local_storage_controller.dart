@@ -50,7 +50,7 @@ class LocalStorageController extends getX.GetxController {
     _localStorageListener = LocalStorageListener();
     SearchCriteria s = SearchCriteria(searchPath: path);
     if (searchKey != null) {
-      s.set(Field.value, searchKey);
+      s.set(Field.key, searchKey);
     }
     await _storageController.registerChangeListener(_localStorageListener, s);
   }
@@ -59,7 +59,7 @@ class LocalStorageController extends getX.GetxController {
   //one Node path
   Future<bool> triggerListener(Node node, String path, String searchKey) async {
     SearchCriteria s = SearchCriteria(searchPath: path);
-    s.set(Field.value, searchKey);
+    s.set(Field.key, searchKey);
     bool e = await s.evaluate(node);
     log("Triggerlistener => $e");
     return e;

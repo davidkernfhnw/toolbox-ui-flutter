@@ -48,7 +48,6 @@ class HomeController extends getX.GetxController {
   var isLoadingServices = false.obs;
   var message = "".obs;
   var scanRequired = false.obs;
-  var grantPermission = false.obs;
   //**** end of observable variable ***
 
   //*** observable object *****
@@ -107,7 +106,7 @@ class HomeController extends getX.GetxController {
     String currentUserId = await _userService.getUserId;
     String indicatorId = _indicatorControllerInstance.indicatorId;
     String path = ":Users";
-    String searchKey = "GEIGER_score";
+    String searchKey = "currentUser";
     Node _node = await _storageController.get(path);
     await _localStorageInstance.registerListener(_node, path, searchKey);
   }
@@ -133,15 +132,19 @@ class HomeController extends getX.GetxController {
       List<Event> event =
           await _localStorageInstance.getLocalStorageListener.events;
       log("Events => $event");
-      if (event.isNotEmpty) {
+      try {
         EventType update = event
             .firstWhere((Event element) => element.type == EventType.update)
             .type;
         log("Event Listener Type => $update");
         scanRequired.value = true;
+      } catch (e) {
+        scanRequired.value = false;
+        log("Opp Something went wrong ==> $e");
       }
     } else {
       log("No changes is localStorage");
+      scanRequired.value = false;
     }
   }
 
@@ -246,7 +249,7 @@ class HomeController extends getX.GetxController {
 
     message.value = "Updating Toolbox..";
 
-    // await _initReplication();
+    await _initReplication();
     isLoadingServices.value = false;
   }
 
@@ -258,15 +261,16 @@ class HomeController extends getX.GetxController {
   void onInit() async {
     //init resources
     await _initStorageResources();
-    //register listener
-    await _registerLocalStorageUserListener();
+
     bool isRedirect = await _redirect();
     if (isRedirect) {
+      //register listener
+      await _registerLocalStorageUserListener();
       //load local Plugin
       await _loadPlugin();
 
       //triggerEvent
-      await _listenToLocalStorageUser();
+      await _triggerLocalStorageUserListener();
     }
 
     //update newUserStatus to false onScanButtonPressed
@@ -287,9 +291,6 @@ class HomeController extends getX.GetxController {
   void onReady() async {
     //await _triggerLocalStorageUserListener();
     //await _listenToLocalStorageUser();
-    if (grantPermission.isTrue) {
-      await _initReplication();
-    }
     super.onReady();
   }
 
