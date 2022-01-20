@@ -9,21 +9,16 @@ class GeigerApiConnector extends GetxController {
 
   //private variables
   late final GeigerApi _localMaster;
-  PluginEventListener? _pluginEventListener;
+  late final PluginEventListener _pluginEventListener;
 
   List<MessageType> handledEvents = [];
-  bool isListenerRegistered = false;
 
   GeigerApi get getLocalMaster {
     return _localMaster;
   }
 
-  PluginEventListener? get getPluginListener {
-    try {
-      return _pluginEventListener;
-    } catch (e) {
-      log("PluginEventListener has no been initialized\n $e");
-    }
+  PluginEventListener get getPluginListener {
+    return _pluginEventListener;
   }
 
   /// initialize this method before the start of the app
@@ -34,61 +29,26 @@ class GeigerApiConnector extends GetxController {
         "geiger_toolbox", GeigerApi.masterId, Declaration.doShareData))!;
     //clear existing state
     //await _localMaster.zapState();
-    //register plugin
-    isListenerRegistered = await _registerExternalPluginListener();
+    await _registerExternalPluginListener(GeigerApi.masterId);
   }
 
-  Future<bool> _registerExternalPluginListener() async {
-    String id = _localMaster.id;
-    if (isListenerRegistered == true) {
-      log('Plugin ${_pluginEventListener.hashCode} has been registered and activated');
-      return true;
-    } else {
-      if (_pluginEventListener == null) {
-        _pluginEventListener = PluginEventListener(id);
-        log("PluginEventListener: ${_pluginEventListener.hashCode}");
-      }
-      try {
-        List<MessageType> allEvents = MessageType.getAllValues();
-        await _localMaster.registerListener(allEvents, _pluginEventListener!);
-        log("Plugin ${_pluginEventListener.hashCode} has been registered and activated");
-        isListenerRegistered = true;
-        return true;
-      } catch (e) {
-        log("Failed to register listener");
-        log(e.toString());
-        return false;
-      }
-    }
+  Future<void> _registerExternalPluginListener(String id) async {
+    List<MessageType> allEvents = MessageType.getAllValues();
+    _pluginEventListener = PluginEventListener(id);
+    await _localMaster.registerListener(allEvents, _pluginEventListener);
+    log('Plugin ${_pluginEventListener.hashCode} has been registered and activated');
   }
 
   // Dynamically define the handler for each message type
   void addMessageHandler(MessageType type, Function handler, String id) {
-    if (_pluginEventListener == null) {
-      _pluginEventListener = PluginEventListener('PluginListener-$id');
-      log('PluginListener: ${_pluginEventListener.hashCode}');
-    }
+    _pluginEventListener = PluginEventListener('PluginListener-$id');
+    log('PluginListener: ${_pluginEventListener.hashCode}');
     handledEvents.add(type);
-    _pluginEventListener!.addMessageHandler(type, handler);
-  }
-
-  Future<MessageType?> getScanCompleteMessage() async {
-    List<Message> message = await _pluginEventListener!.getEvents();
-
-    if (message.isNotEmpty) {
-      Message scanCompleted = message
-          .firstWhere((element) => element.type == MessageType.scanCompleted);
-      return scanCompleted.type;
-    }
+    _pluginEventListener.addMessageHandler(type, handler);
   }
 
   List<Message> getEvents() {
-    return _pluginEventListener!.getEvents();
-  }
-
-  // Show some statistics of Listener
-  String getListenerToString() {
-    return _pluginEventListener.toString();
+    return _pluginEventListener.getEvents();
   }
 }
 
