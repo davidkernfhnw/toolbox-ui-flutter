@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_score_threats.dart';
 import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
@@ -49,6 +50,7 @@ class HomeController extends getX.GetxController {
   var message = "".obs;
   var scanRequired = false.obs;
   var grantPermission = false.obs;
+  var isScanCompleted = "".obs;
   //**** end of observable variable ***
 
   //*** observable object *****
@@ -87,6 +89,15 @@ class HomeController extends getX.GetxController {
     log("ScanButtonPressed called");
     await geigerApiInstance.getLocalMaster.scanButtonPressed();
     //await geigerApiInstance.getEvents();
+  }
+
+  Future<void> _onScanComplete() async {
+    MessageType? s = await geigerApiInstance.getScanCompleteMessage();
+    if (s != null) {
+      isScanCompleted.value = s.toString();
+      log("message => $s ");
+    }
+    log("NO message received");
   }
 
   //returns aggregate of GeigerScoreThreats
@@ -290,6 +301,7 @@ class HomeController extends getX.GetxController {
     if (grantPermission.isTrue) {
       await _initReplication();
     }
+    await _onScanComplete();
     super.onReady();
   }
 
