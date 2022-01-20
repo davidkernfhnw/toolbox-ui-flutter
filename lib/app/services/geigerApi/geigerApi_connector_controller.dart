@@ -25,8 +25,8 @@ class GeigerApiConnector extends GetxController {
   Future<void> initLocalMasterPlugin() async {
     //flushGeigerApiCache();
     //*****************************************master**********************
-    _localMaster = (await getGeigerApi(
-        "geiger_toolbox", GeigerApi.masterId, Declaration.doShareData))!;
+    _localMaster =
+        (await getGeigerApi("", GeigerApi.masterId, Declaration.doShareData))!;
     //clear existing state
     //await _localMaster.zapState();
     await _registerExternalPluginListener(GeigerApi.masterId);
