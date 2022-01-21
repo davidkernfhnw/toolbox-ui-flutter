@@ -16,20 +16,22 @@ import 'app/util/theme/custom_theme_data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   //initialize geigerApi for ui
   // Dynamically adding the function to handle the SCAN_COMPLETED event -> you can customize or move it somewhere if you want
-  await Get.put(GeigerApiConnector()).initLocalMasterPlugin((Message msg) {
+  await Get.put(GeigerApiConnector()).initGeigerApi((Message msg) {
     log('We have received the SCAN_COMPLETED event from ${msg.sourceId}');
     Get.snackbar('New Event',
-        'The external plugin ${msg.sourceId} has fisnihsed the scanning');
+        'The external plugin ${msg.sourceId} has finished the scanning');
   });
   //initialize localStorage for ui
   await Get.put(LocalStorageController());
 
   //initialize indicator
   await Get.put(GeigerIndicatorController());
+
   //initialize cloudReplicationController
-  await Get.put<CloudReplicationController>(CloudReplicationController());
+  Get.lazyPut<CloudReplicationController>(() => CloudReplicationController());
   //cached data
   await GetStorage.init();
   runApp(GeigerApp());

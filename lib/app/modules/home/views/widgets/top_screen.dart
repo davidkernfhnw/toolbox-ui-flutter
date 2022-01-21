@@ -6,6 +6,7 @@ import 'scan_risk_button.dart';
 class TopScreen extends StatelessWidget {
   final String? aggregratedScore;
   final void Function()? onScanPressed;
+  final void Function()? onChangeUserId;
   final bool? warning;
   final bool isLoading;
 
@@ -14,7 +15,8 @@ class TopScreen extends StatelessWidget {
       @required this.aggregratedScore,
       @required this.onScanPressed,
       @required this.warning,
-      required this.isLoading})
+      required this.isLoading,
+      this.onChangeUserId})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -44,11 +46,11 @@ class TopScreen extends StatelessWidget {
         const SizedBox(height: 10.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
+          children: [
             OutlinedButton(
-              onPressed: null,
+              onPressed: onChangeUserId,
               child: Text(
-                'Employee Scores',
+                'update currentUserId ',
                 style: TextStyle(color: Colors.black54),
               ),
             ),

@@ -8,8 +8,8 @@ import 'package:geiger_toolbox/app/data/model/threat_score.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
 import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_indicator_data.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/impl_user_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_indicator_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
 import 'package:get/get.dart' as getX;
 
 class RecommendationController extends getX.GetxController {
@@ -29,8 +29,8 @@ class RecommendationController extends getX.GetxController {
 
   //**** late variables ******
   late final StorageController _storageController;
-  late final UserService _userService;
-  late GeigerIndicatorHelper _geigerIndicatorData;
+  late final GeigerUserService _userService;
+  late GeigerIndicatorService _geigerIndicatorData;
   // *** end of late variables ****
 
   //**** observable variable ****
@@ -200,8 +200,8 @@ class RecommendationController extends getX.GetxController {
   //init storageController, userService and geigerIndicatorData
   Future<void> _init() async {
     _storageController = _storageControllerInstance.getStorageController;
-    _userService = UserService(_storageController);
-    _geigerIndicatorData = GeigerIndicatorHelper(_storageController);
+    _userService = GeigerUserService(_storageController);
+    _geigerIndicatorData = GeigerIndicatorService(_storageController);
   }
 
   //***** end of private method ******

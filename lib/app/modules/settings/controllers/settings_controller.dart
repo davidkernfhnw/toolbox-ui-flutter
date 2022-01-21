@@ -10,8 +10,8 @@ import 'package:geiger_toolbox/app/data/model/partner.dart';
 import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_data.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/impl_user_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_utility_service.dart';
 import 'package:geiger_toolbox/app/translation/suppored_language.dart';
 import 'package:get/get.dart';
 
@@ -21,8 +21,8 @@ class SettingsController extends GetxController {
 
   late final StorageController _storageController;
   //userService
-  late final UserService _userService;
-  late final GeigerUtilityData _geigerData;
+  late final GeigerUserService _userService;
+  late final GeigerUtilityService _geigerData;
 
   //getting instance of localStorageController
   final LocalStorageController _localStorage = LocalStorageController.instance;
@@ -185,7 +185,7 @@ class SettingsController extends GetxController {
   //init storageController
   Future<void> _initStorageController() async {
     _storageController = await _localStorage.getStorageController;
-    _geigerData = GeigerUtilityData(_storageController);
+    _geigerData = GeigerUtilityService(_storageController);
   }
 
   //init util data
@@ -200,7 +200,7 @@ class SettingsController extends GetxController {
     isLoading.value = true;
 
     await _initialUtilityData();
-    _userService = UserService(_storageController);
+    _userService = GeigerUserService(_storageController);
     userInfo.value = (await _userService.getUserInfo)!;
     //init value in ui
     supervisor.value = userInfo.value.supervisor;

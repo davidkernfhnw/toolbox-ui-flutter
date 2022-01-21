@@ -8,14 +8,14 @@ import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/bool_parsing_extension.dart';
 
-import '../abstract/device_service.dart';
-import '../abstract/local_user.dart';
+import '../abstract/local_device_service.dart';
+import '../abstract/local_user_service.dart';
 
 const String _PATH = ":Local";
 const String _USER_KEY = "userInfo";
 
-class UserService extends DeviceService implements LocalUser {
-  UserService(this.storageController) : super(storageController);
+class GeigerUserService extends LocalDeviceService implements LocalUserService {
+  GeigerUserService(this.storageController) : super(storageController);
 
   StorageController storageController;
   late NodeValue _nodeValue;

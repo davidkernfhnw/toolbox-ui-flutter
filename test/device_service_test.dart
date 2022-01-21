@@ -2,12 +2,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/device.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/impl_user_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
 
 void main() {
   final StorageController storageController =
       GenericController("test", DummyMapper("testdb"));
-  final UserService deviceService = UserService(storageController);
+  final GeigerUserService deviceService = GeigerUserService(storageController);
 
   group("DeviceService ", () {
     test("Get deviceId", () async {

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_score_threats.dart';
 import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
@@ -10,9 +9,9 @@ import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_c
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_data.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_indicator_data.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/impl_user_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_indicator_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_utility_service.dart';
 import 'package:get/get.dart' as getX;
 import 'package:get_storage/get_storage.dart';
 
@@ -39,9 +38,9 @@ class HomeController extends getX.GetxController {
 
   //**** late variables ******
   late final StorageController _storageController;
-  late final UserService _userService;
-  late final GeigerUtilityData _geigerUtilityData;
-  late final GeigerIndicatorHelper _geigerIndicatorHelper;
+  late final GeigerUserService _userService;
+  late final GeigerUtilityService _geigerUtilityData;
+  late final GeigerIndicatorService _geigerIndicatorHelper;
   // *** end of late variables ****
 
   //**** observable variable ****
@@ -91,15 +90,6 @@ class HomeController extends getX.GetxController {
     //await geigerApiInstance.getEvents();
   }
 
-  Future<void> _onScanComplete() async {
-    MessageType? s = await geigerApiInstance.getScanCompleteMessage();
-    if (s != null) {
-      isScanCompleted.value = s.toString();
-      log("message => $s ");
-    }
-    log("NO message received");
-  }
-
   //returns aggregate of GeigerScoreThreats
   Future<GeigerScoreThreats> _getAggThreatScore() async {
     String currentUserId = await _userService.getUserId;
@@ -111,52 +101,6 @@ class HomeController extends getX.GetxController {
 
     return geigerScoreThreats;
   }
-
-  // ******start  StorageListener method
-  Future<void> _registerLocalStorageUserListener() async {
-    log("registeredLocalStorageListener called");
-    String currentUserId = await _userService.getUserId;
-    String indicatorId = _indicatorControllerInstance.indicatorId;
-    String path = ":Users";
-    String searchKey = "GEIGER_score";
-    Node _node = await _storageController.get(path);
-    await _localStorageInstance.registerListener(_node, path, searchKey);
-  }
-
-  //trigger
-  Future<bool> _triggerLocalStorageUserListener() async {
-    log("triggerLocalStorageUserListener called");
-    String currentUserId = await _userService.getUserId;
-    String indicatorId = _indicatorControllerInstance.indicatorId;
-    String path =
-        ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
-    String searchKey = "GEIGER_score";
-    Node _node = await _storageController.get(path);
-    return await _localStorageInstance.triggerListener(_node, path, searchKey);
-  }
-
-  //called this when ui is ready
-  Future<void> _listenToLocalStorageUser() async {
-    log("listToLocalStorage called");
-    bool t = await _triggerLocalStorageUserListener();
-
-    if (t == false) {
-      List<Event> event =
-          await _localStorageInstance.getLocalStorageListener.events;
-      log("Events => $event");
-      if (event.isNotEmpty) {
-        EventType update = event
-            .firstWhere((Event element) => element.type == EventType.update)
-            .type;
-        log("Event Listener Type => $update");
-        scanRequired.value = true;
-      }
-    } else {
-      log("No changes is localStorage");
-    }
-  }
-
-  //**********end of storageListener method
 
   //check if termsAndConditions were accepted
   // redirect to termAndCondition if false
@@ -170,9 +114,9 @@ class HomeController extends getX.GetxController {
   }
 
   Future<void> _initGeigerIndicator() async {
-    log("initGeigerIndicator called");
+    //log("initGeigerIndicator called");
     //start indicator
-    await _indicatorControllerInstance.initGeigerIndicator();
+    //await _indicatorControllerInstance.initGeigerIndicator();
   }
 
   //********* start initial resources ***********
@@ -202,9 +146,9 @@ class HomeController extends getX.GetxController {
   Future<void> _initStorageResources() async {
     //get StorageController from localStorageController instance
     _storageController = await _localStorageInstance.getStorageController;
-    _userService = UserService(_storageController);
-    _geigerUtilityData = GeigerUtilityData(_storageController);
-    _geigerIndicatorHelper = GeigerIndicatorHelper(_storageController);
+    _userService = GeigerUserService(_storageController);
+    _geigerUtilityData = GeigerUtilityService(_storageController);
+    _geigerIndicatorHelper = GeigerIndicatorService(_storageController);
   }
   //********* end of initial resources ***********
 
@@ -235,6 +179,21 @@ class HomeController extends getX.GetxController {
   }
 
   //************* end ************
+  void _runInitStorageRegister() async {
+    String currentDeviceId = await _userService.getDeviceId;
+    const String montimagePluginId = 'geiger-api-test-external-plugin-id';
+    const String sensorId = 'mi-ksp-scanner-is-rooted-device';
+
+    String currentUserId = await _userService.getUserId;
+    String indicatorId = _indicatorControllerInstance.indicatorId;
+    String nodePath =
+        ':Device:$currentDeviceId:$montimagePluginId:data:metrics:$sensorId';
+    String path =
+        ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
+    await _localStorageInstance.initRegisterStorageListener((EventType event) {
+      log("StorageListener got this event ==> $event");
+    }, ":Local", "currentUser");
+  }
 
   Future<void> _loadPlugin() async {
     isLoadingServices.value = true;
@@ -269,15 +228,10 @@ class HomeController extends getX.GetxController {
   void onInit() async {
     //init resources
     await _initStorageResources();
-    //register listener
-    await _registerLocalStorageUserListener();
     bool isRedirect = await _redirect();
     if (isRedirect) {
       //load local Plugin
       await _loadPlugin();
-
-      //triggerEvent
-      await _listenToLocalStorageUser();
     }
 
     //update newUserStatus to false onScanButtonPressed
@@ -291,35 +245,33 @@ class HomeController extends getX.GetxController {
     log("Dump after loading*****************");
     log("${await _storageController.dump(":")}");
 
+    //storageRegister
+    _runInitStorageRegister();
     super.onInit();
   }
 
   @override
   void onReady() async {
-    //await _triggerLocalStorageUserListener();
-    //await _listenToLocalStorageUser();
     if (grantPermission.isTrue) {
       await _initReplication();
     }
-    await _onScanComplete();
+
     super.onReady();
   }
 
-  //*********cloud replication
-
-  // // testing purpose for data stored by replication
-  // _getThreatWeight() async {
-  //   Node node = await _storageController.get(":Global:threats");
-  //   List<String> threatsId =
-  //       await node.getChildNodesCsv().then((value) => value.split(','));
-  //   for (String id in threatsId) {
-  //     Node threat = await _storageController.get(":Global:threats:$id");
-  //
-  //     String? result = await threat
-  //         .getValue("threatJson")
-  //         .then((value) => value!.getValue("en"));
-  //     log(result!);
-  //   }
-  // }
-
+  Future<bool> updateCurrentUserId() async {
+    try {
+      NodeValue? nodeValue =
+          await _storageController.getValue(":Local", "currentUser");
+      nodeValue!.setValue("FHnwUserID");
+      await _storageController.updateValue(":Local", nodeValue);
+      log('Updated node');
+      log(await _storageController.dump(":Local"));
+      return true;
+    } catch (e) {
+      log('Failed to get node :Local ');
+      log(e.toString());
+      return false;
+    }
+  }
 }

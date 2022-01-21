@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_data.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/impl_user_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_utility_service.dart';
 import 'package:get/get.dart';
 
 class QrCodeController extends GetxController {
@@ -14,14 +14,14 @@ class QrCodeController extends GetxController {
       LocalStorageController.instance;
   late final StorageController _storageController;
 
-  late GeigerUtilityData _geigerUtilityData;
+  late GeigerUtilityService _geigerUtilityData;
 
   var data = "".obs;
 
   void _storeDataAsQrCode({String agreementType: "both"}) async {
-    _geigerUtilityData = GeigerUtilityData(_storageController);
+    _geigerUtilityData = GeigerUtilityService(_storageController);
     String publicKey = await _geigerUtilityData.getPublicKey;
-    UserService userService = UserService(_storageController);
+    GeigerUserService userService = GeigerUserService(_storageController);
     String userId = await userService.getUserId;
     String body = jsonEncode(<String, dynamic>{
       'agreement': agreementType,

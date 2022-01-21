@@ -10,8 +10,8 @@ import 'package:geiger_toolbox/app/data/model/threat_score.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/abstract/global_data.dart';
 
 
-class GeigerIndicatorHelper extends GlobalData {
-  GeigerIndicatorHelper(this.storageController) : super(storageController);
+class GeigerIndicatorService extends GlobalData {
+  GeigerIndicatorService(this.storageController) : super(storageController);
 
   final StorageController storageController;
 

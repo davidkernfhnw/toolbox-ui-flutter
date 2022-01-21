@@ -51,6 +51,7 @@ class HomeView extends StatelessWidget {
                     children: [
                       TopScreen(
                         warning: controller.scanRequired.value,
+                        onChangeUserId: controller.updateCurrentUserId,
                         onScanPressed: () {
                           //controller.emptyThreatScores();
                           controller.onScanButtonPressed();

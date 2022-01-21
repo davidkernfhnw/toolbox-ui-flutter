@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:geiger_api/geiger_api.dart';
+import 'package:geiger_toolbox/app/services/listeners/external_plugin_event.dart';
 import 'package:get/get.dart';
 
 class GeigerApiConnector extends GetxController {
@@ -9,16 +10,15 @@ class GeigerApiConnector extends GetxController {
 
   //private variables
   late final GeigerApi _localMaster;
-  PluginEventListener? _pluginEventListener;
+  EventPluginEventListener? _pluginEventListener;
 
-  List<MessageType> handledEvents = [];
-  bool isListenerRegistered = false;
+  bool _isPluginListenerRegistered = false;
 
   GeigerApi get getLocalMaster {
     return _localMaster;
   }
 
-  PluginEventListener? get getPluginListener {
+  EventPluginEventListener? get getPluginListener {
     try {
       return _pluginEventListener;
     } catch (e) {
@@ -26,47 +26,37 @@ class GeigerApiConnector extends GetxController {
     }
   }
 
-  // // Dynamically define the handler for each message type
-  // void addMessagehandler(MessageType type, Function handler) {
-  //   if (pluginListener == null) {
-  //     pluginListener = GeigerEventListener('PluginListener-$pluginId');
-  //     log('PluginListener: ${pluginListener.hashCode}');
-  //   }
-  //   handledEvents.add(type);
-  //   pluginListener!.addMessageHandler(type, handler);
-  // }
-
   /// initialize this method before the start of the app
   // LN: adding the function to handle the SCAN_COMPLETED event
-  Future<void> initLocalMasterPlugin(
-      Function? scanCompletedEventHandler) async {
-    //flushGeigerApiCache();
-    //*****************************************master**********************
-    _localMaster = (await getGeigerApi(
-        "geiger_toolbox", GeigerApi.masterId, Declaration.doShareData))!;
-    //clear existing state
-    //await _localMaster.zapState();
-    //register plugin
-    isListenerRegistered =
-        await _registerExternalPluginListener(scanCompletedEventHandler);
+  Future<void> initGeigerApi(Function? scanCompletedEventHandler) async {
+    try {
+      _localMaster = (await getGeigerApi(
+          "geiger_toolbox", GeigerApi.masterId, Declaration.doShareData))!;
+
+      //register plugin
+      _isPluginListenerRegistered =
+          await _registerExternalPluginListener(scanCompletedEventHandler);
+    } catch (e) {
+      log('Failed to get GeigerAPI ===> \n $e');
+    }
   }
 
   Future<bool> _registerExternalPluginListener(
       Function? scanCompletedEventHandler) async {
     String id = _localMaster.id;
-    if (isListenerRegistered == true) {
+    if (_isPluginListenerRegistered == true) {
       log('Plugin ${_pluginEventListener.hashCode} has been registered and activated');
       return true;
     } else {
       if (_pluginEventListener == null) {
-        _pluginEventListener = PluginEventListener(id);
-        log("PluginEventListener: ${_pluginEventListener.hashCode}");
-        // Register the function the to handle the SCAN_COMPLETED event -> this function is provided from initialization of the MasterAPI (ref: main.dart)
+        _pluginEventListener = EventPluginEventListener(id);
+        log("ExternalPluginListener ==> ${_pluginEventListener.hashCode}");
+        // Register the function to handle the SCAN_COMPLETED event -> this function is provided from initialization of the MasterAPI (ref: main.dart)
         _pluginEventListener!.addMessageHandler(
             MessageType.scanCompleted, scanCompletedEventHandler!);
         // An example of handling a message type (STORAGE_EVENT) with a specific handler
         _pluginEventListener!.addMessageHandler(MessageType.storageEvent,
-            // Handle the Storage_event - should use the specific storage listener
+            // Handle the Storage_event - should use the specific storage listeners
             (Message msg) {
           log('Someone ${msg.sourceId} has changed something in the Storage');
           log(msg.toString());
@@ -82,11 +72,11 @@ class GeigerApiConnector extends GetxController {
         // Not sure if it is a bug of the geiger api - but we should always use [MessageType.allEvents]
         await _localMaster
             .registerListener([MessageType.allEvents], _pluginEventListener!);
-        log("Plugin ${_pluginEventListener.hashCode} has been registered and activated");
-        isListenerRegistered = true;
+        log("ExternalPluginListener ==> ${_pluginEventListener.hashCode} has been registered and activated");
+        _isPluginListenerRegistered = true;
         return true;
       } catch (e) {
-        log("Failed to register listener");
+        log("Failed to register listeners");
         log(e.toString());
         return false;
       }
@@ -94,81 +84,21 @@ class GeigerApiConnector extends GetxController {
   }
 
   // Dynamically define the handler for each message type
-  void addMessageHandler(MessageType type, Function handler, String id) {
-    if (_pluginEventListener == null) {
-      _pluginEventListener = PluginEventListener('PluginListener-$id');
-      log('PluginListener: ${_pluginEventListener.hashCode}');
-    }
-    handledEvents.add(type);
-    _pluginEventListener!.addMessageHandler(type, handler);
-  }
-
-  Future<MessageType?> getScanCompleteMessage() async {
-    List<Message> message = await _pluginEventListener!.getEvents();
-
-    if (message.isNotEmpty) {
-      Message scanCompleted = message
-          .firstWhere((element) => element.type == MessageType.scanCompleted);
-      return scanCompleted.type;
-    }
-  }
-
-  List<Message> getEvents() {
-    return _pluginEventListener!.getEvents();
-  }
+  // void _addMessageHandler(MessageType type, Function handler, String id) {
+  //   if (_pluginEventListener == null) {
+  //     _pluginEventListener = PluginEventListener('PluginListener-$id');
+  //     log('PluginListener: ${_pluginEventListener.hashCode}');
+  //   }
+  //   handledEvents.add(type);
+  //   _pluginEventListener!.addMessageHandler(type, handler);
+  // }
+  //
+  // List<Message> getEvents() {
+  //   return _pluginEventListener!.getEvents();
+  // }
 
   // Show some statistics of Listener
   String getListenerToString() {
     return _pluginEventListener.toString();
-  }
-}
-
-class PluginEventListener implements PluginListener {
-  List<Message> events = [];
-  Map<MessageType, Function> messageHandler = {};
-  int numberReceivedMessages = 0;
-  int numberHandledMessages = 0;
-  final String _id;
-
-  PluginEventListener(this._id);
-
-  /// Add a handler for a special message type
-  /// If the message type has been handled by one handler, the old handler will be overwrided by the new one
-  void addMessageHandler(MessageType type, Function handler) {
-    messageHandler[type] = handler;
-  }
-
-  @override
-  void pluginEvent(GeigerUrl? url, Message msg) {
-    log('[Eventlistener "$_id"] received a new event ${msg.type} (source: ${msg.sourceId}, target: ${msg.targetId}');
-    numberReceivedMessages++;
-    events.add(msg);
-    Function? handler = messageHandler[msg.type];
-    if (handler != null) {
-      numberHandledMessages++;
-      handler(msg);
-    } else {
-      log('EventListener $_id does not handle message type ${msg.type}');
-    }
-
-    log('[Listener "$_id"] received a new event ${msg.type} (source: ${msg.sourceId}, target: ${msg.targetId}');
-    log('Message: ${msg.toString()}');
-    log('Total events: ${events.length.toString()} events');
-  }
-
-  List<Message> getEvents() {
-    log("List of events=>  $events");
-    return events;
-  }
-
-  @override
-  String toString() {
-    String ret = '';
-    ret +=
-        'EventListener "$_id" has received $numberReceivedMessages messages\n';
-    ret += 'EventListener "$_id" has handled $numberHandledMessages messages\n';
-    ret +=
-        'EventListener "$_id" has dropped ${numberReceivedMessages - numberHandledMessages} messages\n';
-    return ret;
   }
 }

@@ -4,24 +4,24 @@ import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_localstorage/src/visibility.dart' as vis;
 import 'package:geiger_toolbox/app/data/model/country.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/uuid.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/uuid.dart';
 import 'package:intl/src/locale.dart';
 
-import '../abstract/utility_data.dart';
+import 'utility_data.dart';
 
 const String _LOCATION_PATH = ":Global:location";
 const String _CERT_PATH = ":Global:cert";
 const String _PROF_ASS_PATH = ":Global:professionAssociation";
 const String _NODE_OWNER = "geigerUi";
 
-abstract class ImplUtilityData extends UtilityData {
+abstract class GeigerUtilityHelper extends UtilityData {
   //final LocalStorageController _localStorage = LocalStorageController.instance;
   late Node _node;
   late NodeValue _nodeValue;
 
   StorageController storageController;
 
-  ImplUtilityData(this.storageController);
+  GeigerUtilityHelper(this.storageController);
   @override
   Future<List<Partner>> getCert({String locale: "en"}) async {
     List<Partner> cert = <Partner>[];
@@ -298,3 +298,5 @@ abstract class ImplUtilityData extends UtilityData {
     }
   }
 }
+
+//Todo: refactor storeProfessional, storeCert

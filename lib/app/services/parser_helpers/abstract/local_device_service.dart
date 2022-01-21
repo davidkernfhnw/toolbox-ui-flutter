@@ -4,8 +4,8 @@ import 'package:geiger_toolbox/app/data/model/device.dart';
 const String _PATH = ":Local";
 const String _DEVICE_KEY = "deviceInfo";
 
-abstract class DeviceService {
-  DeviceService(this.storageController);
+abstract class LocalDeviceService {
+  LocalDeviceService(this.storageController);
 
   StorageController storageController;
   late NodeValue _nodeValue;

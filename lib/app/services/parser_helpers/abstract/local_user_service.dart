@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
 
-abstract class LocalUser {
+abstract class LocalUserService {
   /// @return userId as a Future<String>
   /// from the Local node
   Future<String> get getUserId;
