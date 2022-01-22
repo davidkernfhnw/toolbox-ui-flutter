@@ -9,6 +9,7 @@ import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
+import 'package:geiger_toolbox/app/services/localNotification/local_notification.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_indicator_service.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
@@ -34,6 +35,9 @@ class HomeController extends getX.GetxController {
   final GeigerIndicatorController _indicatorControllerInstance =
       GeigerIndicatorController.instance;
   final GeigerApiConnector geigerApiInstance = GeigerApiConnector.instance;
+
+  final LocalNotificationController _localNotificationControllerInstance =
+      LocalNotificationController.instance;
 
   //**** end of instance
 
@@ -147,6 +151,11 @@ class HomeController extends getX.GetxController {
     _geigerIndicatorHelper = GeigerIndicatorService(_storageController);
   }
 
+  void showNotification(EventType event) async {
+    _localNotificationControllerInstance.notification(
+        "Geiger ToolBox Notification", event.toValueString());
+  }
+
   void _runInitStorageRegister() async {
     // String currentDeviceId = await _userService.getDeviceId;
     // const String montimagePluginId = 'geiger-api-test-external-plugin-id';
@@ -159,13 +168,20 @@ class HomeController extends getX.GetxController {
     // String path =
     //     ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
 
-    await _localStorageInstance.initRegisterStorageListener((EventType event) {
-      log("StorageListener got this event ==> $event");
-      //Todo: implement a notification for Storage Event
-      isStorageUpdated.value = event.toValueString();
-      isScanRequired.value = true;
-    }, ":Local", "currentUser");
+    // await _localStorageInstance.initRegisterStorageListener((EventType event) {
+    //   log("StorageListener got this event ==> ${event.toValueString()}");
+    //   String msg = "StorageListener got this event ==> ${event.toValueString()}";
+    //   getX.Get.snackbar("StorageEvent Message",
+    //       "StorageListener got this event ==>${event.toValueString()}");
+    //   //Todo: implement a notification for Storage Event
+    //   isStorageUpdated.value = event.toValueString();
+    //   isScanRequired.value = true;
+    //   log("Is ScanRequired => $isScanRequired");
+    // }, ":Local", "currentUser");
 
+    await _localStorageInstance.initRegisterStorageListener((EventType event) {
+      showNotification(event);
+    }, ":Local", "currentUser");
     // // show snack bar if storageChanges
     // Get.snackbar("StorageEvent Message",
     //     "StorageListener got this event ==> $isStorageUpdated")

@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/consent.dart';
@@ -247,19 +247,25 @@ class SettingsController extends GetxController {
 
   //get name of the user device
   Future<String> get _getDeviceName async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (Platform.isAndroid) {
       AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
-      return androidDeviceInfo.model;
+      return androidDeviceInfo.model!;
     } else if (Platform.isIOS) {
       IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
-      return iosDeviceInfo.utsname.machine;
+      return iosDeviceInfo.utsname.machine!;
     } else if (Platform.isMacOS) {
-      return "MacOS";
+      MacOsDeviceInfo macOsDeviceInfo = await deviceInfo.macOsInfo;
+      String macOs = macOsDeviceInfo.computerName;
+      return macOs;
     } else if (Platform.isWindows) {
-      return "Windows";
+      WindowsDeviceInfo w = await deviceInfo.windowsInfo;
+      String window = w.computerName;
+      return window;
     } else {
-      return "Web";
+      WebBrowserInfo web = await deviceInfo.webBrowserInfo;
+      String browser = web.browserName.name;
+      return browser;
     }
   }
 

@@ -10,6 +10,7 @@ import 'package:get_storage/get_storage.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 import 'app/services/cloudReplication/cloud_replication_controller.dart';
+import 'app/services/localNotification/local_notification.dart';
 import 'app/services/localStorage/local_storage_controller.dart';
 import 'app/translation/app_translation.dart';
 import 'app/util/theme/custom_theme_data.dart';
@@ -34,6 +35,10 @@ void main() async {
   Get.lazyPut<CloudReplicationController>(() => CloudReplicationController());
   //cached data
   await GetStorage.init();
+
+  //Local notification
+  Get.lazyPut<LocalNotificationController>(() => LocalNotificationController());
+
   runApp(GeigerApp());
 }
 

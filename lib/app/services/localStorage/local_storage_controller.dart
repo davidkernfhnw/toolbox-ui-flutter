@@ -78,20 +78,26 @@ class LocalStorageController extends getX.GetxController {
         _isStorageListenerRegistered = true;
 
         if (path != null) {
-          Node node = await _storageController.get(path);
-          //trigger evaluation
-          bool e = await s.evaluate(node);
-          //isTrue means ==> node fails to evaluate successfully
-          if (e) {
-            _isStorageListenerTriggered = false;
-            log("StorageListenerTriggered ==> node FAILS to evaluate successfully");
-          } else {
-            _isStorageListenerTriggered = true;
-            log("StorageListenerTriggered => $_isStorageListenerTriggered");
+          try {
+            Node node = await _storageController.get(path);
+            //trigger evaluation
+            bool e = await s.evaluate(node);
+            //isTrue means ==> node fails to evaluate successfully
+            if (e) {
+              _isStorageListenerTriggered = false;
+              log("StorageListenerTriggered ==> node FAILS to evaluate successfully");
+            } else {
+              _isStorageListenerTriggered = true;
+              log("StorageListenerTriggered => $_isStorageListenerTriggered");
+            }
+            return true;
+          } catch (e) {
+            log("Failed to get Node from this $path \n $e");
+            return false;
           }
-          return true;
+        } else {
+          return false;
         }
-        return false;
       } catch (e) {
         log("Failed to register storageChangeListener\n $e");
         return false;
