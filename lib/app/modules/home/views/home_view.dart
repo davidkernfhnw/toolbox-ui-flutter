@@ -86,7 +86,7 @@ class HomeView extends StatelessWidget {
                                         indicatorScore:
                                             double.parse(t.score.toString()),
                                         routeName: Routes.RECOMMENDATION_VIEW,
-                                        routeArguments: t.threat,
+                                        threat: t.threat,
                                       );
                                     },
                                   ).toList(),
@@ -99,7 +99,7 @@ class HomeView extends StatelessWidget {
     );
   }
 }
-//with STACK
+//with STACK circularIndicator
 // @override
 // Widget build(BuildContext context) {
 //   return Scaffold(

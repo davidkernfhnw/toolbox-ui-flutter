@@ -31,6 +31,7 @@ class RecommendationController extends getX.GetxController {
   late final StorageController _storageController;
   late final GeigerUserService _userService;
   late GeigerIndicatorService _geigerIndicatorData;
+
   // *** end of late variables ****
 
   //**** observable variable ****
@@ -66,6 +67,7 @@ class RecommendationController extends getX.GetxController {
   Future<void> _showUserThreat() async {
     //get userThreatScore
     GeigerScoreThreats geigerUserScore = await _getUserThreatScore();
+    //GeigerScoreThreats geigerUserScore = _getUserCachedData();
     log("GeigerUserScore => $geigerUserScore");
     //geiger userScore
     userGeigerScore.value = geigerUserScore.geigerScore;
@@ -78,7 +80,7 @@ class RecommendationController extends getX.GetxController {
 
   Future<void> _showDeviceThreat() async {
     GeigerScoreThreats geigerDeviceScore = await _getDeviceThreatScore();
-
+    //GeigerScoreThreats geigerDeviceScore = _getDeviceCachedData();
     log("GeigerDeviceScore => $geigerDeviceScore");
     //geiger deviceScore
     deviceGeigerScore.value = geigerDeviceScore.geigerScore;
@@ -125,10 +127,13 @@ class RecommendationController extends getX.GetxController {
         ":Users:${currentUser.userId}:$indicatorId:data:GeigerScoreUser";
 
     List<Recommendation> geigerScoreThreats =
-        await _geigerIndicatorData.getGeigerRecommendationsLoung(
+        await _geigerIndicatorData.getGeigerRecommendations(
             recommendationPath: userRecommendationPath,
             threatId: threat.threatId,
             geigerScorePath: geigerScoreUserPath);
+    //
+    // List<Recommendation> geigerScoreThreats =
+    //     _getUserRecommendationCachedData();
 
     //set observable variable
     userGeigerRecommendations.value = geigerScoreThreats;
@@ -146,10 +151,13 @@ class RecommendationController extends getX.GetxController {
         ":Devices:${currentUser.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
 
     List<Recommendation> deviceRecommendation =
-        await _geigerIndicatorData.getGeigerRecommendationsLoung(
+        await _geigerIndicatorData.getGeigerRecommendations(
             recommendationPath: deviceRecommendationpath,
             threatId: threat.threatId,
             geigerScorePath: geigerScoreDevicePath);
+
+    // List<Recommendation> deviceRecommendation =
+    //     _getDeviceRecommendationCachedData();
     //set observable variable
     deviceGeigerRecommendations.value = deviceRecommendation;
     log("Device Recommendation => $deviceGeigerRecommendations");
@@ -242,6 +250,8 @@ class RecommendationController extends getX.GetxController {
   onInit() async {
     isLoading.value = true;
     await _init();
+    await Future.delayed(Duration(seconds: 1));
+    // _box = _homeControllerInstance.cache;
     _showUserName();
     await _showUserThreat();
     await _showDeviceThreat();
@@ -255,4 +265,40 @@ class RecommendationController extends getX.GetxController {
   onReady() async {
     super.onReady();
   }
+
+  //**************cached data*******************
+
+  //
+
+  // GeigerScoreThreats _getDeviceCachedData() {
+  //   var data = _box.read("deviceThreat");
+  //   var json = jsonDecode(data);
+  //   GeigerScoreThreats result = GeigerScoreThreats.fromJson(json);
+  //   return result;
+  // }
+  //
+  // GeigerScoreThreats _getUserCachedData() {
+  //   var data = _box.read("userThreat");
+  //   var json = jsonDecode(data);
+  //   GeigerScoreThreats result = GeigerScoreThreats.fromJson(json);
+  //   return result;
+  // }
+  //
+  // //
+  // List<Recommendation> _getUserRecommendationCachedData() {
+  //   var data = _box.read("userRecommendations");
+  //   String json = jsonDecode(data);
+  //   log("JSOn data ==> $json");
+  //   List<Recommendation> result = Recommendation.recommendationList(json);
+  //   return result;
+  // }
+  //
+  // List<Recommendation> _getDeviceRecommendationCachedData() {
+  //   var data = _box.read("deviceRecommendations");
+  //   var json = jsonDecode(data);
+  //   List<Recommendation> result = Recommendation.recommendationList(json);
+  //   return result;
+  // }
+
+//************* end ************
 }

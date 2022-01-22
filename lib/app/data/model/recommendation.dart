@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'recommendation.g.dart';
@@ -29,6 +31,14 @@ class Recommendation {
 
   Map<String, dynamic> toJson() {
     return _$RecommendationToJson(this);
+  }
+
+  static List<Recommendation> recommendationList(String recommendationJson) {
+    //Todo: fix error due to some string be empty
+    List<dynamic> jsonData = jsonDecode(recommendationJson);
+    return jsonData
+        .map((recommendationMap) => Recommendation.fromJson(recommendationMap))
+        .toList();
   }
 
   @override

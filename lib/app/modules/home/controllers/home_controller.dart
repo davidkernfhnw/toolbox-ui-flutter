@@ -70,7 +70,7 @@ class HomeController extends getX.GetxController {
     //set observable aggregate threatScore
     aggThreatsScore.value = await _getAggThreatScore();
     //cached data when the user press the scan button
-    _cachedData();
+    _cachedAggregateData(aggThreatsScore.value);
     //scanning is done
     //a delay
     await Future.delayed(Duration(seconds: 2));
@@ -146,30 +146,7 @@ class HomeController extends getX.GetxController {
     _geigerUtilityData = GeigerUtilityService(_storageController);
     _geigerIndicatorHelper = GeigerIndicatorService(_storageController);
   }
-  //********* end of initial resources ***********
 
-  //**************cached data*******************
-  final box = GetStorage();
-
-  void _cachedData() {
-    box.write("aggThreat", jsonEncode(aggThreatsScore.value));
-  }
-
-  GeigerScoreThreats _getCachedData() {
-    var data = box.read("aggThreat");
-    var json = jsonDecode(data);
-    GeigerScoreThreats result = GeigerScoreThreats.fromJson(json);
-    return result;
-  }
-
-  // get data from cache if user has  press the scan button before
-  Future<void> _getCacheData() async {
-    //aggThreatsScore.value = await _getAggThreatScore();
-    //update aggregate threatScore from cached data
-    aggThreatsScore.value = _getCachedData();
-  }
-
-  //************* end ************
   void _runInitStorageRegister() async {
     // String currentDeviceId = await _userService.getDeviceId;
     // const String montimagePluginId = 'geiger-api-test-external-plugin-id';
@@ -184,6 +161,7 @@ class HomeController extends getX.GetxController {
 
     await _localStorageInstance.initRegisterStorageListener((EventType event) {
       log("StorageListener got this event ==> $event");
+      //Todo: implement a notification for Storage Event
       isStorageUpdated.value = event.toValueString();
       isScanRequired.value = true;
     }, ":Local", "currentUser");
@@ -201,7 +179,6 @@ class HomeController extends getX.GetxController {
 
     //load utilityData
     await _loadUtilityData();
-    //await Future.delayed(Duration(seconds: 1));
 
     message.value = "Updating Toolbox..";
 
@@ -209,7 +186,7 @@ class HomeController extends getX.GetxController {
     isLoadingServices.value = false;
   }
 
-  Future<void> _loadCacheData() async {
+  Future<void> _triggerAggCachedData() async {
     //check if user has previously pressed the scanButton
     bool isButtonPressed = await _userService.isButtonPressed();
     //always true because it is set to true when the user accept termsAndConditions
@@ -221,11 +198,9 @@ class HomeController extends getX.GetxController {
       //log("${await _userService.checkNewUserStatus()}");
     } else {
       //populate data from cached
-      await _getCacheData();
+      await _showAggCachedData();
     }
   }
-
-  //******************end cached data***********************
 
   //************* end of private methods ***********************
 
@@ -239,9 +214,8 @@ class HomeController extends getX.GetxController {
       await _loadHelperData();
     }
 
-    await _loadCacheData();
-    //storageRegister
-    _runInitStorageRegister();
+    await _triggerAggCachedData();
+
     super.onInit();
   }
 
@@ -250,7 +224,8 @@ class HomeController extends getX.GetxController {
     if (grantPermission.isTrue) {
       await _initReplication();
     }
-
+    //storageRegister
+    _runInitStorageRegister();
     super.onReady();
   }
 
@@ -269,4 +244,86 @@ class HomeController extends getX.GetxController {
       return false;
     }
   }
+
+  //**************cached data*******************
+  final GetStorage cache = GetStorage();
+
+  void _cachedAggregateData(GeigerScoreThreats value) {
+    cache.write("aggThreat", jsonEncode(value));
+  }
+
+  GeigerScoreThreats _getAggCachedData() {
+    var data = cache.read("aggThreat");
+    var json = jsonDecode(data);
+    GeigerScoreThreats result = GeigerScoreThreats.fromJson(json);
+    return result;
+  }
+
+  // get data from cache if user has  press the scan button before
+  Future<void> _showAggCachedData() async {
+    //aggThreatsScore.value = await _getAggThreatScore();
+    //update aggregate threatScore from cached data
+    aggThreatsScore.value = _getAggCachedData();
+  }
+//********* end of initial resources ***********
 }
+
+// ****cached of recommendatin
+// void _cachedUserData() async {
+//   User? currentUser = await _userService.getUserInfo;
+//   String indicatorId = _indicatorControllerInstance.indicatorId;
+//   String path =
+//       ":Users:${currentUser!.userId}:$indicatorId:data:GeigerScoreUser";
+//   //get user geigerScoreThreats
+//   GeigerScoreThreats geigerScoreThreats =
+//   await _geigerIndicatorHelper.getGeigerScoreThreats(path: path);
+//
+//   cache.write("userThreat", jsonEncode(geigerScoreThreats));
+// }
+//
+// void _cachedDeviceData() async {
+//   User? currentUser = await _userService.getUserInfo;
+//   String indicatorId = _indicatorControllerInstance.indicatorId;
+//   String path =
+//       ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
+//   //get device geigerScoreThreats
+//   GeigerScoreThreats geigerScoreThreats =
+//   await _geigerIndicatorHelper.getGeigerScoreThreats(path: path);
+//
+//   cache.write("deviceThreat", jsonEncode(geigerScoreThreats));
+// }
+//
+// Future<void> cachedUserRecommendation(Threat threat) async {
+//   User? currentUser = await _userService.getUserInfo;
+//   String indicatorId = _indicatorControllerInstance.indicatorId;
+//   String userRecommendationPath =
+//       ":Users:${currentUser!.userId}:$indicatorId:data:recommendations";
+//
+//   String geigerScoreUserPath =
+//       ":Users:${currentUser.userId}:$indicatorId:data:GeigerScoreUser";
+//
+//   List<Recommendation> geigerScoreThreats =
+//   await _geigerIndicatorHelper.getGeigerRecommendations(
+//       recommendationPath: userRecommendationPath,
+//       threatId: threat.threatId,
+//       geigerScorePath: geigerScoreUserPath);
+//   cache.write("userRecommendations", jsonEncode(geigerScoreThreats));
+// }
+//
+// Future<void> cachedDeviceRecommendation(Threat threat) async {
+//   User? currentUser = await _userService.getUserInfo;
+//   String indicatorId = _indicatorControllerInstance.indicatorId;
+//   String deviceRecommendationpath =
+//       ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:recommendations";
+//
+//   String geigerScoreDevicePath =
+//       ":Devices:${currentUser.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
+//
+//   List<Recommendation> deviceRecommendation =
+//   await _geigerIndicatorHelper.getGeigerRecommendations(
+//       recommendationPath: deviceRecommendationpath,
+//       threatId: threat.threatId,
+//       geigerScorePath: geigerScoreDevicePath);
+//
+//   cache.write("deviceRecommendations", jsonEncode(deviceRecommendation));
+// }
