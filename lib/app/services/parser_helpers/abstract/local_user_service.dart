@@ -27,11 +27,11 @@ abstract class LocalUserService {
   Future<bool> updateUserInfo(User user);
 
   ///set newUser to true
-  Future<void> setNewUserStatus({bool value});
+  Future<void> setPressedButton({bool value});
 
   ///update newUser to false
-  Future<void> updateNewUserStatus({bool value});
+  Future<void> updateButtonPressed({bool value});
 
   /// @return Future<bool>
-  Future<bool> checkNewUserStatus();
+  Future<bool> isButtonPressed();
 }

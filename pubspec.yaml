@@ -42,7 +42,6 @@ dependencies:
   qr_flutter: ^4.0.0
   qr_code_scanner: ^0.5.2
   permission_handler: ^8.2.2
-  sqlite3_flutter_libs: ^0.5.1
 
   flutter_form_builder: ^7.0.0
   device_info: ^2.0.3
@@ -56,9 +55,7 @@ dependencies:
   get_storage: ^2.0.3
   charts_flutter: ^0.12.0
   toolbox_indicator_test: ^1.0.5
-
-  geiger_api: ^0.6.2
-  geiger_localstorage: ^0.6.23
+  geiger_api: ^0.6.3
 
 dev_dependencies:
   flutter_test:

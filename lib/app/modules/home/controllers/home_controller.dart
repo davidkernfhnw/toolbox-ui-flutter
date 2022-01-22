@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_score_threats.dart';
@@ -47,9 +48,10 @@ class HomeController extends getX.GetxController {
   var isScanning = false.obs;
   var isLoadingServices = false.obs;
   var message = "".obs;
-  var scanRequired = false.obs;
+  var isScanRequired = false.obs;
   var grantPermission = false.obs;
   var isScanCompleted = "".obs;
+  var isStorageUpdated = "".obs;
   //**** end of observable variable ***
 
   //*** observable object *****
@@ -73,7 +75,7 @@ class HomeController extends getX.GetxController {
     //a delay
     await Future.delayed(Duration(seconds: 2));
     //set scanRequired to false if true
-    scanRequired.value = false;
+    isScanRequired.value = false;
     log("Dump => after onPressed Button *****************");
     log("${await _storageController.dump(":")}");
 
@@ -111,12 +113,6 @@ class HomeController extends getX.GetxController {
       return false;
     }
     return true;
-  }
-
-  Future<void> _initGeigerIndicator() async {
-    //log("initGeigerIndicator called");
-    //start indicator
-    //await _indicatorControllerInstance.initGeigerIndicator();
   }
 
   //********* start initial resources ***********
@@ -168,48 +164,41 @@ class HomeController extends getX.GetxController {
 
   // get data from cache if user has  press the scan button before
   Future<void> _getCacheData() async {
-    bool isNewUser = await _userService.checkNewUserStatus();
-    log("new user : $isNewUser");
-    if (isNewUser == false) {
-      //aggThreatsScore.value = await _getAggThreatScore();
-      //update aggregate threatScore from cached data
-      aggThreatsScore.value = _getCachedData();
-      return;
-    }
+    //aggThreatsScore.value = await _getAggThreatScore();
+    //update aggregate threatScore from cached data
+    aggThreatsScore.value = _getCachedData();
   }
 
   //************* end ************
   void _runInitStorageRegister() async {
-    String currentDeviceId = await _userService.getDeviceId;
-    const String montimagePluginId = 'geiger-api-test-external-plugin-id';
-    const String sensorId = 'mi-ksp-scanner-is-rooted-device';
+    // String currentDeviceId = await _userService.getDeviceId;
+    // const String montimagePluginId = 'geiger-api-test-external-plugin-id';
+    // const String sensorId = 'mi-ksp-scanner-is-rooted-device';
+    //
+    // String currentUserId = await _userService.getUserId;
+    // String indicatorId = _indicatorControllerInstance.indicatorId;
+    // String nodePath =
+    //     ':Device:$currentDeviceId:$montimagePluginId:data:metrics:$sensorId';
+    // String path =
+    //     ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
 
-    String currentUserId = await _userService.getUserId;
-    String indicatorId = _indicatorControllerInstance.indicatorId;
-    String nodePath =
-        ':Device:$currentDeviceId:$montimagePluginId:data:metrics:$sensorId';
-    String path =
-        ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
     await _localStorageInstance.initRegisterStorageListener((EventType event) {
       log("StorageListener got this event ==> $event");
+      isStorageUpdated.value = event.toValueString();
+      isScanRequired.value = true;
     }, ":Local", "currentUser");
+
+    // // show snack bar if storageChanges
+    // Get.snackbar("StorageEvent Message",
+    //     "StorageListener got this event ==> $isStorageUpdated")
   }
 
-  Future<void> _loadPlugin() async {
+  Future<void> _loadHelperData() async {
     isLoadingServices.value = true;
     message.value = "Loading Toolbox..";
 
     await Future.delayed(Duration(seconds: 1));
-    // bool checkUser = await _userService.checkNewUserStatus();
-    // when hot reload is executed before the user pressed
-    // the scan button after accepting terms and conditions
-    // this check always be true
-    //if (checkUser) {
-    // isLoadingServices.value = true;
-    // message.value = "Update..";
-    //init indicator
 
-    await _initGeigerIndicator();
     //load utilityData
     await _loadUtilityData();
     //await Future.delayed(Duration(seconds: 1));
@@ -218,6 +207,22 @@ class HomeController extends getX.GetxController {
 
     // await _initReplication();
     isLoadingServices.value = false;
+  }
+
+  Future<void> _loadCacheData() async {
+    //check if user has previously pressed the scanButton
+    bool isButtonPressed = await _userService.isButtonPressed();
+    //always true because it is set to true when the user accept termsAndConditions
+    // for the first time
+    if (isButtonPressed) {
+      //update newUserStatus to false onScanButtonPressed
+      getX.once(aggThreatsScore,
+          (_) async => await _userService.updateButtonPressed());
+      //log("${await _userService.checkNewUserStatus()}");
+    } else {
+      //populate data from cached
+      await _getCacheData();
+    }
   }
 
   //******************end cached data***********************
@@ -231,20 +236,10 @@ class HomeController extends getX.GetxController {
     bool isRedirect = await _redirect();
     if (isRedirect) {
       //load local Plugin
-      await _loadPlugin();
+      await _loadHelperData();
     }
 
-    //update newUserStatus to false onScanButtonPressed
-    getX.once(
-        aggThreatsScore, (_) async => await _userService.updateNewUserStatus());
-    log("${await _userService.checkNewUserStatus()}");
-
-    //populate data from cached
-    await _getCacheData();
-    log("${await _userService.getUserId}");
-    log("Dump after loading*****************");
-    log("${await _storageController.dump(":")}");
-
+    await _loadCacheData();
     //storageRegister
     _runInitStorageRegister();
     super.onInit();
@@ -259,14 +254,14 @@ class HomeController extends getX.GetxController {
     super.onReady();
   }
 
-  Future<bool> updateCurrentUserId() async {
+  Future<bool> updateDeviceInfo() async {
     try {
       NodeValue? nodeValue =
-          await _storageController.getValue(":Local", "currentUser");
-      nodeValue!.setValue("FHnwUserID");
+          await _storageController.getValue(":Local", "deviceInfo");
+      var r = math.Random();
+      nodeValue!.setValue("FHnwUserID${r.nextDouble()}");
       await _storageController.updateValue(":Local", nodeValue);
-      log('Updated node');
-      log(await _storageController.dump(":Local"));
+
       return true;
     } catch (e) {
       log('Failed to get node :Local ');

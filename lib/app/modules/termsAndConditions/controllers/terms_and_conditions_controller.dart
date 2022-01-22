@@ -81,7 +81,7 @@ class TermsAndConditionsController extends GetxController {
               signedConsent: signedConsent.value,
               agreedPrivacy: agreedPrivacy.value));
       if (success) {
-        await _userService.setNewUserStatus();
+        await _userService.setPressedButton();
 
         // //store utility data
         // await _localStorageInstance.storeCountry();

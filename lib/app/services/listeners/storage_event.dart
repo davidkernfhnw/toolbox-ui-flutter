@@ -38,7 +38,7 @@ class LocalStorageListener implements StorageListener {
   Future<void> gotStorageChange(
       EventType event, Node? oldNode, Node? newNode) async {
     Event e = Event(event, oldNode, newNode);
-    log('localStorageEventListener received a new event ==> ${e} (old Node ==> ${e.oldNode}, new Node: ==> ${e.newNode}');
+    log('localStorageEventListener received a NEW EVENT ==> ${e._event}\n OLD NODE ==> ${e.oldNode} \n NEW NODE ==> ${e.newNode}');
     numberReceivedEvents++;
     events.add(e);
     Function? handler = messageHandler[e.type];

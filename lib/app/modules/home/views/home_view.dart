@@ -50,8 +50,8 @@ class HomeView extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       TopScreen(
-                        warning: controller.scanRequired.value,
-                        onChangeUserId: controller.updateCurrentUserId,
+                        warning: controller.isScanRequired.value,
+                        onChangeUserId: controller.updateDeviceInfo,
                         onScanPressed: () {
                           //controller.emptyThreatScores();
                           controller.onScanButtonPressed();

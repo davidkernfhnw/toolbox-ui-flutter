@@ -118,7 +118,7 @@ class GeigerUserService extends LocalDeviceService implements LocalUserService {
   }
 
   @override
-  Future<void> setNewUserStatus({bool value: true}) async {
+  Future<void> setPressedButton({bool value: true}) async {
     try {
       Node node = await storageController.get(":Local");
       await node.addOrUpdateValue(NodeValueImpl("newUser", value.toString()));
@@ -127,14 +127,14 @@ class GeigerUserService extends LocalDeviceService implements LocalUserService {
       // since on package are also getStorage
       //await ExtendedTimestamp.initializeTimestamp(_storageControllerUi);
       await storageController.addOrUpdate(node);
-      log("setNewUserStatus method: $node");
+      log("setPressedButton method: $node");
     } catch (e, s) {
       StorageException("Storage Error: $e", s);
     }
   }
 
   @override
-  Future<void> updateNewUserStatus({bool value: false}) async {
+  Future<void> updateButtonPressed({bool value: false}) async {
     try {
       Node node = await storageController.get(":Local");
       //Note: If nodeValue is already exist used updateValue() to update it
@@ -144,21 +144,22 @@ class GeigerUserService extends LocalDeviceService implements LocalUserService {
       // since on package are also getStorage
       //await ExtendedTimestamp.initializeTimestamp(_storageControllerUi);
       await storageController.update(node);
-      log("updateNewUserStatus method: $node");
+      log(" updateButtonPressedmethod: $node");
     } catch (e, s) {
       StorageException("Storage Error: $e", s);
     }
   }
 
   @override
-  Future<bool> checkNewUserStatus() async {
+  Future<bool> isButtonPressed() async {
     try {
       NodeValue? nodeValue =
           await storageController.getValue(":Local", "newUser");
       String newUser = nodeValue!.value;
       bool isNewUser = newUser.parseBool();
-      log("checkNewUserStatus method: $newUser");
+
       if (isNewUser == true) {
+        log("ScanButton has never be pressed before : $newUser");
         return true;
       } else {
         return false;
