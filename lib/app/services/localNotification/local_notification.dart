@@ -42,6 +42,7 @@ class LocalNotificationController extends GetxController {
     await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
     if (Platform.isMacOS) {
+      // ignore: unused_local_variable
       final bool? result = await _flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
               MacOSFlutterLocalNotificationsPlugin>()
@@ -52,36 +53,29 @@ class LocalNotificationController extends GetxController {
           );
     }
 
-    if (Platform.isIOS) {
-      final bool? result = await _flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(
-            alert: true,
-            badge: true,
-            sound: true,
-          );
-    }
+    if (Platform.isIOS) {}
   }
 
   Future<void> notification(String title, String message) async {
-    AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails('Channel ID', 'Channel title',
-            channelDescription: 'channel body',
-            priority: Priority.high,
-            importance: Importance.max,
-            ticker: 'test');
+    if (Platform.isMacOS || Platform.isAndroid || Platform.isIOS) {
+      AndroidNotificationDetails androidNotificationDetails =
+          AndroidNotificationDetails('Channel ID', 'Channel title',
+              channelDescription: 'channel body',
+              priority: Priority.high,
+              importance: Importance.max,
+              ticker: 'test');
 
-    IOSNotificationDetails iosNotificationDetails = IOSNotificationDetails();
-    MacOSNotificationDetails macOSNotificationDetails =
-        MacOSNotificationDetails();
+      IOSNotificationDetails iosNotificationDetails = IOSNotificationDetails();
+      MacOSNotificationDetails macOSNotificationDetails =
+          MacOSNotificationDetails();
 
-    NotificationDetails notificationDetails = NotificationDetails(
-        android: androidNotificationDetails,
-        iOS: iosNotificationDetails,
-        macOS: macOSNotificationDetails);
-    await _flutterLocalNotificationsPlugin.show(
-        0, title, message, notificationDetails);
+      NotificationDetails notificationDetails = NotificationDetails(
+          android: androidNotificationDetails,
+          iOS: iosNotificationDetails,
+          macOS: macOSNotificationDetails);
+      await _flutterLocalNotificationsPlugin.show(
+          0, title, message, notificationDetails);
+    }
   }
 
   @override

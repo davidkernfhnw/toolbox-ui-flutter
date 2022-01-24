@@ -2,7 +2,9 @@ import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/device.dart';
 
 const String _PATH = ":Local";
+const String _UI_PATH = ":Local:ui";
 const String _DEVICE_KEY = "deviceInfo";
+const String _NODE_OWNER = "geiger-toolbox";
 
 abstract class LocalDeviceService {
   LocalDeviceService(this.storageController);
@@ -28,14 +30,14 @@ abstract class LocalDeviceService {
   /// @return Future<bool>
   /// store in the Local node
 
-  Future<Device> get getDeviceInfo async {
+  Future<Device?> get getDeviceInfo async {
     try {
-      _nodeValue = (await storageController.getValue(":Local", "deviceInfo"))!;
+      _nodeValue = (await storageController.getValue(_UI_PATH, _DEVICE_KEY))!;
       String userInfo = _nodeValue.value;
       Device device = Device.convertToDevice(userInfo);
       return device;
-    } catch (e, s) {
-      throw StorageException("Failed to retrieve the Local node\n $e", s);
+    } catch (e) {
+      return null;
     }
   }
 
@@ -48,6 +50,14 @@ abstract class LocalDeviceService {
 
   //stores deviceId into Device object
   Future<bool> storeDeviceInfo(Device device) async {
+    Node uiNode;
+    try {
+      uiNode = await storageController.get(_UI_PATH);
+    } catch (e) {
+      uiNode = NodeImpl(_UI_PATH, _NODE_OWNER);
+      await storageController.addOrUpdate(uiNode);
+    }
+
     try {
       //get deviceId
       String currentDeviceId = await getDeviceId;
@@ -56,7 +66,7 @@ abstract class LocalDeviceService {
       String deviceInfo = Device.convertToJson(device);
 
       bool success = await storageController.addOrUpdateValue(
-          _PATH, NodeValueImpl(_DEVICE_KEY, deviceInfo));
+          _UI_PATH, NodeValueImpl(_DEVICE_KEY, deviceInfo));
 
       if (success) {
         return true;

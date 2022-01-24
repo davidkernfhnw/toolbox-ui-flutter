@@ -2,14 +2,14 @@ import 'dart:developer';
 
 import 'package:geiger_api/geiger_api.dart';
 
-class EventPluginEventListener implements PluginListener {
+class ExternalPluginEventListener implements PluginListener {
   List<Message> events = [];
   Map<MessageType, Function> messageHandler = {};
   int numberReceivedMessages = 0;
   int numberHandledMessages = 0;
   final String _id;
 
-  EventPluginEventListener(this._id);
+  ExternalPluginEventListener(this._id);
 
   /// Add a handler for a special message type
   /// If the message type has been handled by one handler, the old handler will be override by the new one

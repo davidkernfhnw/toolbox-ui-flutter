@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' as math;
 
+import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_score_threats.dart';
 import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
@@ -26,7 +27,10 @@ class HomeController extends getX.GetxController {
   final LocalStorageController _localStorageInstance =
       LocalStorageController.instance;
 
-  final TermsAndConditionsController _termsAndConditionsController =
+  //get instance of GeigerApiConnector
+  GeigerApiConnector _geigerApiConnectorInstance = GeigerApiConnector.instance;
+
+  final TermsAndConditionsController _termsAndConditionsControllerInstance =
       TermsAndConditionsController.instance;
 
   final CloudReplicationController _cloudReplicationInstance =
@@ -80,8 +84,6 @@ class HomeController extends getX.GetxController {
     await Future.delayed(Duration(seconds: 2));
     //set scanRequired to false if true
     isScanRequired.value = false;
-    log("Dump => after onPressed Button *****************");
-    log("${await _storageController.dump(":")}");
 
     isScanning.value = false;
   }
@@ -111,7 +113,8 @@ class HomeController extends getX.GetxController {
   //check if termsAndConditions were accepted
   // redirect to termAndCondition if false
   Future<bool> _redirect() async {
-    bool checkTerms = await _termsAndConditionsController.isTermsAccepted();
+    bool checkTerms =
+        await _termsAndConditionsControllerInstance.isTermsAccepted();
     if (checkTerms == false) {
       await getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
       return false;
@@ -151,9 +154,9 @@ class HomeController extends getX.GetxController {
     _geigerIndicatorHelper = GeigerIndicatorService(_storageController);
   }
 
-  void showNotification(EventType event) async {
+  void _showNotification(String event) async {
     _localNotificationControllerInstance.notification(
-        "Geiger ToolBox Notification", event.toValueString());
+        "Geiger ToolBox Notification", event);
   }
 
   void _runInitStorageRegister() async {
@@ -161,30 +164,29 @@ class HomeController extends getX.GetxController {
     // const String montimagePluginId = 'geiger-api-test-external-plugin-id';
     // const String sensorId = 'mi-ksp-scanner-is-rooted-device';
     //
-    // String currentUserId = await _userService.getUserId;
+    //String currentUserId = await _userService.getUserId;
+    //String currentDeviceId = await _userService.getDeviceId;
     // String indicatorId = _indicatorControllerInstance.indicatorId;
-    // String nodePath =
-    //     ':Device:$currentDeviceId:$montimagePluginId:data:metrics:$sensorId';
     // String path =
     //     ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
 
-    // await _localStorageInstance.initRegisterStorageListener((EventType event) {
-    //   log("StorageListener got this event ==> ${event.toValueString()}");
-    //   String msg = "StorageListener got this event ==> ${event.toValueString()}";
-    //   getX.Get.snackbar("StorageEvent Message",
-    //       "StorageListener got this event ==>${event.toValueString()}");
-    //   //Todo: implement a notification for Storage Event
-    //   isStorageUpdated.value = event.toValueString();
-    //   isScanRequired.value = true;
-    //   log("Is ScanRequired => $isScanRequired");
-    // }, ":Local", "currentUser");
-
     await _localStorageInstance.initRegisterStorageListener((EventType event) {
-      showNotification(event);
-    }, ":Local", "currentUser");
-    // // show snack bar if storageChanges
-    // Get.snackbar("StorageEvent Message",
-    //     "StorageListener got this event ==> $isStorageUpdated")
+      isStorageUpdated.value = event.toValueString();
+      isScanRequired.value = true;
+      _showNotification(event.toValueString());
+    }, ":Local", "currentDevice");
+  }
+
+  void _runInitRegisterExternalPluginListener() async {
+    //get instance of GeigerApiConnector
+    _geigerApiConnectorInstance.initRegisterExternalPluginListener(
+        scanCompletedEventHandler: (Message msg) {
+      _showNotification(
+          'We have received the SCAN_COMPLETED event from ${msg.sourceId}');
+      log('We have received the SCAN_COMPLETED event from ${msg.sourceId}');
+      getX.Get.snackbar(
+          '', 'The external plugin ${msg.sourceId} has finished the scanning');
+    });
   }
 
   Future<void> _loadHelperData() async {
@@ -195,10 +197,7 @@ class HomeController extends getX.GetxController {
 
     //load utilityData
     await _loadUtilityData();
-
     message.value = "Updating Toolbox..";
-
-    // await _initReplication();
     isLoadingServices.value = false;
   }
 
@@ -232,6 +231,9 @@ class HomeController extends getX.GetxController {
 
     await _triggerAggCachedData();
 
+    log("Dump =>  *****************");
+    log("${await _storageController.dump(":")}");
+
     super.onInit();
   }
 
@@ -242,20 +244,24 @@ class HomeController extends getX.GetxController {
     }
     //storageRegister
     _runInitStorageRegister();
+    //ExternalPluginListener
+    _runInitRegisterExternalPluginListener();
+
     super.onReady();
   }
 
+//test method
   Future<bool> updateDeviceInfo() async {
     try {
       NodeValue? nodeValue =
-          await _storageController.getValue(":Local", "deviceInfo");
+          await _storageController.getValue(":Local:ui", "deviceInfo");
       var r = math.Random();
       nodeValue!.setValue("FHnwUserID${r.nextDouble()}");
-      await _storageController.updateValue(":Local", nodeValue);
+      await _storageController.updateValue(":Local:ui", nodeValue);
 
       return true;
     } catch (e) {
-      log('Failed to get node :Local ');
+      log('Failed to get node :Local:ui ');
       log(e.toString());
       return false;
     }
@@ -281,7 +287,7 @@ class HomeController extends getX.GetxController {
     //update aggregate threatScore from cached data
     aggThreatsScore.value = _getAggCachedData();
   }
-//********* end of initial resources ***********
+//********* end of resources ***********
 }
 
 // ****cached of recommendatin

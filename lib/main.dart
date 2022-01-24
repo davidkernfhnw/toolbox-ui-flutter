@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
 import 'package:get/get.dart';
@@ -20,16 +17,12 @@ void main() async {
 
   //initialize geigerApi for ui
   // Dynamically adding the function to handle the SCAN_COMPLETED event -> you can customize or move it somewhere if you want
-  await Get.put(GeigerApiConnector()).initGeigerApi((Message msg) {
-    log('We have received the SCAN_COMPLETED event from ${msg.sourceId}');
-    Get.snackbar('New Event',
-        'The external plugin ${msg.sourceId} has finished the scanning');
-  });
+  await Get.put(GeigerApiConnector()).initGeigerApi();
   //initialize localStorage for ui
-  await Get.put(LocalStorageController());
+  Get.put(LocalStorageController());
 
   //initialize indicator
-  await Get.put(GeigerIndicatorController());
+  Get.put(GeigerIndicatorController());
 
   //initialize cloudReplicationController
   Get.lazyPut<CloudReplicationController>(() => CloudReplicationController());

@@ -12,7 +12,7 @@ import 'utility_data.dart';
 const String _LOCATION_PATH = ":Global:location";
 const String _CERT_PATH = ":Global:cert";
 const String _PROF_ASS_PATH = ":Global:professionAssociation";
-const String _NODE_OWNER = "geigerUi";
+const String _NODE_OWNER = "geiger-toolbox";
 
 abstract class GeigerUtilityHelper extends UtilityData {
   //final LocalStorageController _localStorage = LocalStorageController.instance;

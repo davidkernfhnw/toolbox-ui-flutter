@@ -27,7 +27,7 @@ abstract class LocalUserService {
   Future<bool> updateUserInfo(User user);
 
   ///set newUser to true
-  Future<void> setPressedButton({bool value});
+  Future<void> setButtonNotPressed({bool value});
 
   ///update newUser to false
   Future<void> updateButtonPressed({bool value});
