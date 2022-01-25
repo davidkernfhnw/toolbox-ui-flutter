@@ -16,6 +16,7 @@ const String _UI_PATH = ":Local:ui";
 const String _USER_KEY = "userInfo";
 const String _NODE_OWNER = "geiger-toolbox";
 const String _BUTTON_KEY = "buttonPressed";
+//const String _IMPROVE_KEY = "improvedPressed";
 
 class GeigerUserService extends LocalDeviceService implements LocalUserService {
   GeigerUserService(this.storageController) : super(storageController);
@@ -137,10 +138,6 @@ class GeigerUserService extends LocalDeviceService implements LocalUserService {
     try {
       Node node = await storageController.get(_UI_PATH);
       await node.addOrUpdateValue(NodeValueImpl(_BUTTON_KEY, value.toString()));
-      //when creating my data
-      // add this to avoid error
-      // since on package are also getStorage
-      //await ExtendedTimestamp.initializeTimestamp(_storageControllerUi);
       await storageController.addOrUpdate(node);
       log("setButtonNotPressed method: $node");
     } catch (e, s) {
@@ -184,4 +181,40 @@ class GeigerUserService extends LocalDeviceService implements LocalUserService {
       return false;
     }
   }
+
+  // Future<bool> setImproveButton({bool value: true}) async {
+  //   try {
+  //     Node node=
+  //     await storageController.get(_UI_PATH);
+  //
+  //     await node.addOrUpdateValue(NodeValueImpl(_IMPROVE_KEY, value.toString()));
+  //     await storageController.addOrUpdate(node);
+  //     log("setImproveButton: $node");
+  //
+  //     return true;
+  //   } catch (e) {
+  //     log('Failed to get node :Local:ui ');
+  //     log(e.toString());
+  //     return false;
+  //   }
+  // }
+  //
+  // Future<bool> isImproveButtonPressed() async {
+  //   try {
+  //     NodeValue? nodeValue =
+  //     await storageController.getValue(_UI_PATH, _BUTTON_KEY);
+  //     String newUser = nodeValue!.value;
+  //     bool isNewUser = newUser.parseBool();
+  //
+  //     if (isNewUser == true) {
+  //       log("ScanButton has never be pressed before : $newUser");
+  //       return true;
+  //     } else {
+  //       return false;
+  //     }
+  //   } catch (e) {
+  //     log("Error from storageControllerUi");
+  //     return false;
+  //   }
+  // }
 }

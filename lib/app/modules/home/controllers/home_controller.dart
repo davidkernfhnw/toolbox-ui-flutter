@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' as math;
 
+import 'package:flutter/material.dart';
 import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_score_threats.dart';
@@ -88,6 +89,17 @@ class HomeController extends getX.GetxController {
     isScanning.value = false;
   }
 
+  Color changeScanBtnColor(String score) {
+    String weight = _checkAggScoreLevel(score);
+    if (weight == "Low") {
+      return Colors.green;
+    } else if (weight == "Medium") {
+      return Colors.orangeAccent;
+    } else {
+      return Colors.red;
+    }
+  }
+
   //*** end public method *****
 
   //************* start of private methods ***********************
@@ -96,6 +108,22 @@ class HomeController extends getX.GetxController {
     log("ScanButtonPressed called");
     await geigerApiInstance.getLocalMaster.scanButtonPressed();
     //await geigerApiInstance.getEvents();
+  }
+
+  String _checkAggScoreLevel(String score) {
+    double parse = double.parse(score);
+    double result = parse.toPrecision(2);
+    if (result >= 0.00 && result <= 100) {
+      if (result <= 0.39) {
+        return "Low";
+      } else if (result >= 0.40 || result <= 0.70) {
+        return "Medium";
+      } else {
+        return "High";
+      }
+    } else {
+      return "invalid";
+    }
   }
 
   //returns aggregate of GeigerScoreThreats
@@ -251,7 +279,7 @@ class HomeController extends getX.GetxController {
   }
 
 //test method
-  Future<bool> updateDeviceInfo() async {
+  Future<bool> setImproveButton() async {
     try {
       NodeValue? nodeValue =
           await _storageController.getValue(":Local:ui", "deviceInfo");
@@ -289,63 +317,3 @@ class HomeController extends getX.GetxController {
   }
 //********* end of resources ***********
 }
-
-// ****cached of recommendatin
-// void _cachedUserData() async {
-//   User? currentUser = await _userService.getUserInfo;
-//   String indicatorId = _indicatorControllerInstance.indicatorId;
-//   String path =
-//       ":Users:${currentUser!.userId}:$indicatorId:data:GeigerScoreUser";
-//   //get user geigerScoreThreats
-//   GeigerScoreThreats geigerScoreThreats =
-//   await _geigerIndicatorHelper.getGeigerScoreThreats(path: path);
-//
-//   cache.write("userThreat", jsonEncode(geigerScoreThreats));
-// }
-//
-// void _cachedDeviceData() async {
-//   User? currentUser = await _userService.getUserInfo;
-//   String indicatorId = _indicatorControllerInstance.indicatorId;
-//   String path =
-//       ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
-//   //get device geigerScoreThreats
-//   GeigerScoreThreats geigerScoreThreats =
-//   await _geigerIndicatorHelper.getGeigerScoreThreats(path: path);
-//
-//   cache.write("deviceThreat", jsonEncode(geigerScoreThreats));
-// }
-//
-// Future<void> cachedUserRecommendation(Threat threat) async {
-//   User? currentUser = await _userService.getUserInfo;
-//   String indicatorId = _indicatorControllerInstance.indicatorId;
-//   String userRecommendationPath =
-//       ":Users:${currentUser!.userId}:$indicatorId:data:recommendations";
-//
-//   String geigerScoreUserPath =
-//       ":Users:${currentUser.userId}:$indicatorId:data:GeigerScoreUser";
-//
-//   List<Recommendation> geigerScoreThreats =
-//   await _geigerIndicatorHelper.getGeigerRecommendations(
-//       recommendationPath: userRecommendationPath,
-//       threatId: threat.threatId,
-//       geigerScorePath: geigerScoreUserPath);
-//   cache.write("userRecommendations", jsonEncode(geigerScoreThreats));
-// }
-//
-// Future<void> cachedDeviceRecommendation(Threat threat) async {
-//   User? currentUser = await _userService.getUserInfo;
-//   String indicatorId = _indicatorControllerInstance.indicatorId;
-//   String deviceRecommendationpath =
-//       ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:recommendations";
-//
-//   String geigerScoreDevicePath =
-//       ":Devices:${currentUser.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
-//
-//   List<Recommendation> deviceRecommendation =
-//   await _geigerIndicatorHelper.getGeigerRecommendations(
-//       recommendationPath: deviceRecommendationpath,
-//       threatId: threat.threatId,
-//       geigerScorePath: geigerScoreDevicePath);
-//
-//   cache.write("deviceRecommendations", jsonEncode(deviceRecommendation));
-// }

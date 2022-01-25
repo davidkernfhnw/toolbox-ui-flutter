@@ -28,8 +28,8 @@ class ExpansionCard extends StatelessWidget {
             style: const TextStyle(),
           ),
           trailing: Text(
-            checkWeight(recommendation.weight!),
-            style: TextStyle(color: showWeightColor(recommendation.weight!)),
+            _checkWeight(recommendation.weight!),
+            style: TextStyle(color: _showWeightColor(recommendation.weight!)),
           ),
         ),
         collapsed: Padding(
@@ -81,7 +81,7 @@ class ExpansionCard extends StatelessWidget {
         onPressed: recommendation.implemented ? null : onPressedGetTool);
   }
 
-  String checkWeight(String weight) {
+  String _checkWeight(String weight) {
     if (weight == '0.1') {
       return "Low";
     } else if (weight == '0.5') {
@@ -91,8 +91,8 @@ class ExpansionCard extends StatelessWidget {
     }
   }
 
-  Color showWeightColor(String level) {
-    String weight = checkWeight(level);
+  Color _showWeightColor(String level) {
+    String weight = _checkWeight(level);
     if (weight == "Low") {
       return Colors.green;
     } else if (weight == "Medium") {

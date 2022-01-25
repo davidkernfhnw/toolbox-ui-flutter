@@ -9,9 +9,9 @@ class IndicatorGauge extends StatelessWidget {
     return PrettyGauge(
         gaugeSize: 100,
         segments: [
-          GaugeSegment('Low', 30, Colors.red),
-          GaugeSegment('Medium', 40, Colors.orange),
           GaugeSegment('High', 30, Colors.green),
+          GaugeSegment('Medium', 40, Colors.orange),
+          GaugeSegment('Low', 30, Colors.red),
         ],
         currentValue: score,
         displayWidget: const Text('High', style: TextStyle(fontSize: 12)),
