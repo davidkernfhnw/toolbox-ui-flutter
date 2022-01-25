@@ -90,13 +90,31 @@ class HomeController extends getX.GetxController {
   }
 
   Color changeScanBtnColor(String score) {
-    String weight = _checkAggScoreLevel(score);
+    String weight = checkAggScoreLevel(score);
     if (weight == "Low") {
       return Colors.green;
     } else if (weight == "Medium") {
       return Colors.orangeAccent;
+    } else if (weight == "High") {
+      return Colors.red;
     } else {
       return Colors.red;
+    }
+  }
+
+  String checkAggScoreLevel(String score) {
+    double parse = double.parse(score);
+    double result = parse.toPrecision(2);
+    if (result >= 0.10 && result <= 100) {
+      if (result <= 0.39) {
+        return "Low";
+      } else if (result >= 0.40 || result <= 0.70) {
+        return "Medium";
+      } else {
+        return "High";
+      }
+    } else {
+      return "invalid";
     }
   }
 
@@ -108,22 +126,6 @@ class HomeController extends getX.GetxController {
     log("ScanButtonPressed called");
     await geigerApiInstance.getLocalMaster.scanButtonPressed();
     //await geigerApiInstance.getEvents();
-  }
-
-  String _checkAggScoreLevel(String score) {
-    double parse = double.parse(score);
-    double result = parse.toPrecision(2);
-    if (result >= 0.00 && result <= 100) {
-      if (result <= 0.39) {
-        return "Low";
-      } else if (result >= 0.40 || result <= 0.70) {
-        return "Medium";
-      } else {
-        return "High";
-      }
-    } else {
-      return "invalid";
-    }
   }
 
   //returns aggregate of GeigerScoreThreats

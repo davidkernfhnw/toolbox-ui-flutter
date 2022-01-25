@@ -14,6 +14,8 @@ import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_utility_service.dart';
 import 'package:geiger_toolbox/app/translation/suppored_language.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SettingsController extends GetxController {
   //instance of SettingsController
@@ -147,6 +149,27 @@ class SettingsController extends GetxController {
     if (isSuccess.value) {
       log("UserInfo: Updated Successfully");
     }
+  }
+
+  Future<String> showRawData() async {
+    String userPath = ":Users:${userInfo.value.userId}";
+    String devicePath = ":Devices:${userInfo.value.deviceOwner!.deviceId}";
+    String u = await _storageController.dump(userPath);
+    String d = await _storageController.dump(devicePath);
+
+    return u + d;
+  }
+
+  void makeJsonFile() async {
+    String value = await showRawData();
+    final Directory directory = await getApplicationDocumentsDirectory();
+    String path =
+        directory.path + Platform.pathSeparator + "geiger_Toolbox_data.json";
+    final File file = File(path);
+
+    File update = await file.writeAsString(value);
+
+    Share.shareFiles([path], text: "geiger_Toolbox_data");
   }
 
   _updateUser(User userInfo) async {
