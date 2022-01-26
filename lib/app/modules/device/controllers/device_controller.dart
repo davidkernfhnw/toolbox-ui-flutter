@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
 import 'package:get/get.dart';
@@ -10,8 +9,8 @@ import 'package:get/get.dart';
 class DeviceController extends GetxController {
   static final DeviceController instance = Get.find<DeviceController>();
 
-  final CloudReplicationController _cloudReplicationInstance =
-      CloudReplicationController.instance;
+  // final CloudReplicationController _cloudReplicationInstance =
+  //     CloudReplicationController.instance;
 
   //getting instance of localStorageController
   final LocalStorageController _localStorage = LocalStorageController.instance;
@@ -105,10 +104,10 @@ class DeviceController extends GetxController {
     log(r.toString());
   }
 
-  Future<String> _getCurrentUserId() async {
-    String userId = await _userService.getUserId;
-    return userId;
-  }
+  // Future<String> _getCurrentUserId() async {
+  //   String userId = await _userService.getUserId;
+  //   return userId;
+  // }
 
   _checkPairAlert() {
     checkPairResult.isNotEmpty

@@ -167,9 +167,10 @@ class SettingsController extends GetxController {
         directory.path + Platform.pathSeparator + "geiger_Toolbox_data.json";
     final File file = File(path);
 
-    File update = await file.writeAsString(value);
+    await file.writeAsString(value);
 
     Share.shareFiles([path], text: "geiger_Toolbox_data");
+    file.deleteSync();
   }
 
   _updateUser(User userInfo) async {
