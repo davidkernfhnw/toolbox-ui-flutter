@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
 
-class EmployeeCard extends StatelessWidget {
-  EmployeeCard(
+class QrScannerCard extends StatelessWidget {
+  QrScannerCard(
       {Key? key,
       required this.title,
       required this.msgBody,

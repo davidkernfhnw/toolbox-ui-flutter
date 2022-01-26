@@ -18,80 +18,101 @@ class ProfileView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Obx(() {
-            return Column(
-              children: [
-                CustomTextField(
-                    hintText: "Enter username",
-                    label: 'User Name',
-                    textEditingController: controller.userName
-                      ..text =
-                          controller.userInfo.value.userName ?? "userName"),
-                CustomTextField(
-                  hintText: "auto get deviceName",
-                  label: 'Name of this Device',
-                  textEditingController: controller.deviceName
-                    ..text = controller.userInfo.value.deviceOwner.name ??
-                        "deviceName",
-                ),
-                CustomSwitchs(
-                  label: "I’m a company owner",
-                  description:
-                      "As an owner you can compare your company’s geiger score with others ",
-                  defaultValue: controller.supervisor.value,
-                  onChanged: controller.onChangeOwner,
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                CustomDropdownLanguage(
-                  listItems: controller.languages,
-                  titleText: "Language",
-                  onChanged: controller.onChangeLanguage,
-                  defaultValue: controller.selectedLanguage.value,
-                  hintText: '',
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                CustomDropDownCountry(
-                  listItems: controller.countries,
-                  onChanged: controller.onChangedCountry,
-                  hintText: 'Select Your Country',
-                  titleText: "Country",
-                  defaultValue:
-                      controller.userInfo.value.country ?? "Switzerland",
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                CustomDropDownFlutter(
-                  onChanged: controller.onChangedCert,
-                  listItems: controller.certBaseOnCountrySelected,
-                  defaultValue: controller.userInfo.value.cert ??
-                      controller.currentCert.value,
-                  hintText: "Select Competent CERT",
-                  titleText: "Competent CERT",
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                CustomDropDownFlutter(
-                  onChanged: controller.onChangedProfAss,
-                  listItems: controller.profAssBaseOnCountrySelected,
-                  defaultValue: controller.userInfo.value.profAss ??
-                      controller.currentProfAss.value,
-                  hintText: "Select Profession Association",
-                  titleText: "Profession Association",
-                ),
-                OutlinedButton(onPressed: null, child: Text("Update")),
-              ],
-            );
-          }),
-        ),
-      ),
+          child: Form(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              // onChanged: () {
+              //   log("listening to changes in full form");
+              // },
+              key: _formKey,
+              child: Obx(() {
+                return Column(
+                  children: [
+                    CustomTextField(
+                      hintText: controller.currentUserName.value == ""
+                          ? "Enter User name"
+                          : controller.currentUserName.value,
+                      label: 'User Name',
+                      initialValue: controller.currentUserName.value,
+                      onChanged: controller.onChangeUserName,
+                      validator: controller.validateUserName,
+                    ),
+                    CustomTextField(
+                      hintText: controller.currentDeviceName.value,
+                      label: 'Name of this Device',
+                      initialValue: controller.currentDeviceName.value,
+                      onChanged: controller.onChangeDeviceName,
+                      validator: controller.validateDeviceName,
+                    ),
+                    CustomSwitchs(
+                      label: "I’m a company owner",
+                      description:
+                          "As an owner you can compare your company’s geiger score with others ",
+                      defaultValue: controller.supervisor.value,
+                      onChanged: controller.onChangeOwner,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CustomDropdownLanguage(
+                      listItems: controller.languages,
+                      titleText: "Language",
+                      onChanged: controller.onChangeLanguage,
+                      defaultValue: controller.userInfo.value.language,
+                      hintText: '',
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    CustomDropDownCountry(
+                      listItems: controller.currentCountries,
+                      onChanged: controller.onChangedCountry,
+                      hintText: 'Select Your Country',
+                      titleText: "Country",
+                      defaultValue: controller.currentCountry.value,
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    CustomDropDownFlutter(
+                      onChanged: controller.onChangedCert,
+                      listItems: controller.certBaseOnCountrySelected,
+                      defaultValue: controller.currentCert.value,
+                      hintText: "Select Competent CERT",
+                      titleText: "Competent CERT",
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    CustomDropDownFlutter(
+                      onChanged: controller.onChangedProfAss,
+                      listItems: controller.profAssBaseOnCountrySelected,
+                      defaultValue: controller.currentProfAss.value,
+                      hintText: "Select Profession Association",
+                      titleText: "Profession Association",
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          controller.updateUserInfo(controller.userInfo.value);
+                          if (controller.isSuccess.value == true) {
+                            if (!Get.isSnackbarOpen) {
+                              Get.snackbar("Success", "Updated SuccessFully.",
+                                  backgroundColor: Colors.greenAccent,
+                                  snackPosition: SnackPosition.BOTTOM);
+                            }
+                          } else {
+                            Get.snackbar("Message Alert",
+                                "Updated Failed!!!.. contact the Developer",
+                                backgroundColor: Colors.redAccent);
+                          }
+                        }
+                      },
+                      child: Text("Update"),
+                    ),
+                    SizedBox(height: 10),
+                  ],
+                );
+              }))),
     );
   }
 }

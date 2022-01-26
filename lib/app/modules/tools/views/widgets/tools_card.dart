@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
 
-class Tools_card extends StatelessWidget {
-  const Tools_card({
+class ToolCard extends StatelessWidget {
+  const ToolCard({
     Key? key,
   }) : super(key: key);
 

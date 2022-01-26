@@ -22,14 +22,15 @@ class SideMenu extends StatelessWidget {
               color: Colors.white30,
             ),
           ),
-          autoGenerateMenuList(),
+          _autoGenerateMenuList(),
+          //_menuList(),
         ],
       ),
     );
   }
 }
 
-Widget autoGenerateMenuList() {
+Widget _autoGenerateMenuList() {
   return Column(
       children: Routes.sideMenuRoutes
           .map(
@@ -50,7 +51,10 @@ Widget autoGenerateMenuList() {
           .toList());
 }
 
-Widget menuList() {
+//using this will result in controller been initialized again ex: HomeController
+//
+// ignore: unused_element
+Widget _menuList() {
   return Column(
     children: [
       ListTile(
@@ -79,11 +83,36 @@ Widget menuList() {
         },
       ),
       ListTile(
+        title: Text(Routes.DEVICE_DISPLAY_NAME),
+        tileColor:
+            Get.currentRoute == Routes.DEVICE_VIEW ? Colors.grey[300] : null,
+        onTap: () {
+          Get.toNamed(Routes.DEVICE_VIEW);
+        },
+      ),
+      ListTile(
+        title: Text(Routes.TOOLS_DISPLAY_NAME),
+        tileColor:
+            Get.currentRoute == Routes.TOOLS_VIEW ? Colors.grey[300] : null,
+        onTap: () {
+          Get.offNamed(Routes.TOOLS_VIEW);
+        },
+      ),
+      ListTile(
         title: Text(Routes.SETTINGS_DISPLAY_NAME),
         tileColor:
             Get.currentRoute == Routes.SETTINGS_VIEW ? Colors.grey[300] : null,
         onTap: () {
           Get.offNamed(Routes.SETTINGS_VIEW);
+        },
+      ),
+      ListTile(
+        title: Text(Routes.SECURITY_DEFENDERS_DISPLAY_NAME),
+        tileColor: Get.currentRoute == Routes.SECURITY_DEFENDERS_VIEW
+            ? Colors.grey[300]
+            : null,
+        onTap: () {
+          Get.offNamed(Routes.SECURITY_DEFENDERS_VIEW);
         },
       ),
     ],

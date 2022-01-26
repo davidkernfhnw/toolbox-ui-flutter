@@ -17,7 +17,7 @@ class TermsAndConditionsView extends StatelessWidget {
 
   //initial controller
   final TermsAndConditionsController _controller =
-      TermsAndConditionsController.to;
+      TermsAndConditionsController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +79,7 @@ class TermsAndConditionsView extends StatelessWidget {
                       title: Text(
                         'In order to use the toolbox all terms above have to be accepted',
                         style: TextStyle(
-                            color: _controller.error.value
+                            color: _controller.errorMsg.value
                                 ? Colors.red
                                 : Colors.grey),
                       ),
@@ -87,7 +87,7 @@ class TermsAndConditionsView extends StatelessWidget {
                     ListTile(
                       title: ElevatedButton(
                         onPressed: () {
-                          _controller.agreed();
+                          _controller.acceptTerms();
                         },
                         child: Text("Continue"),
                       ),

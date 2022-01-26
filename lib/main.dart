@@ -1,18 +1,37 @@
 import 'package:flutter/material.dart';
-//import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
+import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
+import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
-//import 'app/services/local_storage.dart';
+import 'app/services/cloudReplication/cloud_replication_controller.dart';
+import 'app/services/localNotification/local_notification.dart';
+import 'app/services/localStorage/local_storage_controller.dart';
 import 'app/translation/app_translation.dart';
 import 'app/util/theme/custom_theme_data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-// localStorage database
-//   await LocalStorage.initLocalStorage();
-//   await Get.put(TermsAndConditionsController().previouslyAgreed());
+
+  //initialize geigerApi for ui
+  // Dynamically adding the function to handle the SCAN_COMPLETED event -> you can customize or move it somewhere if you want
+  await Get.put(GeigerApiConnector()).initGeigerApi();
+  //initialize localStorage for ui
+  Get.put(LocalStorageController());
+
+  //initialize indicator
+  Get.put(GeigerIndicatorController());
+
+  //initialize cloudReplicationController
+  Get.lazyPut<CloudReplicationController>(() => CloudReplicationController());
+  //cached data
+  await GetStorage.init();
+
+  //Local notification
+  Get.lazyPut<LocalNotificationController>(() => LocalNotificationController());
+
   runApp(GeigerApp());
 }
 
@@ -22,13 +41,15 @@ class GeigerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-        debugShowCheckedModeBanner: true,
-        getPages: Pages.pages,
-        initialRoute: Routes.HOME_VIEW,
-        translationsKeys: AppTranslation.translationsKeys,
-        locale: Get.deviceLocale,
-        fallbackLocale: Locale('en'),
-        theme: customThemeData());
+      debugShowCheckedModeBanner: true,
+      getPages: Pages.pages,
+      //initialBinding: TermsAndConditionsBinding(),
+      initialRoute: Routes.HOME_VIEW,
+      translationsKeys: AppTranslation.translationsKeys,
+      locale: Get.deviceLocale,
+      fallbackLocale: Locale('en'),
+      theme: customThemeData(),
+    );
   }
 }
 

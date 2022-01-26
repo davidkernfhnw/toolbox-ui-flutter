@@ -30,17 +30,14 @@ class DefendersCard extends StatelessWidget {
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CircleAvatar(
-                backgroundColor: Colors.black,
-                radius: 30,
-                child: CircleAvatar(
-                  radius: 29,
-                  backgroundImage: AssetImage(
-                      imagePath ?? "assets/images/defender_icon.png"),
-                  // child: Icon(
-                  //   Icons.person_outlined,
-                  //   size: 40,
-                  // ),
-                ),
+                // backgroundColor: Colors.black,
+                radius: 25,
+                backgroundImage:
+                    AssetImage(imagePath ?? "assets/images/defender_icon.png"),
+                // child: Icon(
+                //   Icons.person_outlined,
+                //   size: 40,
+                // ),
               ),
               SizedBox(width: 10),
               Expanded(
@@ -73,8 +70,9 @@ class DefendersCard extends StatelessWidget {
               ElevatedButton(
                 onPressed: onPressed ?? null,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  padding: const EdgeInsets.symmetric(vertical: 2.0),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
                         Icons.email_outlined,

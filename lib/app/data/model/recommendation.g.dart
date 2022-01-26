@@ -8,14 +8,13 @@ part of 'recommendation.dart';
 
 Recommendation _$RecommendationFromJson(Map<String, dynamic> json) =>
     Recommendation(
-      json['recommendationId'] as String,
-      json['shortDescription'] as String,
-      json['longDescription'] as String,
-      (json['threatImpact'] as Map<String, dynamic>).map(
-        (k, e) => MapEntry(k, Threat.fromJson(e as Map<String, dynamic>)),
-      ),
-      User.fromJson(json['user'] as Map<String, dynamic>),
-      json['recommendationType'] as String,
+      recommendationId: json['recommendationId'] as String,
+      shortDescription: json['shortDescription'] as String,
+      longDescription: json['longDescription'] as String?,
+      recommendationType: json['recommendationType'] as String,
+      weight: json['weight'] as String?,
+      action: json['action'] as String?,
+      implemented: json['implemented'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$RecommendationToJson(Recommendation instance) =>
@@ -23,8 +22,8 @@ Map<String, dynamic> _$RecommendationToJson(Recommendation instance) =>
       'recommendationId': instance.recommendationId,
       'shortDescription': instance.shortDescription,
       'longDescription': instance.longDescription,
-      'threatImpact':
-          instance.threatImpact.map((k, e) => MapEntry(k, e.toJson())),
-      'user': instance.user.toJson(),
       'recommendationType': instance.recommendationType,
+      'weight': instance.weight,
+      'action': instance.action,
+      'implemented': instance.implemented,
     };

@@ -5,6 +5,8 @@ class RecommendationBinding extends Bindings {
   @override
   void dependencies() {
     //only called when someone use Get.find<RecommendationController>()
-    Get.lazyPut(() => RecommendationController());
+    Get.lazyPut(
+      () => RecommendationController(),
+    );
   }
 }

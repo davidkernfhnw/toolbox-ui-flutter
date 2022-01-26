@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geiger_toolbox/app/data/model/country.dart';
 import 'package:geiger_toolbox/app/modules/security_defenders/views/widgets/defenders_card.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_country.dart';
@@ -28,7 +29,7 @@ class SecurityDefendersView extends StatelessWidget {
                     children: [
                       Expanded(
                         child: CustomDropDownCountry(
-                          listItems: ["switzerland"],
+                          listItems: [Country(name: "switzerland")],
                           hintText: "Select Country",
                           titleText: "Country",
                         ),
@@ -47,9 +48,9 @@ class SecurityDefendersView extends StatelessWidget {
                     children: [
                       Expanded(
                         child: CustomTextField(
-                            label: "",
-                            hintText: "Search region",
-                            textEditingController: TextEditingController()),
+                          label: "",
+                          hintText: "Search region",
+                        ),
                       ),
                       SizedBox(width: 10),
                       ElevatedButton(

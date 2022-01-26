@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/data/model/threat.dart';
+import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:get/get.dart';
+
 import '../../../../shared_widgets/indicator_gauge.dart';
 
 class ThreatsCard extends StatelessWidget {
@@ -9,14 +11,16 @@ class ThreatsCard extends StatelessWidget {
   final IconData? icon;
   final double? indicatorScore;
   final String? routeName;
-  final Threat routeArguments;
+  final HomeController? controller;
+  final Threat threat;
   const ThreatsCard(
       {Key? key,
       @required this.label,
       @required this.icon,
       @required this.indicatorScore,
       @required this.routeName,
-      required this.routeArguments})
+      required this.threat,
+      this.controller})
       : super(key: key);
 
   @override
@@ -44,8 +48,13 @@ class ThreatsCard extends StatelessWidget {
                   score: indicatorScore,
                 ),
                 ElevatedButton(
+                  // onPressed: () async {
+                  //   await controller!.cachedUserRecommendation(threat);
+                  //   await controller!.cachedDeviceRecommendation(threat);
+                  //   Get.toNamed(Routes.RECOMMENDATION_VIEW, arguments: threat);
+                  // },
                   onPressed: () => Get.toNamed(Routes.RECOMMENDATION_VIEW,
-                      arguments: routeArguments),
+                      arguments: threat),
                   child: const Text("Improve"),
                 ),
               ],

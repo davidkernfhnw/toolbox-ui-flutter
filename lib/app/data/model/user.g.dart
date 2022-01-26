@@ -7,19 +7,42 @@ part of 'user.dart';
 // **************************************************************************
 
 User _$UserFromJson(Map<String, dynamic> json) => User(
-      userId: json['userId'] as String,
-      firstName: json['firstName'] as String? ?? 'currentUser',
-      lastname: json['lastname'] as String? ?? 'currentUser',
-      knowledgeLevel: json['knowledgeLevel'] as String? ?? '1',
-      role: json['role'] == null
+      userId: json['userId'] as String?,
+      userName: json['userName'] as String?,
+      language: json['language'] as String? ?? "en",
+      country: json['country'] as String?,
+      supervisor: json['supervisor'] as bool? ?? false,
+      cert: json['cert'] as String?,
+      profAss: json['profAss'] as String?,
+      termsAndConditions: TermsAndConditions.fromJson(
+          json['termsAndConditions'] as Map<String, dynamic>),
+      consent: Consent.fromJson(json['consent'] as Map<String, dynamic>),
+      deviceOwner: json['deviceOwner'] == null
           ? null
-          : Role.fromJson(json['role'] as Map<String, dynamic>),
+          : Device.fromJson(json['deviceOwner'] as Map<String, dynamic>),
+      pairedDevices: (json['pairedDevices'] as List<dynamic>?)
+          ?.map((e) => Device.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      shareInfo: json['shareInfo'] == null
+          ? null
+          : ShareInfo.fromJson(json['shareInfo'] as Map<String, dynamic>),
+      mse: json['mse'] == null
+          ? null
+          : Mse.fromJson(json['mse'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'userId': instance.userId,
-      'firstName': instance.firstName,
-      'lastname': instance.lastname,
-      'knowledgeLevel': instance.knowledgeLevel,
-      'role': instance.role?.toJson(),
+      'userName': instance.userName,
+      'language': instance.language,
+      'country': instance.country,
+      'supervisor': instance.supervisor,
+      'cert': instance.cert,
+      'profAss': instance.profAss,
+      'termsAndConditions': instance.termsAndConditions.toJson(),
+      'consent': instance.consent.toJson(),
+      'deviceOwner': instance.deviceOwner?.toJson(),
+      'pairedDevices': instance.pairedDevices?.map((e) => e.toJson()).toList(),
+      'shareInfo': instance.shareInfo?.toJson(),
+      'mse': instance.mse?.toJson(),
     };

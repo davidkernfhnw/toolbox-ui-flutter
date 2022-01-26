@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/views/widgets/tab_bar_builder.dart';
 import 'package:geiger_toolbox/app/modules/settings/controllers/settings_controller.dart';
 import 'package:geiger_toolbox/app/modules/settings/views/widgets/data_protection_view.dart';
-import 'package:geiger_toolbox/app/modules/settings/views/widgets/edit_data_view.dart';
+import 'package:geiger_toolbox/app/modules/settings/views/widgets/data_view.dart';
 import 'package:geiger_toolbox/app/modules/settings/views/widgets/profile_view.dart';
+import 'package:geiger_toolbox/app/shared_widgets/showCircularProgress.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 import 'package:get/get.dart';
 
 class SettingsView extends StatelessWidget {
   SettingsView({Key? key}) : super(key: key);
-  final SettingsController _controller = SettingsController.to;
+  final SettingsController _controller = SettingsController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -39,18 +40,26 @@ class SettingsView extends StatelessWidget {
               icon: Icon(
                 Icons.storage_outlined,
               ),
-              text: "Edit Data",
+              text: "Data",
             ),
           ]),
         ),
-        body: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          children: [
-            ProfileView(controller: _controller),
-            DataProtectionView(),
-            EditDataView(),
-          ],
-        ),
+        body: Obx(() {
+          return _controller.isLoading.value == true
+              ? Center(
+                  child: ShowCircularProgress(
+                    visible: _controller.isLoading.value,
+                  ),
+                )
+              : TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    ProfileView(controller: _controller),
+                    DataProtectionView(),
+                    DataView(controller: _controller),
+                  ],
+                );
+        }),
       ),
     );
   }

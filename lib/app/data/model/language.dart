@@ -1,9 +1,9 @@
 class Language {
   String language;
-  String symbol;
+  String locale;
 
   Language(
     this.language,
-    this.symbol,
+    this.locale,
   );
 }

@@ -27,6 +27,7 @@ ThemeData customThemeData() {
       bodyText2: GoogleFonts.nunito().copyWith(
           fontSize: 16.0, fontWeight: FontWeight.w400, color: Colors.black),
     ),
+
     pageTransitionsTheme: PageTransitionsTheme(builders: {
       TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
       TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder()

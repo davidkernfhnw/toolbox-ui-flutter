@@ -1,0 +1,29 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'terms_and_conditions.g.dart';
+
+@JsonSerializable(explicitToJson: true)
+class TermsAndConditions {
+  final bool ageCompliant;
+  final bool signedConsent;
+  final bool agreedPrivacy;
+
+  TermsAndConditions(
+      {this.ageCompliant: false,
+      this.signedConsent: false,
+      this.agreedPrivacy: false});
+
+  factory TermsAndConditions.fromJson(Map<String, dynamic> json) {
+    return _$TermsAndConditionsFromJson(json);
+  }
+
+  Map<String, dynamic> toJson() {
+    return _$TermsAndConditionsToJson(this);
+  }
+
+  @override
+  String toString() {
+    super.toString();
+    return '{"ageCompliant":$ageCompliant, "signedConsent":$signedConsent, "agreedPrivacy":$agreedPrivacy}';
+  }
+}

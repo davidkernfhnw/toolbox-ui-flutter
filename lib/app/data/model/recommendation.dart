@@ -1,5 +1,5 @@
-import 'package:geiger_toolbox/app/data/model/threat.dart';
-import 'package:geiger_toolbox/app/data/model/user.dart';
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'recommendation.g.dart';
@@ -8,18 +8,22 @@ part 'recommendation.g.dart';
 class Recommendation {
   String recommendationId;
   String shortDescription;
-  String longDescription;
-  Map<String, Threat> threatImpact;
-  User user;
+  String? longDescription;
   String recommendationType;
+  String? weight;
+  String? action;
+  bool implemented;
+  bool disableActionButton;
 
   Recommendation(
-      this.recommendationId,
-      this.shortDescription,
+      {required this.recommendationId,
+      required this.shortDescription,
       this.longDescription,
-      this.threatImpact,
-      this.user,
-      this.recommendationType);
+      required this.recommendationType,
+      this.weight,
+      this.action,
+      this.implemented: false,
+      this.disableActionButton: false});
 
   factory Recommendation.fromJson(Map<String, dynamic> json) {
     return _$RecommendationFromJson(json);
@@ -27,5 +31,18 @@ class Recommendation {
 
   Map<String, dynamic> toJson() {
     return _$RecommendationToJson(this);
+  }
+
+  static List<Recommendation> recommendationList(String recommendationJson) {
+    //Todo: fix error due to some string be empty
+    List<dynamic> jsonData = jsonDecode(recommendationJson);
+    return jsonData
+        .map((recommendationMap) => Recommendation.fromJson(recommendationMap))
+        .toList();
+  }
+
+  @override
+  String toString() {
+    return '{"recommendationID:$recommendationId, shortDescription:$shortDescription,longDescription:$longDescription, recommendationType:$recommendationType weight:$weight, action:$action, implemented:$implemented, disableActionButton:$disableActionButton}';
   }
 }

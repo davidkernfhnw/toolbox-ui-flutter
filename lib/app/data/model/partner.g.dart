@@ -7,11 +7,15 @@ part of 'partner.dart';
 // **************************************************************************
 
 Partner _$PartnerFromJson(Map<String, dynamic> json) => Partner(
-      country: json['country'] as String,
+      id: json['id'] as String?,
+      location: Country.fromJson(json['location'] as Map<String, dynamic>),
       names: (json['names'] as List<dynamic>).map((e) => e as String).toList(),
+      locale: json['locale'] as String? ?? "en",
     );
 
 Map<String, dynamic> _$PartnerToJson(Partner instance) => <String, dynamic>{
-      'country': instance.country,
+      'id': instance.id,
+      'location': instance.location.toJson(),
       'names': instance.names,
+      'locale': instance.locale,
     };
