@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
 
-abstract class LocalUser {
+abstract class LocalUserService {
   /// @return userId as a Future<String>
   /// from the Local node
   Future<String> get getUserId;
@@ -27,11 +27,11 @@ abstract class LocalUser {
   Future<bool> updateUserInfo(User user);
 
   ///set newUser to true
-  Future<void> setNewUserStatus({bool value});
+  Future<void> setButtonNotPressed({bool value});
 
   ///update newUser to false
-  Future<void> updateNewUserStatus({bool value});
+  Future<void> updateButtonPressed({bool value});
 
   /// @return Future<bool>
-  Future<bool> checkNewUserStatus();
+  Future<bool> isButtonPressed();
 }

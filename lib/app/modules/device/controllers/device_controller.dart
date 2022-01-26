@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/impl_user_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
 import 'package:get/get.dart';
 
 class DeviceController extends GetxController {
@@ -16,7 +16,7 @@ class DeviceController extends GetxController {
   //getting instance of localStorageController
   final LocalStorageController _localStorage = LocalStorageController.instance;
   //userService
-  late final UserService _userService;
+  late final GeigerUserService _userService;
   late final StorageController _storageController;
 
   var devices = [].obs;
@@ -121,7 +121,7 @@ class DeviceController extends GetxController {
 
   Future<void> _initialUtilityData() async {
     _storageController = await _localStorage.getStorageController;
-    _userService = UserService(_storageController);
+    _userService = GeigerUserService(_storageController);
   }
 
   @override

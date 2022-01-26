@@ -22,7 +22,9 @@ class RecommendationPage extends StatelessWidget {
         child: Scaffold(
             appBar: AppBar(
               centerTitle: true,
-              title: Text(controller.userThreatScore.value.threat.name),
+              title: Text(controller.isLoading.value == false
+                  ? controller.userThreatScore.value.threat.name
+                  : "Geiger Toolbox"),
               bottom: buildTabBar(tabs: [
                 Tab(
                   icon: Icon(

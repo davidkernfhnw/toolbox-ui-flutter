@@ -6,12 +6,12 @@ import 'package:geiger_toolbox/app/data/model/consent.dart';
 import 'package:geiger_toolbox/app/data/model/device.dart';
 import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/impl_user_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
 
 void main() {
   final StorageController storageController =
       GenericController("test", DummyMapper("testdb"));
-  final UserService userService = UserService(storageController);
+  final GeigerUserService userService = GeigerUserService(storageController);
 
   group("UserService ", () {
     setUp(() async {

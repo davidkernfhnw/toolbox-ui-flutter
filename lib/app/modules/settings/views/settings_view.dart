@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/views/widgets/tab_bar_builder.dart';
 import 'package:geiger_toolbox/app/modules/settings/controllers/settings_controller.dart';
 import 'package:geiger_toolbox/app/modules/settings/views/widgets/data_protection_view.dart';
-import 'package:geiger_toolbox/app/modules/settings/views/widgets/edit_data_view.dart';
+import 'package:geiger_toolbox/app/modules/settings/views/widgets/data_view.dart';
 import 'package:geiger_toolbox/app/modules/settings/views/widgets/profile_view.dart';
 import 'package:geiger_toolbox/app/shared_widgets/showCircularProgress.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
@@ -40,7 +40,7 @@ class SettingsView extends StatelessWidget {
               icon: Icon(
                 Icons.storage_outlined,
               ),
-              text: "Edit Data",
+              text: "Data",
             ),
           ]),
         ),
@@ -56,7 +56,7 @@ class SettingsView extends StatelessWidget {
                   children: [
                     ProfileView(controller: _controller),
                     DataProtectionView(),
-                    EditDataView(),
+                    DataView(controller: _controller),
                   ],
                 );
         }),

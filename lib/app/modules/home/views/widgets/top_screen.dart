@@ -1,82 +1,101 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
+import 'package:geiger_toolbox/app/util/style.dart';
+import 'package:get/get.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 import 'scan_risk_button.dart';
 
 class TopScreen extends StatelessWidget {
-  final String? aggregratedScore;
-  final void Function()? onScanPressed;
-  final bool? warning;
-  final bool isLoading;
+  final HomeController controller;
 
-  const TopScreen(
-      {Key? key,
-      @required this.aggregratedScore,
-      @required this.onScanPressed,
-      @required this.warning,
-      required this.isLoading})
+  final void Function()? onChangeUserId;
+
+  const TopScreen({Key? key, this.onChangeUserId, required this.controller})
       : super(key: key);
+
+  String get parseToDouble {
+    //convert to geiger_score aggregate to double
+    double a = double.parse(controller.aggThreatsScore.value.geigerScore);
+    //back to String with precision
+    String agg = a.toPrecision(1).toString();
+    log("Parse Agg => $agg ");
+    return agg;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Text(
-          'Your total Risk Score:',
-          style: TextStyle(color: Colors.grey),
-        ),
-        const SizedBox(height: 5.0),
-        GradientText(
-          aggregratedScore!,
-          style: const TextStyle(
-            fontSize: 34.0,
-            fontWeight: FontWeight.w700,
+    return Obx(() {
+      return Column(
+        children: [
+          Text(
+            parseToDouble != "0.0"
+                ? 'Your total Risk Score:'
+                : 'Start scanning your cyber threats:',
+            style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
           ),
-          colors: const [
-            Color(0xffD92323),
-            Color(0xffD92323),
-          ],
-        ),
-        const SizedBox(height: 5.0),
-        ScanRiskButton(
-          onScanPressed: onScanPressed,
-          warming: warning,
-        ),
-        const SizedBox(height: 10.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            OutlinedButton(
-              onPressed: null,
-              child: Text(
-                'Employee Scores',
-                style: TextStyle(color: Colors.black54),
+          !controller.isScanning.value
+              ? GradientText(
+                  !controller.isScanning.value
+                      ? parseToDouble == "0.0"
+                          ? ""
+                          : parseToDouble
+                      : "",
+                  style: const TextStyle(
+                    fontSize: 34.0,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  colors: [
+                    controller.changeScanBtnColor(parseToDouble),
+                    controller.changeScanBtnColor(parseToDouble),
+                  ],
+                )
+              : greyText("Scanning...."),
+          const SizedBox(height: 5.0),
+          ScanRiskButton(
+            onScanPressed: controller.onScanButtonPressed,
+            warming: controller.isScanRequired.value,
+            changeScanBtnColor: controller.changeScanBtnColor(parseToDouble),
+          ),
+          const SizedBox(height: 10.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              OutlinedButton(
+                onPressed: onChangeUserId,
+                child: Text(
+                  'update currentUserId ',
+                  style: TextStyle(color: Colors.black54),
+                ),
               ),
-            ),
-            OutlinedButton(
-              onPressed: null,
-              autofocus: true,
-              child: Text(
-                'Device Scores',
-                style: TextStyle(color: Colors.black54),
+              OutlinedButton(
+                onPressed: null,
+                autofocus: true,
+                child: Text(
+                  'Device Scores',
+                  style: TextStyle(color: Colors.black54),
+                ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 5.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            Text(
-              'Current Threats',
-              style: TextStyle(color: Colors.grey),
-            ),
-            Text(
-              'Threat Levels',
-              style: TextStyle(color: Colors.grey),
-            ),
-          ],
-        ),
-      ],
-    );
+            ],
+          ),
+          const SizedBox(height: 5.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: const [
+              Text(
+                'Current Threats',
+                style: TextStyle(color: Colors.grey),
+              ),
+              Text(
+                'Threat Levels',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ],
+          ),
+        ],
+      );
+    });
   }
 }

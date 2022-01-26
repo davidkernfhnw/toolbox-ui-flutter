@@ -1,13 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_indicator_data.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_indicator_service.dart';
 
 void main() {
   final StorageController storageController =
       GenericController("test", DummyMapper("testdb"));
 
-  final GeigerIndicatorHelper _global =
-      GeigerIndicatorHelper(storageController);
+  final GeigerIndicatorService _global =
+      GeigerIndicatorService(storageController);
 
   //final dummy.ThreatNode _geigerDummy = dummy.ThreatNode(storageController);
   group("test GlobalThreat", () {

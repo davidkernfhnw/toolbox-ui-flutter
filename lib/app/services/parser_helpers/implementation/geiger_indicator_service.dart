@@ -10,8 +10,8 @@ import 'package:geiger_toolbox/app/data/model/threat_score.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/abstract/global_data.dart';
 
 
-class GeigerIndicatorHelper extends GlobalData {
-  GeigerIndicatorHelper(this.storageController) : super(storageController);
+class GeigerIndicatorService extends GlobalData {
+  GeigerIndicatorService(this.storageController) : super(storageController);
 
   final StorageController storageController;
 
@@ -100,33 +100,36 @@ class GeigerIndicatorHelper extends GlobalData {
         if (node.path == nodePath) {
           NodeValue? nodeValueI = await storageController.getValue(
               nodePath, threatId);
-          String reco = nodeValueI!.value;
-          //check if empty
-          if (reco.isEmpty) {
-            // return empty list
-            return [];
-          }
-          List<String> recoSplit = reco.split(";"); //split on semi-colon
-          log("indicatorRecommendation: $recoSplit");
+          if(nodeValueI != null){
+            String reco = nodeValueI.value;
+            //check if empty
+            if (reco.isEmpty) {
+              // return empty list
+              return [];
+            }
+            List<String> recoSplit = reco.split(";"); //split on semi-colon
+            log("indicatorRecommendation: $recoSplit");
 
-          for (String reco in recoSplit) {
-            if (reco.isNotEmpty) {
-              List<String> rI = reco.split(","); //split on colon
-              String recomId = rI[0]; //recomId
-              String weight = rI[1]; // weight Level
+            for (String reco in recoSplit) {
+              if (reco.isNotEmpty) {
+                List<String> rI = reco.split(","); //split on colon
+                String recomId = rI[0]; //recomId
+                String weight = rI[1]; // weight Level
 
-              indicatorRecommendation.add(IndicatorRecommendation(
-                  recommendationId: recomId, weight: weight));
+                indicatorRecommendation.add(IndicatorRecommendation(
+                    recommendationId: recomId, weight: weight));
+              }
             }
           }
+
         }
         else {
           log("$nodePath => NODE PATH NOT FOUND");
         }
       }
     }
-    on Error catch (e) {
-      log('Got Exception while fetching data from this $nodePath\n $e');
+    on Error catch (e,s) {
+      log('Got Exception while fetching data from this $nodePath\n $e\n $s');
     }
     return indicatorRecommendation;
   }
@@ -152,7 +155,7 @@ class GeigerIndicatorHelper extends GlobalData {
   ///List<IndicatorRecommendation> indicationRecommendation is a subset
   ///of List<GlobalRecommendation>globalRecommendation
   ///List<String> implementedRecommendation is of list of recommendationIds
-  Future<List<Recommendation>> getGeigerRecommendationsLoung(
+  Future<List<Recommendation>> getGeigerRecommendations(
       {required String recommendationPath,
         required String threatId,
         required geigerScorePath}) async {

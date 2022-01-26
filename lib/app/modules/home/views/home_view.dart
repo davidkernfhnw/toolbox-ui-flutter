@@ -32,11 +32,6 @@ class HomeView extends StatelessWidget {
       ),
       body: Obx(
         () {
-          //convert to geiger_score aggregate to double
-          double a = double.parse(controller.aggThreatsScore.value.geigerScore);
-          //back to String with precision
-          String agg = a.toPrecision(1).toString();
-
           return controller.isLoadingServices.value == true
               ? Center(
                   child: ShowCircularProgress(
@@ -50,17 +45,8 @@ class HomeView extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       TopScreen(
-                        warning: controller.scanRequired.value,
-                        onScanPressed: () {
-                          //controller.emptyThreatScores();
-                          controller.onScanButtonPressed();
-                        },
-                        aggregratedScore: !controller.isScanning.value
-                            ? agg == "0.0"
-                                ? ""
-                                : agg
-                            : "",
-                        isLoading: controller.isScanning.value,
+                        onChangeUserId: controller.setImproveButton,
+                        controller: controller,
                       ),
                       controller.isScanning.value
                           ? ShowCircularProgress(
@@ -85,7 +71,7 @@ class HomeView extends StatelessWidget {
                                         indicatorScore:
                                             double.parse(t.score.toString()),
                                         routeName: Routes.RECOMMENDATION_VIEW,
-                                        routeArguments: t.threat,
+                                        threat: t.threat,
                                       );
                                     },
                                   ).toList(),
@@ -98,7 +84,7 @@ class HomeView extends StatelessWidget {
     );
   }
 }
-//with STACK
+//with STACK circularIndicator
 // @override
 // Widget build(BuildContext context) {
 //   return Scaffold(

@@ -6,6 +6,7 @@ import 'dart:developer';
 import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
+import 'package:geiger_toolbox/app/services/listeners/storage_event.dart';
 import 'package:get/get.dart' as getX;
 
 class LocalStorageController extends getX.GetxController {
@@ -18,7 +19,11 @@ class LocalStorageController extends getX.GetxController {
   //private variables
   late StorageController _storageController;
   late GeigerApi _api;
-  late LocalStorageListener _localStorageListener;
+
+  LocalStorageListener? _localStorageListener;
+
+  bool _isStorageListenerRegistered = false;
+  bool _isStorageListenerTriggered = false;
 
   StorageController get getStorageController {
     return _storageController;
@@ -26,7 +31,7 @@ class LocalStorageController extends getX.GetxController {
 
   LocalStorageListener get getLocalStorageListener {
     try {
-      return _localStorageListener;
+      return _localStorageListener!;
     } catch (e) {
       log("LocalStorageListener has not be initialized \n$e");
       rethrow;
@@ -36,33 +41,68 @@ class LocalStorageController extends getX.GetxController {
   Future<void> _initLocalStorage() async {
     try {
       _api = await _geigerApiConnector.getLocalMaster;
-      _storageController = _api.getStorage()!;
+      _storageController = await _api.getStorage()!;
     } catch (e) {
-      log("Database Connection Error From LocalStorage: $e");
-      rethrow;
+      log("Failed to get StorageController ===> \n $e");
     }
   }
 
-  //called this first
-  // 3 node path
-  Future<void> registerListener(Node node, String path,
-      [String? searchKey]) async {
-    _localStorageListener = LocalStorageListener();
-    SearchCriteria s = SearchCriteria(searchPath: path);
-    if (searchKey != null) {
-      s.set(Field.key, searchKey);
-    }
-    await _storageController.registerChangeListener(_localStorageListener, s);
+  Future<void> initRegisterStorageListener(
+      updatedEventHandler, path, searchKey) async {
+    // register storageListener
+    _isStorageListenerRegistered =
+        await _registerStorageListener(updatedEventHandler, path, searchKey);
   }
 
-  //called this after
-  //one Node path
-  Future<bool> triggerListener(Node node, String path, String searchKey) async {
-    SearchCriteria s = SearchCriteria(searchPath: path);
-    s.set(Field.key, searchKey);
-    bool e = await s.evaluate(node);
-    log("Triggerlistener => $e");
-    return e;
+  Future<bool> _registerStorageListener(Function? updatedEventHandler,
+      [String? path, String? searchKey]) async {
+    if (_isStorageListenerRegistered == true) {
+      log('StorageChangeListener ==> ${_localStorageListener.hashCode} has been registered and activated');
+      return true;
+    } else {
+      if (_localStorageListener == null) {
+        _localStorageListener = LocalStorageListener();
+        _localStorageListener!
+            .addMessageHandler(EventType.update, updatedEventHandler!);
+      }
+
+      try {
+        SearchCriteria s = SearchCriteria(searchPath: path);
+        if (searchKey != null) {
+          s.set(Field.value, searchKey);
+        }
+        await _storageController.registerChangeListener(
+            _localStorageListener!, s);
+        log("StorageChangeListener ==> ${_localStorageListener.hashCode} has been registered and activated");
+
+        _isStorageListenerRegistered = true;
+
+        if (path != null) {
+          try {
+            Node node = await _storageController.get(path);
+            //trigger evaluation
+            bool e = await s.evaluate(node);
+            //isTrue means ==> node fails to evaluate successfully
+            if (e) {
+              _isStorageListenerTriggered = false;
+              log("StorageListenerTriggered ==> node FAILS to evaluate successfully");
+            } else {
+              _isStorageListenerTriggered = true;
+              log("StorageListenerTriggered => $_isStorageListenerTriggered");
+            }
+            return true;
+          } catch (e) {
+            log("Failed to get Node from this $path \n $e");
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } catch (e) {
+        log("Failed to register storageChangeListener\n $e");
+        return false;
+      }
+    }
   }
 
   @override
@@ -76,50 +116,5 @@ class LocalStorageController extends getX.GetxController {
   void onClose() async {
     super.onClose();
     //await _api.close();
-  }
-}
-
-class Event {
-  final EventType _event;
-  final Node? _old;
-  final Node? _new;
-
-  Event(this._event, this._old, this._new);
-
-  EventType get type => _event;
-
-  Node? get oldNode => _old;
-
-  Node? get newNode => _new;
-
-  @override
-  String toString() {
-    return '${type.toString()} ${oldNode.toString()}=>${newNode.toString()}';
-  }
-}
-
-class LocalStorageListener implements StorageListener {
-  List<Event> events = <Event>[];
-
-  @override
-  Future<void> gotStorageChange(
-      EventType event, Node? oldNode, Node? newNode) async {
-    Event e = Event(event, oldNode, newNode);
-    events.add(e);
-    // ignore: avoid_print
-    print('got event for ui ${e.toString()}');
-  }
-
-  //called this in the ui
-  Future<List<Event>> getNumEvents(int num, [int timeout = 2000]) async {
-    int start = DateTime.now().millisecondsSinceEpoch;
-    List<Event> ret = await Future.doWhile(() =>
-            events.length < num &&
-            start + 1000 * timeout > DateTime.now().millisecondsSinceEpoch)
-        .then((value) => events);
-    if (events.length < num) {
-      throw TimeoutException('Timeout reached while waiting for $num events');
-    }
-    return ret;
   }
 }

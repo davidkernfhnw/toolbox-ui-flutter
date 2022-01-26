@@ -2,10 +2,10 @@ import 'package:geiger_localstorage/src/storage_controller.dart';
 import 'package:geiger_toolbox/app/data/model/country.dart';
 import 'package:geiger_toolbox/app/data/model/partner.dart';
 
-import 'impl_utility_data.dart';
+import '../abstract/geiger_utility_helper.dart';
 
-class GeigerUtilityData extends ImplUtilityData {
-  GeigerUtilityData(StorageController storageController)
+class GeigerUtilityService extends GeigerUtilityHelper {
+  GeigerUtilityService(StorageController storageController)
       : super(storageController);
 
   //store list of countries

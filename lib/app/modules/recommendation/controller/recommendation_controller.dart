@@ -8,8 +8,8 @@ import 'package:geiger_toolbox/app/data/model/threat_score.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
 import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_indicator_data.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/impl_user_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_indicator_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
 import 'package:get/get.dart' as getX;
 
 class RecommendationController extends getX.GetxController {
@@ -25,12 +25,16 @@ class RecommendationController extends getX.GetxController {
   final GeigerIndicatorController _indicatorControllerInstance =
       GeigerIndicatorController.instance;
 
+  //final HomeController _homeControllerInstance = HomeController.instance;
+
   //**** end of instance
 
   //**** late variables ******
   late final StorageController _storageController;
-  late final UserService _userService;
-  late GeigerIndicatorHelper _geigerIndicatorData;
+  late final GeigerUserService _userService;
+  late GeigerIndicatorService _geigerIndicatorData;
+  //late GeigerIndicatorService _geigerIndicatorHelper;
+
   // *** end of late variables ****
 
   //**** observable variable ****
@@ -66,6 +70,7 @@ class RecommendationController extends getX.GetxController {
   Future<void> _showUserThreat() async {
     //get userThreatScore
     GeigerScoreThreats geigerUserScore = await _getUserThreatScore();
+    //GeigerScoreThreats geigerUserScore = _getUserCachedData();
     log("GeigerUserScore => $geigerUserScore");
     //geiger userScore
     userGeigerScore.value = geigerUserScore.geigerScore;
@@ -78,7 +83,7 @@ class RecommendationController extends getX.GetxController {
 
   Future<void> _showDeviceThreat() async {
     GeigerScoreThreats geigerDeviceScore = await _getDeviceThreatScore();
-
+    //GeigerScoreThreats geigerDeviceScore = _getDeviceCachedData();
     log("GeigerDeviceScore => $geigerDeviceScore");
     //geiger deviceScore
     deviceGeigerScore.value = geigerDeviceScore.geigerScore;
@@ -125,10 +130,13 @@ class RecommendationController extends getX.GetxController {
         ":Users:${currentUser.userId}:$indicatorId:data:GeigerScoreUser";
 
     List<Recommendation> geigerScoreThreats =
-        await _geigerIndicatorData.getGeigerRecommendationsLoung(
+        await _geigerIndicatorData.getGeigerRecommendations(
             recommendationPath: userRecommendationPath,
             threatId: threat.threatId,
             geigerScorePath: geigerScoreUserPath);
+    //
+    // List<Recommendation> geigerScoreThreats =
+    //     _getUserRecommendationCachedData();
 
     //set observable variable
     userGeigerRecommendations.value = geigerScoreThreats;
@@ -146,10 +154,13 @@ class RecommendationController extends getX.GetxController {
         ":Devices:${currentUser.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
 
     List<Recommendation> deviceRecommendation =
-        await _geigerIndicatorData.getGeigerRecommendationsLoung(
+        await _geigerIndicatorData.getGeigerRecommendations(
             recommendationPath: deviceRecommendationpath,
             threatId: threat.threatId,
             geigerScorePath: geigerScoreDevicePath);
+
+    // List<Recommendation> deviceRecommendation =
+    //     _getDeviceRecommendationCachedData();
     //set observable variable
     deviceGeigerRecommendations.value = deviceRecommendation;
     log("Device Recommendation => $deviceGeigerRecommendations");
@@ -200,8 +211,9 @@ class RecommendationController extends getX.GetxController {
   //init storageController, userService and geigerIndicatorData
   Future<void> _init() async {
     _storageController = _storageControllerInstance.getStorageController;
-    _userService = UserService(_storageController);
-    _geigerIndicatorData = GeigerIndicatorHelper(_storageController);
+    _userService = GeigerUserService(_storageController);
+    _geigerIndicatorData = GeigerIndicatorService(_storageController);
+    // _geigerIndicatorHelper = GeigerIndicatorService(_storageController);
   }
 
   //***** end of private method ******
@@ -242,6 +254,8 @@ class RecommendationController extends getX.GetxController {
   onInit() async {
     isLoading.value = true;
     await _init();
+    await Future.delayed(Duration(seconds: 1));
+    // _box = _homeControllerInstance.cache;
     _showUserName();
     await _showUserThreat();
     await _showDeviceThreat();
@@ -255,4 +269,102 @@ class RecommendationController extends getX.GetxController {
   onReady() async {
     super.onReady();
   }
+
+  //**************cached data*******************
+
+  ///****cached of recommendation
+  // void _cachedUserData() async {
+  //   User? currentUser = await _userService.getUserInfo;
+  //   String indicatorId = _indicatorControllerInstance.indicatorId;
+  //   String path =
+  //       ":Users:${currentUser!.userId}:$indicatorId:data:GeigerScoreUser";
+  //   //get user geigerScoreThreats
+  //   GeigerScoreThreats geigerScoreThreats =
+  //       await _geigerIndicatorHelper.getGeigerScoreThreats(path: path);
+  //
+  //   _homeControllerInstance.cache
+  //       .write("userThreat", jsonEncode(geigerScoreThreats));
+  // }
+  //
+  // void _cachedDeviceData() async {
+  //   User? currentUser = await _userService.getUserInfo;
+  //   String indicatorId = _indicatorControllerInstance.indicatorId;
+  //   String path =
+  //       ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
+  //   //get device geigerScoreThreats
+  //   GeigerScoreThreats geigerScoreThreats =
+  //       await _geigerIndicatorHelper.getGeigerScoreThreats(path: path);
+  //
+  //   _homeControllerInstance.cache
+  //       .write("deviceThreat", jsonEncode(geigerScoreThreats));
+  // }
+  //
+  // Future<void> cachedUserRecommendation(Threat threat) async {
+  //   User? currentUser = await _userService.getUserInfo;
+  //   String indicatorId = _indicatorControllerInstance.indicatorId;
+  //   String userRecommendationPath =
+  //       ":Users:${currentUser!.userId}:$indicatorId:data:recommendations";
+  //
+  //   String geigerScoreUserPath =
+  //       ":Users:${currentUser.userId}:$indicatorId:data:GeigerScoreUser";
+  //
+  //   List<Recommendation> geigerScoreThreats =
+  //       await _geigerIndicatorHelper.getGeigerRecommendations(
+  //           recommendationPath: userRecommendationPath,
+  //           threatId: threat.threatId,
+  //           geigerScorePath: geigerScoreUserPath);
+  //   _homeControllerInstance.cache
+  //       .write("userRecommendations", jsonEncode(geigerScoreThreats));
+  // }
+  //
+  // Future<void> cachedDeviceRecommendation(Threat threat) async {
+  //   User? currentUser = await _userService.getUserInfo;
+  //   String indicatorId = _indicatorControllerInstance.indicatorId;
+  //   String deviceRecommendationpath =
+  //       ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:recommendations";
+  //
+  //   String geigerScoreDevicePath =
+  //       ":Devices:${currentUser.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
+  //
+  //   List<Recommendation> deviceRecommendation =
+  //       await _geigerIndicatorHelper.getGeigerRecommendations(
+  //           recommendationPath: deviceRecommendationpath,
+  //           threatId: threat.threatId,
+  //           geigerScorePath: geigerScoreDevicePath);
+  //
+  //   _homeControllerInstance.cache
+  //       .write("deviceRecommendations", jsonEncode(deviceRecommendation));
+  // }
+  //
+  // GeigerScoreThreats _getDeviceCachedData() {
+  //   var data = _homeControllerInstance.cache.read("deviceThreat");
+  //   var json = jsonDecode(data);
+  //   GeigerScoreThreats result = GeigerScoreThreats.fromJson(json);
+  //   return result;
+  // }
+  //
+  // GeigerScoreThreats _getUserCachedData() {
+  //   var data = _homeControllerInstance.cache.read("userThreat");
+  //   var json = jsonDecode(data);
+  //   GeigerScoreThreats result = GeigerScoreThreats.fromJson(json);
+  //   return result;
+  // }
+  //
+  // //
+  // List<Recommendation> _getUserRecommendationCachedData() {
+  //   var data = _homeControllerInstance.cache.read("userRecommendations");
+  //   String json = jsonDecode(data);
+  //   log("JSOn data ==> $json");
+  //   List<Recommendation> result = Recommendation.recommendationList(json);
+  //   return result;
+  // }
+  //
+  // List<Recommendation> _getDeviceRecommendationCachedData() {
+  //   var data = _homeControllerInstance.cache.read("deviceRecommendations");
+  //   var json = jsonDecode(data);
+  //   List<Recommendation> result = Recommendation.recommendationList(json);
+  //   return result;
+  // }
+
+//************* end ************
 }

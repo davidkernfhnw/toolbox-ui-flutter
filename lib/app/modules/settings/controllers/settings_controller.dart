@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/consent.dart';
@@ -10,10 +10,12 @@ import 'package:geiger_toolbox/app/data/model/partner.dart';
 import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_data.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/impl_user_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_utility_service.dart';
 import 'package:geiger_toolbox/app/translation/suppored_language.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SettingsController extends GetxController {
   //instance of SettingsController
@@ -21,8 +23,8 @@ class SettingsController extends GetxController {
 
   late final StorageController _storageController;
   //userService
-  late final UserService _userService;
-  late final GeigerUtilityData _geigerData;
+  late final GeigerUserService _userService;
+  late final GeigerUtilityService _geigerData;
 
   //getting instance of localStorageController
   final LocalStorageController _localStorage = LocalStorageController.instance;
@@ -149,6 +151,27 @@ class SettingsController extends GetxController {
     }
   }
 
+  Future<String> showRawData() async {
+    String userPath = ":Users:${userInfo.value.userId}";
+    String devicePath = ":Devices:${userInfo.value.deviceOwner!.deviceId}";
+    String u = await _storageController.dump(userPath);
+    String d = await _storageController.dump(devicePath);
+
+    return u + d;
+  }
+
+  void makeJsonFile() async {
+    String value = await showRawData();
+    final Directory directory = await getApplicationDocumentsDirectory();
+    String path =
+        directory.path + Platform.pathSeparator + "geiger_Toolbox_data.json";
+    final File file = File(path);
+
+    File update = await file.writeAsString(value);
+
+    Share.shareFiles([path], text: "geiger_Toolbox_data");
+  }
+
   _updateUser(User userInfo) async {
     bool success = await _userService.updateUserInfo(userInfo);
     if (success) {
@@ -185,7 +208,7 @@ class SettingsController extends GetxController {
   //init storageController
   Future<void> _initStorageController() async {
     _storageController = await _localStorage.getStorageController;
-    _geigerData = GeigerUtilityData(_storageController);
+    _geigerData = GeigerUtilityService(_storageController);
   }
 
   //init util data
@@ -200,7 +223,7 @@ class SettingsController extends GetxController {
     isLoading.value = true;
 
     await _initialUtilityData();
-    _userService = UserService(_storageController);
+    _userService = GeigerUserService(_storageController);
     userInfo.value = (await _userService.getUserInfo)!;
     //init value in ui
     supervisor.value = userInfo.value.supervisor;
@@ -247,19 +270,25 @@ class SettingsController extends GetxController {
 
   //get name of the user device
   Future<String> get _getDeviceName async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (Platform.isAndroid) {
       AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
-      return androidDeviceInfo.model;
+      return androidDeviceInfo.model!;
     } else if (Platform.isIOS) {
       IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
-      return iosDeviceInfo.utsname.machine;
+      return iosDeviceInfo.utsname.machine!;
     } else if (Platform.isMacOS) {
-      return "MacOS";
+      MacOsDeviceInfo macOsDeviceInfo = await deviceInfo.macOsInfo;
+      String macOs = macOsDeviceInfo.computerName;
+      return macOs;
     } else if (Platform.isWindows) {
-      return "Windows";
+      WindowsDeviceInfo w = await deviceInfo.windowsInfo;
+      String window = w.computerName;
+      return window;
     } else {
-      return "Web";
+      WebBrowserInfo web = await deviceInfo.webBrowserInfo;
+      String browser = web.browserName.name;
+      return browser;
     }
   }
 

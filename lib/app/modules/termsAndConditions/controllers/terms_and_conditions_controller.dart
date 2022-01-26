@@ -5,7 +5,7 @@ import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/data/model/user.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/impl_user_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
 import 'package:get/get.dart';
 
 class TermsAndConditionsController extends GetxController {
@@ -18,12 +18,12 @@ class TermsAndConditionsController extends GetxController {
 
   //declaring storageController
   late StorageController _storageController;
-  late UserService _userService;
+  late GeigerUserService _userService;
 
   //initialize _storageController using _localStorage instance
   _initializeStorageController() {
     _storageController = _localStorageInstance.getStorageController;
-    _userService = UserService(_storageController);
+    _userService = GeigerUserService(_storageController);
   }
 
   // declaring variable for creativeness
@@ -81,7 +81,7 @@ class TermsAndConditionsController extends GetxController {
               signedConsent: signedConsent.value,
               agreedPrivacy: agreedPrivacy.value));
       if (success) {
-        await _userService.setNewUserStatus();
+        await _userService.setButtonNotPressed();
 
         // //store utility data
         // await _localStorageInstance.storeCountry();
