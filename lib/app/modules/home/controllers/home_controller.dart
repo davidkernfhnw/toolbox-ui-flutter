@@ -145,8 +145,10 @@ class HomeController extends getX.GetxController {
     bool checkTerms =
         await _termsAndConditionsControllerInstance.isTermsAccepted();
     if (checkTerms == false) {
-      return getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
+      await getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
+      return false;
     }
+    return true;
   }
 
   //********* start initial resources ***********
@@ -172,24 +174,6 @@ class HomeController extends getX.GetxController {
         "Geiger ToolBox Notification", event);
   }
 
-  void _runInitStorageRegister() async {
-    // String currentDeviceId = await _userService.getDeviceId;
-    // const String montimagePluginId = 'geiger-api-test-external-plugin-id';
-    // const String sensorId = 'mi-ksp-scanner-is-rooted-device';
-    //
-    //String currentUserId = await _userService.getUserId;
-    //String currentDeviceId = await _userService.getDeviceId;
-    // String indicatorId = _indicatorControllerInstance.indicatorId;
-    // String path =
-    //     ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
-
-    await _localStorageInstance.initRegisterStorageListener((EventType event) {
-      isStorageUpdated.value = event.toValueString();
-      isScanRequired.value = true;
-      _showNotification(event.toValueString());
-    }, ":Local", "currentDevice");
-  }
-
   void _runInitRegisterExternalPluginListener() async {
     //get instance of GeigerApiConnector
     _geigerApiConnectorInstance.initRegisterExternalPluginListener(
@@ -200,6 +184,23 @@ class HomeController extends getX.GetxController {
       getX.Get.snackbar(
           '', 'The external plugin ${msg.sourceId} has finished the scanning');
     });
+  }
+
+  void _runInitStorageRegister() async {
+    //
+    String currentUserId = await _userService.getUserId;
+    //String currentDeviceId = await _userService.getDeviceId;
+    String indicatorId = _indicatorControllerInstance.indicatorId;
+    String path =
+        ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
+
+    await _localStorageInstance.initRegisterStorageListener((EventType event) {
+      isStorageUpdated.value = event.toValueString();
+      isScanRequired.value = true;
+      _showNotification(event.toValueString());
+      getX.Get.snackbar('',
+          'Storage has be ${isStorageUpdated.value}.... a new scan is required.');
+    }, path, "GEIGER_score");
   }
 
   Future<void> _loadHelperData() async {
@@ -254,7 +255,7 @@ class HomeController extends getX.GetxController {
   @override
   void onReady() async {
     if (grantPermission.isTrue) {
-      await _initReplication();
+      //await _initReplication();
     }
     //storageRegister
     _runInitStorageRegister();
