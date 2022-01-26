@@ -11,7 +11,7 @@ class GeigerIndicatorController extends GetxController {
   Future<void> _initGeigerIndicator() async {
     try {
       log("Run Indicator called");
-      await runIndicator(indicatorId);
+      runIndicator(indicatorId);
     } catch (e) {
       log(" Fail to run indicator $e");
     }
