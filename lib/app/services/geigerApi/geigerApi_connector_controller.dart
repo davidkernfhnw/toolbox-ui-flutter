@@ -26,7 +26,7 @@ class GeigerApiConnector extends GetxController {
     }
   }
 
-  /// initialize this method before the start of the app
+  // initialize this method before the start of the app
   // LN: adding the function to handle the SCAN_COMPLETED event
   Future<void> initGeigerApi() async {
     try {
@@ -78,5 +78,4 @@ class GeigerApiConnector extends GetxController {
   String getListenerToString() {
     return _externalPluginEventListener.toString();
   }
-
 }
