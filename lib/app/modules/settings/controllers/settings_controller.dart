@@ -160,6 +160,7 @@ class SettingsController extends GetxController {
     return u + d;
   }
 
+  //not tested
   void makeJsonFile() async {
     String value = await showRawData();
     final Directory directory = await getApplicationDocumentsDirectory();
@@ -169,7 +170,8 @@ class SettingsController extends GetxController {
 
     File update = await file.writeAsString(value);
 
-    Share.shareFiles([path], text: "geiger_Toolbox_data");
+    await Share.shareFiles([path], text: "geiger_Toolbox_data");
+    await update.delete();
   }
 
   _updateUser(User userInfo) async {

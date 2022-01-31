@@ -139,7 +139,6 @@ class GeigerUserService extends LocalDeviceService implements LocalUserService {
       Node node = await storageController.get(_UI_PATH);
       await node.addOrUpdateValue(NodeValueImpl(_BUTTON_KEY, value.toString()));
       await storageController.addOrUpdate(node);
-      log("setButtonNotPressed method: $node");
     } catch (e, s) {
       StorageException("Storage Error: $e", s);
     }
@@ -156,7 +155,6 @@ class GeigerUserService extends LocalDeviceService implements LocalUserService {
       // since on package are also getStorage
       //await ExtendedTimestamp.initializeTimestamp(_storageControllerUi);
       await storageController.update(node);
-      log(" updateButtonPressedmethod: $node");
     } catch (e, s) {
       StorageException("Storage Error: $e", s);
     }

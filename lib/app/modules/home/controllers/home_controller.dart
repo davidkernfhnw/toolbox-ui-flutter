@@ -200,11 +200,15 @@ class HomeController extends getX.GetxController {
     // String path =
     //     ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
 
-    await _localStorageInstance.initRegisterStorageListener((EventType event) {
-      isStorageUpdated.value = event.toValueString();
-      isScanRequired.value = true;
-      _showNotification(event.toValueString());
-    }, ":Local", "currentDevice");
+    await _localStorageInstance.initRegisterStorageListener(
+        eventType: EventType.update,
+        eventHandler: (EventType event) {
+          isStorageUpdated.value = event.toValueString();
+          isScanRequired.value = true;
+          _showNotification(event.toValueString());
+        },
+        path: ":Local:ui",
+        searchKey: "deviceInfo");
   }
 
   void _runInitRegisterExternalPluginListener() async {
@@ -281,7 +285,7 @@ class HomeController extends getX.GetxController {
   }
 
 //test method
-  Future<bool> setImproveButton() async {
+  Future<bool> changeDeviceInfo() async {
     try {
       NodeValue? nodeValue =
           await _storageController.getValue(":Local:ui", "deviceInfo");

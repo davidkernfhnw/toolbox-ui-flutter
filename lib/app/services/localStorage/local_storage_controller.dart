@@ -48,14 +48,17 @@ class LocalStorageController extends getX.GetxController {
   }
 
   Future<void> initRegisterStorageListener(
-      updatedEventHandler, path, searchKey) async {
+      {required EventType eventType,
+      required Function eventHandler,
+      required String path,
+      String? searchKey}) async {
     // register storageListener
-    _isStorageListenerRegistered =
-        await _registerStorageListener(updatedEventHandler, path, searchKey);
+    _isStorageListenerRegistered = await _registerStorageListener(
+        eventType, eventHandler, path, searchKey);
   }
 
-  Future<bool> _registerStorageListener(Function? updatedEventHandler,
-      [String? path, String? searchKey]) async {
+  Future<bool> _registerStorageListener(EventType eventType,
+      Function updatedEventHandler, String path, String? searchKey) async {
     if (_isStorageListenerRegistered == true) {
       log('StorageChangeListener ==> ${_localStorageListener.hashCode} has been registered and activated');
       return true;
@@ -63,13 +66,13 @@ class LocalStorageController extends getX.GetxController {
       if (_localStorageListener == null) {
         _localStorageListener = LocalStorageListener();
         _localStorageListener!
-            .addMessageHandler(EventType.update, updatedEventHandler!);
+            .addMessageHandler(eventType, updatedEventHandler);
       }
 
       try {
         SearchCriteria s = SearchCriteria(searchPath: path);
         if (searchKey != null) {
-          s.set(Field.value, searchKey);
+          s.set(Field.key, searchKey);
         }
         await _storageController.registerChangeListener(
             _localStorageListener!, s);
@@ -77,25 +80,21 @@ class LocalStorageController extends getX.GetxController {
 
         _isStorageListenerRegistered = true;
 
-        if (path != null) {
-          try {
-            Node node = await _storageController.get(path);
-            //trigger evaluation
-            bool e = await s.evaluate(node);
-            //isTrue means ==> node fails to evaluate successfully
-            if (e) {
-              _isStorageListenerTriggered = false;
-              log("StorageListenerTriggered ==> node FAILS to evaluate successfully");
-            } else {
-              _isStorageListenerTriggered = true;
-              log("StorageListenerTriggered => $_isStorageListenerTriggered");
-            }
-            return true;
-          } catch (e) {
-            log("Failed to get Node from this $path \n $e");
-            return false;
+        try {
+          Node node = await _storageController.get(path);
+          //trigger evaluation
+          bool e = await s.evaluate(node);
+          //isTrue means ==> node fails to evaluate successfully
+          if (e) {
+            _isStorageListenerTriggered = false;
+            log("StorageListenerTriggered ==> node FAILS to evaluate successfully");
+          } else {
+            _isStorageListenerTriggered = true;
+            log("StorageListenerTriggered => $_isStorageListenerTriggered");
           }
-        } else {
+          return true;
+        } catch (e) {
+          log("Failed to get Node from this $path \n $e");
           return false;
         }
       } catch (e) {

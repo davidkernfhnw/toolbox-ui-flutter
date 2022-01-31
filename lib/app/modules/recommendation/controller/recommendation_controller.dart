@@ -257,10 +257,10 @@ class RecommendationController extends getX.GetxController {
     await Future.delayed(Duration(seconds: 1));
     // _box = _homeControllerInstance.cache;
     _showUserName();
-    await _showUserThreat();
-    await _showDeviceThreat();
-    await _getUserRecommendation();
-    await _getDeviceRecommendation();
+    _showUserThreat();
+    _showDeviceThreat();
+    _getUserRecommendation();
+    _getDeviceRecommendation();
     isLoading.value = false;
     super.onInit();
   }

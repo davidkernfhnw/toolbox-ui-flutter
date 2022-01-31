@@ -45,7 +45,7 @@ class HomeView extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       TopScreen(
-                        onChangeUserId: controller.setImproveButton,
+                        onChangeUserId: controller.changeDeviceInfo,
                         controller: controller,
                       ),
                       controller.isScanning.value

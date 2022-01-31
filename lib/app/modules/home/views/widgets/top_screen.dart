@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
@@ -21,7 +19,6 @@ class TopScreen extends StatelessWidget {
     double a = double.parse(controller.aggThreatsScore.value.geigerScore);
     //back to String with precision
     String agg = a.toPrecision(1).toString();
-    log("Parse Agg => $agg ");
     return agg;
   }
 

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:get/get.dart';
+import 'package:initialize_geiger_data/initialize_geiger_data.dart';
 import 'package:toolbox_indicator_test/indicator.dart';
 
 class GeigerIndicatorController extends GetxController {
@@ -11,15 +12,20 @@ class GeigerIndicatorController extends GetxController {
   Future<void> _initGeigerIndicator() async {
     try {
       log("Run Indicator called");
-      await runIndicator(indicatorId);
+      await await runIndicator(indicatorId);
     } catch (e) {
       log(" Fail to run indicator $e");
     }
   }
 
+  Future<void> _iniGeigerData() async {
+    await initializeGeigerData(indicatorId);
+  }
+
   @override
   void onInit() async {
-    await _initGeigerIndicator();
+    await _iniGeigerData();
+    _initGeigerIndicator();
     super.onInit();
   }
 }
