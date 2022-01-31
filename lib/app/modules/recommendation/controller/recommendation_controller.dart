@@ -120,7 +120,7 @@ class RecommendationController extends getX.GetxController {
     return geigerScoreThreats;
   }
 
-  Future<List<Recommendation>> _getUserRecommendation() async {
+  void _getUserRecommendation() async {
     User? currentUser = await _userService.getUserInfo;
     String indicatorId = _indicatorControllerInstance.indicatorId;
     String userRecommendationPath =
@@ -129,7 +129,7 @@ class RecommendationController extends getX.GetxController {
     String geigerScoreUserPath =
         ":Users:${currentUser.userId}:$indicatorId:data:GeigerScoreUser";
 
-    List<Recommendation> geigerScoreThreats =
+    List<Recommendation> userRecommendation =
         await _geigerIndicatorData.getGeigerRecommendations(
             recommendationPath: userRecommendationPath,
             threatId: threat.threatId,
@@ -139,15 +139,16 @@ class RecommendationController extends getX.GetxController {
     //     _getUserRecommendationCachedData();
 
     //set observable variable
-    userGeigerRecommendations.value = geigerScoreThreats;
-
-    return geigerScoreThreats;
+    userGeigerRecommendations.value = userRecommendation;
+    //log("User Recommendation => $userGeigerRecommendations");
+    log("User Recommendation dump==> $userRecommendation");
+    // return geigerScoreThreats;
   }
 
-  Future<List<Recommendation>> _getDeviceRecommendation() async {
+  void _getDeviceRecommendation() async {
     User? currentUser = await _userService.getUserInfo;
     String indicatorId = _indicatorControllerInstance.indicatorId;
-    String deviceRecommendationpath =
+    String deviceRecommendationPath =
         ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:recommendations";
 
     String geigerScoreDevicePath =
@@ -155,7 +156,7 @@ class RecommendationController extends getX.GetxController {
 
     List<Recommendation> deviceRecommendation =
         await _geigerIndicatorData.getGeigerRecommendations(
-            recommendationPath: deviceRecommendationpath,
+            recommendationPath: deviceRecommendationPath,
             threatId: threat.threatId,
             geigerScorePath: geigerScoreDevicePath);
 
@@ -163,8 +164,8 @@ class RecommendationController extends getX.GetxController {
     //     _getDeviceRecommendationCachedData();
     //set observable variable
     deviceGeigerRecommendations.value = deviceRecommendation;
-    log("Device Recommendation => $deviceGeigerRecommendations");
-    return deviceRecommendation;
+    log("Device Recommendation ==> $deviceGeigerRecommendations");
+    // return deviceRecommendation;
   }
 
   void _showUserName() async {
@@ -176,6 +177,7 @@ class RecommendationController extends getX.GetxController {
 
   Future<void> _implementRecommendation(
       {required String recommendationId, required String path}) async {
+    isLoading.value = true;
     String recommendationIds = "";
     String key = "implementedRecommendations";
 
@@ -192,7 +194,7 @@ class RecommendationController extends getX.GetxController {
     await _storageController.updateValue(path, nodeValue);
 
     isLoading.value = false;
-    log("${await _storageController.dump(path)}");
+    log("Current Implemented Recommendation${await _storageController.dump(path)}");
   }
 
   void _setCheckBox(
@@ -213,6 +215,7 @@ class RecommendationController extends getX.GetxController {
     _storageController = _storageControllerInstance.getStorageController;
     _userService = GeigerUserService(_storageController);
     _geigerIndicatorData = GeigerIndicatorService(_storageController);
+
     // _geigerIndicatorHelper = GeigerIndicatorService(_storageController);
   }
 
@@ -254,7 +257,7 @@ class RecommendationController extends getX.GetxController {
   onInit() async {
     isLoading.value = true;
     await _init();
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(milliseconds: 500));
     // _box = _homeControllerInstance.cache;
     _showUserName();
     _showUserThreat();

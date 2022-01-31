@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/device.dart';
 
@@ -83,6 +85,7 @@ abstract class LocalDeviceService {
     Node node = await storageController.get(":Devices");
     List<String> ids =
         await node.getChildNodesCsv().then((value) => value.split(','));
+    log("Dump devices id ==> ${await storageController.dump(":Devices")}");
     return ids;
   }
 

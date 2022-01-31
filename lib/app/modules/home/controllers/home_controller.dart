@@ -83,6 +83,8 @@ class HomeController extends getX.GetxController {
     //scanning is done
     //a delay
     await Future.delayed(Duration(seconds: 2));
+
+    log("Dump after scanning ==> ${await _storageController.dump(":")}");
     //set scanRequired to false if true
     isScanRequired.value = false;
 
@@ -273,9 +275,8 @@ class HomeController extends getX.GetxController {
 
   @override
   void onReady() async {
-    if (grantPermission.isTrue) {
-      await _initReplication();
-    }
+    await _initReplication();
+
     //storageRegister
     _runInitStorageRegister();
     //ExternalPluginListener

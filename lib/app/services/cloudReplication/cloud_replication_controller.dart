@@ -22,7 +22,11 @@ class CloudReplicationController extends GetxController {
       await _controller.initGeigerStorage();
       bool checkReplication = await _controller.checkReplication();
       if (checkReplication == false) {
-        await _controller.geigerReplication();
+        await _controller.geigerReplication(
+            _controller.deleteHandler,
+            _controller.createHandler,
+            _controller.renameHanlder,
+            _controller.updateHanlder);
         await _controller.endGeigerStorage();
       }
     } catch (e) {

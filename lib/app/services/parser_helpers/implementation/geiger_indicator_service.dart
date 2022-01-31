@@ -149,6 +149,7 @@ class GeigerIndicatorService extends GlobalData {
         implRecom.add(i);
       }
     }
+    log("Implemented recommendation ==> $implRecom");
     return implRecom;
   }
 

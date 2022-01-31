@@ -54,7 +54,7 @@ dependencies:
   #cache data
   get_storage: ^2.0.3
   charts_flutter: ^0.12.0
-  toolbox_indicator_test: ^1.0.7
+  toolbox_indicator_test: ^2.0.0
   geiger_api: ^0.6.3
   flutter_local_notifications: ^9.2.0
   share_plus: ^3.0.4

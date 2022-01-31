@@ -19,7 +19,11 @@ class GeigerIndicatorController extends GetxController {
   }
 
   Future<void> _iniGeigerData() async {
-    await initializeGeigerData(indicatorId);
+    try {
+      await initializeGeigerData(indicatorId);
+    } catch (e) {
+      log("Initialized GeigerData Already...\n");
+    }
   }
 
   @override

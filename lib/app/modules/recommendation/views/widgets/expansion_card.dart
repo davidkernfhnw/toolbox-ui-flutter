@@ -38,16 +38,17 @@ class ExpansionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                // recommendation.longDescription!,
-                recommendation.recommendationId,
-                softWrap: true,
-              ),
               recommendation.longDescription == ""
-                  ? const SizedBox(
-                      height: 0,
+                  ? Text(
+                      // recommendation.longDescription!,
+                      recommendation.recommendationId,
+                      softWrap: true,
                     )
-                  : const SizedBox(height: 5),
+                  : Text(
+                      // recommendation.longDescription!,
+                      recommendation.longDescription!,
+                      softWrap: true,
+                    ),
               const Text(
                 "Required Tool:",
                 style: TextStyle(color: Colors.black45),
