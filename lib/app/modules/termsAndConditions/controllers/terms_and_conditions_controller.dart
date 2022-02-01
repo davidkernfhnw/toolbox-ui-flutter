@@ -21,8 +21,8 @@ class TermsAndConditionsController extends GetxController {
   late GeigerUserService _userService;
 
   //initialize _storageController using _localStorage instance
-  _initializeStorageController() {
-    _storageController = _localStorageInstance.getStorageController;
+  Future<void> _initializeStorageController() async {
+    _storageController = await _localStorageInstance.getStorageController;
     _userService = GeigerUserService(_storageController);
   }
 
@@ -39,23 +39,17 @@ class TermsAndConditionsController extends GetxController {
     try {
       //get user Info
       User? userInfo = await _userService.getUserInfo;
-      if (userInfo != null) {
-        // assign user term and condition
-        TermsAndConditions userTermsAndConditions = userInfo.termsAndConditions;
-        //check if true and return home view (screen)
-        if (await userTermsAndConditions.ageCompliant == true &&
-            await userTermsAndConditions.signedConsent == true &&
-            await userTermsAndConditions.agreedPrivacy == true) {
-          return true;
-          //Show home view
-        }
-        // else {
-        //   //Get.offNamed(Routes.HOME_VIEW);
-        //   return false;
-        //   //show default screen(Home view)
-        // }
+
+      // assign user term and condition
+      TermsAndConditions userTermsAndConditions = userInfo!.termsAndConditions;
+      //check if true and return home view (screen)
+      if (await userTermsAndConditions.ageCompliant == true &&
+          await userTermsAndConditions.signedConsent == true &&
+          await userTermsAndConditions.agreedPrivacy == true) {
+        return true;
+      } else {
+        return false;
       }
-      return false;
     } catch (e) {
       log("Something went wrong $e");
       log("UserInfo not found");
@@ -82,12 +76,6 @@ class TermsAndConditionsController extends GetxController {
               agreedPrivacy: agreedPrivacy.value));
       if (success) {
         await _userService.setButtonNotPressed();
-
-        // //store utility data
-        // await _localStorageInstance.storeCountry();
-        // await _localStorageInstance.storeProfAss();
-        // await _localStorageInstance.storeCert();
-        // await _localStorageInstance.storePublicKey();
         Get.offNamed(Routes.HOME_VIEW);
       } else {
         //set errorMsg to true
@@ -103,31 +91,7 @@ class TermsAndConditionsController extends GetxController {
   @override
   void onInit() async {
     //init storageController
-    _initializeStorageController();
-    // if (await isTermsAccepted() == true) {
-    //   return Get.offNamed(Routes.HOME_VIEW);
-    // } else {
-    //   //store utility data
-    //   await _localStorageInstance.storeCountry();
-    //   await _localStorageInstance.storeProfAss();
-    //   await _localStorageInstance.storeCert();
-    //   await _localStorageInstance.storePublicKey();
-    //   return;
-    // }
-
-    //check if terms and condition were previously agreed
-    //await checkExistingTerms();
+    await _initializeStorageController();
     super.onInit();
-  }
-
-  @override
-  void onReady() async {
-    super.onReady();
-  }
-
-  @override
-  void onClose() async {
-    super.onClose();
-    //close storageController after use
   }
 }

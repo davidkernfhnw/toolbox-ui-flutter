@@ -13,13 +13,13 @@ class CloudReplicationController extends GetxController {
 
   late final ReplicationController _controller;
 
-  void _initialReplicationController() {
+  void _initialReplicationController() async {
     _controller = ReplicationService();
+    await _controller.initGeigerStorage();
   }
 
   Future<void> initialReplication() async {
     try {
-      await _controller.initGeigerStorage();
       bool checkReplication = await _controller.checkReplication();
       if (checkReplication == false) {
         await _controller.geigerReplication(
@@ -36,7 +36,7 @@ class CloudReplicationController extends GetxController {
 
   @override
   void onInit() async {
-    _initialReplicationController();
+    //_initialReplicationController();
     super.onInit();
   }
 }

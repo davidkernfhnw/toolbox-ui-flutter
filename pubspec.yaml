@@ -58,6 +58,7 @@ dependencies:
   geiger_api: ^0.6.3
   flutter_local_notifications: ^9.2.0
   share_plus: ^3.0.4
+
   initialize_geiger_data: ^1.0.3
 
 dev_dependencies:

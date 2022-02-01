@@ -26,7 +26,13 @@ class LocalStorageController extends getX.GetxController {
   bool _isStorageListenerTriggered = false;
 
   StorageController get getStorageController {
-    return _storageController;
+    try {
+      log("StorageController gotten successfully $_storageController");
+      return _storageController;
+    } catch (e) {
+      log("Failed to get storageController");
+      rethrow;
+    }
   }
 
   LocalStorageListener get getLocalStorageListener {
@@ -38,10 +44,11 @@ class LocalStorageController extends getX.GetxController {
     }
   }
 
-  Future<void> _initLocalStorage() async {
+  Future<void> initLocalStorage() async {
     try {
       _api = await _geigerApiConnector.getLocalMaster;
       _storageController = await _api.getStorage()!;
+      log("StorageController initialize successfully $_storageController");
     } catch (e) {
       log("Failed to get StorageController ===> \n $e");
     }
@@ -106,14 +113,7 @@ class LocalStorageController extends getX.GetxController {
 
   @override
   void onInit() async {
-    await _initLocalStorage();
+    await initLocalStorage();
     super.onInit();
-  }
-
-  //close geigerApi after user
-  @override
-  void onClose() async {
-    super.onClose();
-    //await _api.close();
   }
 }

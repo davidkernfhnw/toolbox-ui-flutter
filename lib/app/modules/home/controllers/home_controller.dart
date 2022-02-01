@@ -26,7 +26,7 @@ class HomeController extends getX.GetxController {
   //******* start of instance **********
 
   final LocalStorageController _localStorageInstance =
-      LocalStorageController.instance;
+      getX.Get.find<LocalStorageController>();
 
   //get instance of GeigerApiConnector
   GeigerApiConnector _geigerApiConnectorInstance = GeigerApiConnector.instance;
@@ -267,15 +267,12 @@ class HomeController extends getX.GetxController {
 
     await _triggerAggCachedData();
 
-    log("Dump =>  *****************");
-    log("${await _storageController.dump(":")}");
-
     super.onInit();
   }
 
   @override
   void onReady() async {
-    await _initReplication();
+    //await _initReplication();
 
     //storageRegister
     _runInitStorageRegister();
