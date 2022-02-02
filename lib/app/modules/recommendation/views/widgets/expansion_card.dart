@@ -74,12 +74,12 @@ class ExpansionCard extends StatelessWidget {
 
   Widget _buildGetToolButton(
       Recommendation r, void Function()? onPressedGetTool) {
-    return new ElevatedButton(
-        child: new Text(recommendation.implemented ? "Active" : "Get Tool"),
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(
-                recommendation.implemented ? Colors.grey : Colors.green)),
-        onPressed: recommendation.implemented ? null : onPressedGetTool);
+    if (!r.implemented) {
+      return ElevatedButton(
+          child: new Text("Get Tool"), onPressed: onPressedGetTool);
+    } else {
+      return Container();
+    }
   }
 
   String _checkWeight(String weight) {

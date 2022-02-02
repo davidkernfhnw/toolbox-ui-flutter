@@ -28,10 +28,10 @@ class DeviceController extends GetxController {
     log("ScanData : $data");
     bool result = await _runPair(data);
     if (result == true) {
-      await _devices();
+      await _getPairedDevices();
       return true;
     } else {
-      await _devices();
+      await _getPairedDevices();
       return false;
     }
   }
@@ -77,10 +77,10 @@ class DeviceController extends GetxController {
   Future<bool> _unPair(String userId) async {
     bool result = await _runUnpair(userId: userId);
     if (result == true) {
-      await _devices();
+      await _getPairedDevices();
       return true;
     } else {
-      await _devices();
+      await _getPairedDevices();
       return false;
     }
   }
@@ -99,8 +99,8 @@ class DeviceController extends GetxController {
     }
   }
 
-  Future<void> _devices() async {
-    log("getListOfDevices called");
+  Future<void> _getPairedDevices() async {
+    log("getPairedDevices");
     List<String> r = await _userService.getListPairedDevices();
     devices.value = r;
     log(r.toString());
@@ -128,7 +128,7 @@ class DeviceController extends GetxController {
   @override
   void onInit() async {
     await _initialUtilityData();
-    await _devices();
+    await _getPairedDevices();
 
     _checkPairAlert();
     super.onInit();
