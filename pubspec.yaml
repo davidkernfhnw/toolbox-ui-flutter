@@ -45,7 +45,9 @@ dependencies:
   device_info_plus: 3.2.1
 
   cloud_replication_package:
-    path: ../toolbox-replication/
+    git:
+      url: git://github.com/cyber-geiger/toolbox-replication.git
+      ref: consent
 
   #state management, dependency injection
   get: ^4.6.1

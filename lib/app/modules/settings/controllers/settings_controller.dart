@@ -214,19 +214,24 @@ class SettingsController extends GetxController {
   }
 
   //init util data
-  Future<void> _initialUtilityData() async {
+  Future<void> _getData() async {
+    isLoading.value = true;
     currentCountries = await _geigerData.getCountries();
     _profAss = await _geigerData.getProfessionAssociation();
     _cert = await _geigerData.getCert();
+    isLoading.value = false;
   }
 
   //initial User Data
   Future<void> _initUserData() async {
     isLoading.value = true;
 
-    await _initialUtilityData();
+    await _getData();
     _userService = GeigerUserService(_storageController);
-    userInfo.value = (await _userService.getUserInfo)!;
+    User? user = await _userService.getUserInfo;
+    if (user != null) {
+      userInfo.value = user;
+    }
     //init value in ui
     supervisor.value = userInfo.value.supervisor;
 
@@ -241,15 +246,13 @@ class SettingsController extends GetxController {
     //init for ui
     if (userInfo.value.country != null &&
         userInfo.value.profAss != null &&
-        userInfo.value.cert != null &&
-        userInfo.value.userName != null) {
+        userInfo.value.cert != null) {
       currentCountry.value = userInfo.value.country!;
       currentProfAss.value = userInfo.value.profAss!;
       currentCert.value = userInfo.value.cert!;
+    }
+    if (userInfo.value.userName != null) {
       currentUserName.value = userInfo.value.userName!;
-    } else {
-      //currentCountry.value = "Switzerland";
-
     }
 
     //default country
@@ -263,7 +266,7 @@ class SettingsController extends GetxController {
     onChangeLanguage(userInfo.value.language);
     log("cert current: " + currentCert.value);
     log("country: ${currentCountry.value}");
-    log("country: ${currentCountries}");
+    log("countries: ${currentCountries}");
     log("profAss: ${currentProfAss.value}");
     log("userInfo: ${userInfo.value}");
     log("CurrentUserName :${currentUserName.value}");
@@ -312,9 +315,9 @@ class SettingsController extends GetxController {
   @override
   void onInit() async {
     await _initStorageController();
-    await _initialUtilityData();
+    _getData();
+    _initUserData();
 
-    await _initUserData();
     super.onInit();
   }
 }
