@@ -25,6 +25,11 @@ ThemeData customThemeData() {
           fontWeight: FontWeight.w400,
           color: Colors.black,
           fontFamily: NUNITO_FONT),
+      bodyText1: TextStyle().copyWith(
+          fontSize: 14.0,
+          fontWeight: FontWeight.w400,
+          color: Colors.black,
+          fontFamily: NUNITO_FONT),
     ),
 
     pageTransitionsTheme: PageTransitionsTheme(builders: {

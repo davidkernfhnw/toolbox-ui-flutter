@@ -10,11 +10,6 @@ abstract class LocalUserService {
   /// from the Local node
   Future<String> get getUserId;
 
-  /// @param User object
-  /// @return Future<bool>
-  /// store in the Local node
-  Future<bool> storeUserInfo(User user);
-
   /// @return Future<User?>
   /// retrieve user from Local node
   Future<User?> get getUserInfo;
@@ -22,6 +17,16 @@ abstract class LocalUserService {
   /// @return Future<bool>
   Future<bool> storeTermsAndConditions(
       {required TermsAndConditions termsAndConditions});
+
+  ///@param optional
+  ///@return Future<bool>
+  Future<bool> storeUserConsent(
+      {bool dataAccess: true, bool dataProcess: true});
+
+  Future<bool> updateUserConsent(
+      {required bool dataAccess, required bool dataProcess});
+
+  Future<bool?> get checkUserConsent;
 
   /// @return Future<bool>
   Future<bool> updateUserInfo(User user);

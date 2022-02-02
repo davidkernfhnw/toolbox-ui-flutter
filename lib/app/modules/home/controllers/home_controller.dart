@@ -162,6 +162,7 @@ class HomeController extends getX.GetxController {
     await _geigerUtilityData.storeProfAss();
     await _geigerUtilityData.storeCerts();
     await _geigerUtilityData.setPublicKey();
+    await _userService.storeUserConsent();
   }
 
   Future<void> _initReplication() async {
@@ -229,7 +230,7 @@ class HomeController extends getX.GetxController {
     isLoadingServices.value = true;
     message.value = "Loading Toolbox..";
 
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(milliseconds: 500));
 
     //load utilityData
     await _loadUtilityData();
@@ -261,7 +262,9 @@ class HomeController extends getX.GetxController {
     await _initStorageResources();
     bool isRedirect = await _redirect();
     if (isRedirect) {
-      //load local Plugin
+      // is only called once
+      //if user as already accepted terms and condition
+      //load basic data
       await _loadHelperData();
     }
 

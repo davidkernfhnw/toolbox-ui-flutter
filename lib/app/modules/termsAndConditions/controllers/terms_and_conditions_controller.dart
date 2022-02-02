@@ -75,6 +75,7 @@ class TermsAndConditionsController extends GetxController {
               signedConsent: signedConsent.value,
               agreedPrivacy: agreedPrivacy.value));
       if (success) {
+        //set scanButton has not be pressed to true
         await _userService.setButtonNotPressed();
         Get.offNamed(Routes.HOME_VIEW);
       } else {
