@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/data/model/geiger_score_threats.dart';
-import 'package:geiger_toolbox/app/modules/termsAndConditions/controllers/terms_and_conditions_controller.dart';
+import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
+import 'package:geiger_toolbox/app/data/model/user.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
@@ -15,7 +16,6 @@ import 'package:geiger_toolbox/app/services/localNotification/local_notification
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_indicator_service.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_utility_service.dart';
 import 'package:get/get.dart' as getX;
 import 'package:get_storage/get_storage.dart';
 
@@ -30,9 +30,6 @@ class HomeController extends getX.GetxController {
 
   //get instance of GeigerApiConnector
   GeigerApiConnector _geigerApiConnectorInstance = GeigerApiConnector.instance;
-
-  final TermsAndConditionsController _termsAndConditionsControllerInstance =
-      TermsAndConditionsController.instance;
 
   final CloudReplicationController _cloudReplicationInstance =
       CloudReplicationController.instance;
@@ -49,7 +46,6 @@ class HomeController extends getX.GetxController {
   //**** late variables ******
   late final StorageController _storageController;
   late final GeigerUserService _userService;
-  late final GeigerUtilityService _geigerUtilityData;
   late final GeigerIndicatorService _geigerIndicatorHelper;
   // *** end of late variables ****
 
@@ -142,11 +138,35 @@ class HomeController extends getX.GetxController {
     return geigerScoreThreats;
   }
 
+  //check if terms and condition values is true in the localstorage
+  // and navigate to home view (screen)
+  //if false navigate to TermAndCondition view(screen).
+  Future<bool> _isTermsAccepted() async {
+    try {
+      //get user Info
+      User? userInfo = await _userService.getUserInfo;
+
+      // assign user term and condition
+      TermsAndConditions userTermsAndConditions = userInfo!.termsAndConditions;
+      //check if true and return home view (screen)
+      if (await userTermsAndConditions.ageCompliant == true &&
+          await userTermsAndConditions.signedConsent == true &&
+          await userTermsAndConditions.agreedPrivacy == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      log("UserInfo not found");
+      return false;
+    }
+  }
+
   //check if termsAndConditions were accepted
   // redirect to termAndCondition if false
   Future<bool> _redirect() async {
-    bool checkTerms =
-        await _termsAndConditionsControllerInstance.isTermsAccepted();
+    bool checkTerms = await _isTermsAccepted();
+
     if (checkTerms == false) {
       await getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
       return false;
@@ -155,15 +175,6 @@ class HomeController extends getX.GetxController {
   }
 
   //********* start initial resources ***********
-
-  //load utility data
-  Future<void> _loadUtilityData() async {
-    await _geigerUtilityData.storeCountry();
-    await _geigerUtilityData.storeProfAss();
-    await _geigerUtilityData.storeCerts();
-    await _geigerUtilityData.setPublicKey();
-    await _userService.storeUserConsent();
-  }
 
   Future<void> _initReplication() async {
     log("replication called");
@@ -183,7 +194,7 @@ class HomeController extends getX.GetxController {
     //get StorageController from localStorageController instance
     _storageController = await _localStorageInstance.getStorageController;
     _userService = GeigerUserService(_storageController);
-    _geigerUtilityData = GeigerUtilityService(_storageController);
+
     _geigerIndicatorHelper = GeigerIndicatorService(_storageController);
   }
 
@@ -226,14 +237,14 @@ class HomeController extends getX.GetxController {
     });
   }
 
-  Future<void> _loadHelperData() async {
+  //Todo : Listen for a change in userConsent before calling indicator
+  //Todo :if a user has not click the scan button show a loading screen
+  Future<void> _loadIndicator() async {
     isLoadingServices.value = true;
     message.value = "Loading Toolbox..";
 
-    await Future.delayed(Duration(milliseconds: 500));
+    _indicatorControllerInstance.initGeigerIndicator();
 
-    //load utilityData
-    await _loadUtilityData();
     message.value = "Updating Toolbox..";
     isLoadingServices.value = false;
   }
@@ -262,10 +273,9 @@ class HomeController extends getX.GetxController {
     await _initStorageResources();
     bool isRedirect = await _redirect();
     if (isRedirect) {
-      // is only called once
+      // is only called
       //if user as already accepted terms and condition
-      //load basic data
-      await _loadHelperData();
+      await _loadIndicator();
     }
 
     await _triggerAggCachedData();

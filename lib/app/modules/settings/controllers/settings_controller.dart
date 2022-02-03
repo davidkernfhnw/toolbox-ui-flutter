@@ -289,7 +289,7 @@ class SettingsController extends GetxController {
   void onInit() async {
     await _initStorageController();
     await _getData();
-    _initUserData();
+    await _initUserData();
 
     super.onInit();
   }

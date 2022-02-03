@@ -252,7 +252,7 @@ class RecommendationController extends getX.GetxController {
   }
 
   //*** end public method *****
-
+  //Todo remove delay to see if it loads faster in release mode
   @override
   onInit() async {
     isLoading.value = true;

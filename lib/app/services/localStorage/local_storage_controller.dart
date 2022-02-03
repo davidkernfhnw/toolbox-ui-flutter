@@ -17,8 +17,8 @@ class LocalStorageController extends getX.GetxController {
   GeigerApiConnector _geigerApiConnector = GeigerApiConnector.instance;
 
   //private variables
-  late StorageController _storageController;
-  late GeigerApi _api;
+  late final StorageController _storageController;
+  late final GeigerApi _api;
 
   LocalStorageListener? _localStorageListener;
 
@@ -44,10 +44,11 @@ class LocalStorageController extends getX.GetxController {
     }
   }
 
-  Future<void> initLocalStorage() async {
+  Future<void> _initLocalStorage() async {
     try {
       _api = await _geigerApiConnector.getLocalMaster;
       _storageController = await _api.getStorage()!;
+
       log("StorageController initialize successfully $_storageController");
     } catch (e) {
       log("Failed to get StorageController ===> \n $e");
@@ -113,7 +114,7 @@ class LocalStorageController extends getX.GetxController {
 
   @override
   void onInit() async {
-    await initLocalStorage();
+    await _initLocalStorage();
     super.onInit();
   }
 }

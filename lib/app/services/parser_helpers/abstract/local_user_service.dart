@@ -23,10 +23,13 @@ abstract class LocalUserService {
   Future<bool> storeUserConsent(
       {bool dataAccess: true, bool dataProcess: true});
 
-  Future<bool> updateUserConsent(
-      {required bool dataAccess, required bool dataProcess});
+  Future<bool> updateUserConsentDataAccess({required bool dataAccess});
 
-  Future<bool?> get checkUserConsent;
+  Future<bool> updateUserConsentDataProcess({required bool dataProcess});
+
+  Future<bool?> get getUserConsentDataAccess;
+
+  Future<bool?> get getUserConsentDataProcess;
 
   /// @return Future<bool>
   Future<bool> updateUserInfo(User user);

@@ -201,8 +201,8 @@ class GeigerUserService extends LocalDeviceService implements LocalUserService {
       bool isDpStored = await storageController.addOrUpdateValue(
           _USER_CONSENT_PATH,
           NodeValueImpl(_DATA_PROCESS_KEY, dataProcess.toString()));
+      log("Consent Data ${await storageController.dump(_USER_CONSENT_PATH)}");
       if (isDaStored && isDpStored) {
-        log("Consent Data ${await storageController.dump(_USER_CONSENT_PATH)}");
         return true;
       } else {
         return false;
@@ -214,41 +214,64 @@ class GeigerUserService extends LocalDeviceService implements LocalUserService {
   }
 
   @override
-  Future<bool> updateUserConsent(
-      {required bool dataAccess, required bool dataProcess}) async {
+  Future<bool> updateUserConsentDataAccess({required bool dataAccess}) async {
     Node _node;
     try {
       _node = await getNode(_USER_CONSENT_PATH, storageController);
 
       NodeValue dataAccessValue =
           NodeValueImpl(_DATA_ACCESS_KEY, dataAccess.toString());
-      NodeValue dataProcessValue =
-          NodeValueImpl(_DATA_PROCESS_KEY, dataProcess.toString());
-      await _node.updateValue(dataAccessValue);
-      await _node.updateValue(dataProcessValue);
-      await storageController.update(_node);
 
+      await _node.updateValue(dataAccessValue);
+      await storageController.update(_node);
+      log("Update Access Data ${await storageController.dump(_USER_CONSENT_PATH)}");
       return true;
     } catch (e, s) {
-      log("failed To update UserConsent \n $e \n $s");
+      log("failed To update UserConsent DataAccess \n $e \n $s");
       return false;
     }
   }
 
   @override
-  Future<bool?> get checkUserConsent async {
+  Future<bool> updateUserConsentDataProcess({required bool dataProcess}) async {
+    Node _node;
+    try {
+      _node = await getNode(_USER_CONSENT_PATH, storageController);
+
+      NodeValue dataProcessValue =
+          NodeValueImpl(_DATA_PROCESS_KEY, dataProcess.toString());
+
+      await _node.updateValue(dataProcessValue);
+      await storageController.update(_node);
+      log("Update Process Data  ${await storageController.dump(_USER_CONSENT_PATH)}");
+      return true;
+    } catch (e, s) {
+      log("failed To update UserConsent DataProcess \n $e \n $s");
+      return false;
+    }
+  }
+
+  @override
+  Future<bool?> get getUserConsentDataAccess async {
     try {
       NodeValue dataAccessValue = (await storageController.getValue(
           _USER_CONSENT_PATH, _DATA_ACCESS_KEY))!;
+      bool dataAccess = dataAccessValue.value.parseBool();
+      log("Data Access ==> ${await storageController.dump(_USER_CONSENT_PATH)}");
+      return dataAccess;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<bool?> get getUserConsentDataProcess async {
+    try {
       NodeValue dataProcessValue = (await storageController.getValue(
           _USER_CONSENT_PATH, _DATA_PROCESS_KEY))!;
-      bool dataAccess = dataAccessValue.value.parseBool();
       bool dataProcess = dataProcessValue.value.parseBool();
-      if (dataAccess == true && dataProcess == true) {
-        return true;
-      } else {
-        return false;
-      }
+      log("Data Process ==> ${await storageController.dump(_USER_CONSENT_PATH)}");
+      return dataProcess;
     } catch (e) {
       return null;
     }

@@ -9,7 +9,7 @@ class GeigerIndicatorController extends GetxController {
 
   final String indicatorId = "1234-1234-1234";
 
-  Future<void> _initGeigerIndicator() async {
+  Future<void> initGeigerIndicator() async {
     try {
       log("Run Indicator called");
       await await runIndicator(indicatorId);
@@ -19,6 +19,7 @@ class GeigerIndicatorController extends GetxController {
   }
 
   Future<void> _iniGeigerData() async {
+    log("IniGeigerData called");
     try {
       await initializeGeigerData(indicatorId);
     } catch (e) {
@@ -29,7 +30,6 @@ class GeigerIndicatorController extends GetxController {
   @override
   void onInit() async {
     await _iniGeigerData();
-    _initGeigerIndicator();
     super.onInit();
   }
 }
