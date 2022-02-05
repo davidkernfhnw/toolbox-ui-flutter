@@ -114,8 +114,10 @@ abstract class LocalDeviceAbstract {
       String window = w.computerName;
       return window;
     } else {
-      WebBrowserInfo web = await deviceInfo.webBrowserInfo;
-      String browser = web.browserName.name;
+      //UnimplementedError: webBrowserInfo() has not been implemented
+      // WebBrowserInfo web = await deviceInfo.webBrowserInfo;
+      // String browser = web.browserName.name;
+      String browser = "Web Browser";
       return browser;
     }
   }
