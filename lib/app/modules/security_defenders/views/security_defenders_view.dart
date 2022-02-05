@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/data/model/country.dart';
+import 'package:geiger_toolbox/app/model/country.dart';
 import 'package:geiger_toolbox/app/modules/security_defenders/views/widgets/defenders_card.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_country.dart';

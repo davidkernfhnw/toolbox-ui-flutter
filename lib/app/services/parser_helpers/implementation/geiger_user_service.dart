@@ -2,10 +2,10 @@ import 'dart:developer';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_localstorage/src/visibility.dart' as vis;
-import 'package:geiger_toolbox/app/data/model/consent.dart';
-import 'package:geiger_toolbox/app/data/model/device.dart';
-import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
-import 'package:geiger_toolbox/app/data/model/user.dart';
+import 'package:geiger_toolbox/app/model/consent.dart';
+import 'package:geiger_toolbox/app/model/device.dart';
+import 'package:geiger_toolbox/app/model/terms_and_conditions.dart';
+import 'package:geiger_toolbox/app/model/user.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/bool_parsing_extension.dart';
 
 import '../abstract/local_device_service.dart';
@@ -70,6 +70,7 @@ class GeigerUserService extends LocalDeviceService implements LocalUserService {
       await storeDeviceInfo(Device());
       //get deviceInfo
       Device? deviceInfo = await getDeviceInfo;
+
       //assign deviceInf
       user.deviceOwner = deviceInfo;
 
@@ -260,6 +261,7 @@ class GeigerUserService extends LocalDeviceService implements LocalUserService {
       log("Data Access ==> ${await storageController.dump(_USER_CONSENT_PATH)}");
       return dataAccess;
     } catch (e) {
+      log("Failed to get data from $_USER_CONSENT_PATH");
       return null;
     }
   }
@@ -273,6 +275,27 @@ class GeigerUserService extends LocalDeviceService implements LocalUserService {
       log("Data Process ==> ${await storageController.dump(_USER_CONSENT_PATH)}");
       return dataProcess;
     } catch (e) {
+      log("Failed to get data from $_USER_CONSENT_PATH");
+      return null;
+    }
+  }
+
+  @override
+  Future<bool?> checkUserConsent() async {
+    try {
+      NodeValue dataProcessValue = (await storageController.getValue(
+          _USER_CONSENT_PATH, _DATA_PROCESS_KEY))!;
+      bool dataProcess = dataProcessValue.value.parseBool();
+      NodeValue dataAccessValue = (await storageController.getValue(
+          _USER_CONSENT_PATH, _DATA_ACCESS_KEY))!;
+      bool dataAccess = dataAccessValue.value.parseBool();
+      if (dataAccess == true && dataProcess == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      log("Failed to get data from $_USER_CONSENT_PATH");
       return null;
     }
   }

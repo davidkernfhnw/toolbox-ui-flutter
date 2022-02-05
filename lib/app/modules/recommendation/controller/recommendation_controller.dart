@@ -1,11 +1,11 @@
 import 'dart:developer';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:geiger_toolbox/app/data/model/geiger_score_threats.dart';
-import 'package:geiger_toolbox/app/data/model/recommendation.dart';
-import 'package:geiger_toolbox/app/data/model/threat.dart';
-import 'package:geiger_toolbox/app/data/model/threat_score.dart';
-import 'package:geiger_toolbox/app/data/model/user.dart';
+import 'package:geiger_toolbox/app/model/geiger_score_threats.dart';
+import 'package:geiger_toolbox/app/model/recommendation.dart';
+import 'package:geiger_toolbox/app/model/threat.dart';
+import 'package:geiger_toolbox/app/model/threat_score.dart';
+import 'package:geiger_toolbox/app/model/user.dart';
 import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_indicator_service.dart';
@@ -40,6 +40,7 @@ class RecommendationController extends getX.GetxController {
   //**** observable variable ****
   var isLoading = false.obs;
   var userName = "".obs;
+  var deviceName = "".obs;
   var userGeigerScore = "0.0".obs;
   var deviceGeigerScore = "0.0".obs;
   //**** end of observable variable ***
@@ -120,7 +121,7 @@ class RecommendationController extends getX.GetxController {
     return geigerScoreThreats;
   }
 
-  void _getUserRecommendation() async {
+  Future<void> _getUserRecommendation() async {
     User? currentUser = await _userService.getUserInfo;
     String indicatorId = _indicatorControllerInstance.indicatorId;
     String userRecommendationPath =
@@ -168,11 +169,11 @@ class RecommendationController extends getX.GetxController {
     // return deviceRecommendation;
   }
 
-  void _showUserName() async {
+  void _showName() async {
     User? currentUser = await _userService.getUserInfo;
     //set observable variable
-
     userName.value = currentUser!.userName ?? "";
+    deviceName.value = currentUser.deviceOwner!.name ?? "";
   }
 
   Future<void> _implementRecommendation(
@@ -222,54 +223,63 @@ class RecommendationController extends getX.GetxController {
   //***** end of private method ******
 
   //****** start of public method *****
-  void implementRecommendation({required Recommendation recommendation}) async {
+  Future<bool> implementRecommendation(
+      {required Recommendation recommendation}) async {
     // set isLoading true
     //has it take some millsec to complete
     isLoading.value = true;
-    log("recommendations => $recommendation");
-    String indicatorId = _indicatorControllerInstance.indicatorId;
-    User? currentUser = await _userService.getUserInfo;
-    String userPath =
-        ":Users:${currentUser!.userId}:$indicatorId:data:GeigerScoreUser";
-    String devicePath =
-        ":Devices:${currentUser.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
+    try {
+      log("recommendations => $recommendation");
+      String indicatorId = _indicatorControllerInstance.indicatorId;
+      User? currentUser = await _userService.getUserInfo;
+      String userPath =
+          ":Users:${currentUser!.userId}:$indicatorId:data:GeigerScoreUser";
+      String devicePath =
+          ":Devices:${currentUser.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
 
-    if (recommendation.recommendationType.toLowerCase() == "users") {
-      //implement user recommendation
-      await _implementRecommendation(
-          recommendationId: recommendation.recommendationId, path: userPath);
+      if (recommendation.recommendationType.toLowerCase() == "users") {
+        //implement user recommendation
+        await _implementRecommendation(
+            recommendationId: recommendation.recommendationId, path: userPath);
 
-      // set user Recommendations
-      _setCheckBox(userGeigerRecommendations, recommendation);
-    } else {
-      //set device recommendation
-      await _implementRecommendation(
-          recommendationId: recommendation.recommendationId, path: devicePath);
-      //set device Recommendations
-      _setCheckBox(deviceGeigerRecommendations, recommendation);
+        // set user Recommendations
+        _setCheckBox(userGeigerRecommendations, recommendation);
+      } else {
+        //set device recommendation
+        await _implementRecommendation(
+            recommendationId: recommendation.recommendationId,
+            path: devicePath);
+        //set device Recommendations
+        _setCheckBox(deviceGeigerRecommendations, recommendation);
+      }
+      isLoading.value = false;
+      return true;
+    } catch (e) {
+      return false;
     }
-    isLoading.value = false;
   }
 
   //*** end public method *****
-  //Todo remove delay to see if it loads faster in release mode
+
   @override
   onInit() async {
-    isLoading.value = true;
     await _init();
-    await Future.delayed(Duration(milliseconds: 500));
-    // _box = _homeControllerInstance.cache;
-    _showUserName();
+    isLoading.value = true;
+    _showName();
     _showUserThreat();
-    _showDeviceThreat();
+    await Future.delayed(Duration(milliseconds: 400));
+    // _box = _homeControllerInstance.cache;
     _getUserRecommendation();
-    _getDeviceRecommendation();
     isLoading.value = false;
     super.onInit();
   }
 
   @override
   onReady() async {
+    isLoading.value = true;
+    _showDeviceThreat();
+    _getDeviceRecommendation();
+    isLoading.value = false;
     super.onReady();
   }
 

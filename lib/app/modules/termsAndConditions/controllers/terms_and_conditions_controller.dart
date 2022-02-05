@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
+import 'package:geiger_toolbox/app/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
@@ -70,16 +70,15 @@ class TermsAndConditionsController extends GetxController {
   // //load utility data
   Future<void> _loadUtilityData() async {
     await _geigerUtilityData.storeCountry();
-    _geigerUtilityData.storeProfAss();
+    await _geigerUtilityData.storeProfAss();
     await _geigerUtilityData.storeCerts();
-    _geigerUtilityData.setPublicKey();
+    await _geigerUtilityData.setPublicKey();
   }
 
   @override
   void onInit() async {
     //init storageController
     await _initializeStorageController();
-    //store user consent
 
     super.onInit();
   }
@@ -87,7 +86,7 @@ class TermsAndConditionsController extends GetxController {
   @override
   void onReady() async {
     _userService.storeUserConsent();
-    _loadUtilityData();
+    await _loadUtilityData();
     super.onReady();
   }
 }

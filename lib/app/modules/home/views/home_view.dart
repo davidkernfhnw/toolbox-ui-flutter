@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/data/model/threat_score.dart';
+import 'package:geiger_toolbox/app/model/threat_score.dart';
 import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
 import 'package:geiger_toolbox/app/modules/home/views/widgets/threats_card.dart';
 import 'package:geiger_toolbox/app/modules/home/views/widgets/top_screen.dart';
@@ -11,22 +11,14 @@ import 'package:get/get.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({Key? key}) : super(key: key);
+
   // getting an instance of HomeController
   final HomeController controller = HomeController.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Obx(() {
-        return controller.isLoadingServices.value == true
-            ? Visibility(
-                maintainSize: true,
-                maintainState: true,
-                visible: true,
-                child: SizedBox(),
-              )
-            : const SideMenu();
-      }),
+      drawer: SideMenu(),
       appBar: AppBar(
         title: const Text('Geiger Toolbox'),
       ),
@@ -70,8 +62,12 @@ class HomeView extends StatelessWidget {
                                             t.threat.name.toLowerCase()],
                                         indicatorScore:
                                             double.parse(t.score.toString()),
-                                        routeName: Routes.RECOMMENDATION_VIEW,
-                                        threat: t.threat,
+                                        improve: controller.dataProcess.value &&
+                                                controller.dataAccess.value
+                                            ? () => Get.toNamed(
+                                                Routes.RECOMMENDATION_VIEW,
+                                                arguments: t.threat)
+                                            : null,
                                       );
                                     },
                                   ).toList(),
@@ -156,29 +152,3 @@ class HomeView extends StatelessWidget {
 //   );
 // }
 //
-
-//ListView.builder //
-
-/*
-ListView.builder(
-shrinkWrap: true,
-itemCount:
-controllers.getGeigerAggregateThreatScore().length,
-itemBuilder: (BuildContext context, int index) =>
-ThreatsCard(
-label: controllers
-    .getGeigerAggregateThreatScore()[index]
-.name,
-icon: GeigerIcon.iconsMap[controllers
-    .getGeigerAggregateThreatScore()[index]
-.name
-    .toLowerCase()],
-indicatorScore: double.parse(controllers
-    .getGeigerAggregateThreatScore()[index]
-.score
-    .score
-    .toString()),
-routeName: Routes.RECOMMENDATION_PAGE +
-'/userId?threatTitle=${controllers.getGeigerAggregateThreatScore()[index].name}',
-),
-),*/

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:geiger_toolbox/app/data/model/tool.dart';
+import 'package:geiger_toolbox/app/model/tool.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'device.g.dart';

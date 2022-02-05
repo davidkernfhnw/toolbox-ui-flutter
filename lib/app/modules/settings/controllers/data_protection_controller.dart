@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:geiger_localstorage/geiger_localstorage.dart';
+import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
 import 'package:get/get.dart';
@@ -10,6 +13,7 @@ class DataProtectionController extends GetxController {
 
   //getting instance of localStorageController
   final LocalStorageController _localStorage = LocalStorageController.instance;
+  final HomeController _homeControllerInstance = HomeController.instance;
 
   late final StorageController _storageController;
   late final GeigerUserService _userService;
@@ -32,12 +36,25 @@ class DataProtectionController extends GetxController {
   Future<bool> updateDataAccess(bool value) async {
     _dataAccess.value = value;
     bool result = await _storeDataAccess(value);
+    if (value) {
+      _homeControllerInstance.dataAccess.value = true;
+    } else {
+      _homeControllerInstance.dataAccess.value = false;
+    }
+    log("DataAccess status ${_homeControllerInstance.dataAccess.value}");
     return result;
   }
 
   Future<bool> updateDataProcess(bool value) async {
     _dataProcess.value = value;
     bool result = await _storeDataProcess(value);
+    if (value) {
+      _homeControllerInstance.dataProcess.value = true;
+    } else {
+      _homeControllerInstance.dataProcess.value = false;
+    }
+
+    log("dataProcess status ${_homeControllerInstance.dataProcess.value}");
     return result;
   }
 

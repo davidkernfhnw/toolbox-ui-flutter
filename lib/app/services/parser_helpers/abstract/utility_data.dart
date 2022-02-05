@@ -1,6 +1,6 @@
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:geiger_toolbox/app/data/model/country.dart';
-import 'package:geiger_toolbox/app/data/model/partner.dart';
+import 'package:geiger_toolbox/app/model/country.dart';
+import 'package:geiger_toolbox/app/model/partner.dart';
 
 abstract class UtilityData {
   Future<bool> storeCountries({required List<Country> countries});

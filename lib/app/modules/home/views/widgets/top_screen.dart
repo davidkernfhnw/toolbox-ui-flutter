@@ -52,8 +52,7 @@ class TopScreen extends StatelessWidget {
               : greyText("Scanning...."),
           const SizedBox(height: 5.0),
           ScanRiskButton(
-            onScanPressed: controller.onScanButtonPressed,
-            warming: controller.isScanRequired.value,
+            controller: controller,
             changeScanBtnColor: controller.changeScanBtnColor(parseToDouble),
           ),
           const SizedBox(height: 10.0),

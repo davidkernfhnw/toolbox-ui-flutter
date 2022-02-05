@@ -1,9 +1,7 @@
 import 'dart:async';
 
-//import 'package:flutter/material.dart';
-
-import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
-import 'package:geiger_toolbox/app/data/model/user.dart';
+import 'package:geiger_toolbox/app/model/terms_and_conditions.dart';
+import 'package:geiger_toolbox/app/model/user.dart';
 
 abstract class LocalUserService {
   /// @return userId as a Future<String>
@@ -30,6 +28,8 @@ abstract class LocalUserService {
   Future<bool?> get getUserConsentDataAccess;
 
   Future<bool?> get getUserConsentDataProcess;
+
+  Future<bool?> checkUserConsent();
 
   /// @return Future<bool>
   Future<bool> updateUserInfo(User user);

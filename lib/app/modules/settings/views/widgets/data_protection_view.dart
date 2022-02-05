@@ -29,7 +29,7 @@ class DataProtectionView extends StatelessWidget {
                           ? Get.snackbar(
                               "Data Access", "Consent successfully updated.",
                               snackPosition: SnackPosition.BOTTOM,
-                              backgroundColor: Colors.green)
+                              backgroundColor: Colors.greenAccent)
                           : Get.snackbar(
                               "Data Access", "Consent fail to update.",
                               snackPosition: SnackPosition.BOTTOM,
@@ -53,7 +53,7 @@ class DataProtectionView extends StatelessWidget {
                           ? Get.snackbar(
                               "Data Process", "Consent successfully updated.",
                               snackPosition: SnackPosition.BOTTOM,
-                              backgroundColor: Colors.green)
+                              backgroundColor: Colors.greenAccent)
                           : Get.snackbar(
                               "Data Process", "Consent fail to updated.",
                               snackPosition: SnackPosition.BOTTOM,

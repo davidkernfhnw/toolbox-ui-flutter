@@ -1,4 +1,4 @@
-import 'package:geiger_toolbox/app/data/model/threat_score.dart';
+import 'package:geiger_toolbox/app/model/threat_score.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'geiger_score_threats.g.dart';

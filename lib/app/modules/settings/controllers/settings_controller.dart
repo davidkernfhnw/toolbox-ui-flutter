@@ -1,14 +1,12 @@
 import 'dart:developer';
-import 'dart:io';
 
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:geiger_toolbox/app/data/model/consent.dart';
-import 'package:geiger_toolbox/app/data/model/language.dart';
-import 'package:geiger_toolbox/app/data/model/partner.dart';
-import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
-import 'package:geiger_toolbox/app/data/model/user.dart';
+import 'package:geiger_toolbox/app/model/consent.dart';
+import 'package:geiger_toolbox/app/model/language.dart';
+import 'package:geiger_toolbox/app/model/partner.dart';
+import 'package:geiger_toolbox/app/model/terms_and_conditions.dart';
+import 'package:geiger_toolbox/app/model/user.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_utility_service.dart';
@@ -136,9 +134,11 @@ class SettingsController extends GetxController {
   //call when the update button  is pressed
   void updateUserInfo(User userInfo) {
     //check dis
-    //check dis
-    userInfo.supervisor = supervisor.value;
+
     userInfo.userName = currentUserName.value;
+    userInfo.deviceOwner!.name = currentDeviceName.value;
+    userInfo.supervisor = supervisor.value;
+
     userInfo.country = currentCountry.value;
     userInfo.cert = currentCert.value;
     userInfo.profAss = currentProfAss.value;
@@ -210,9 +210,9 @@ class SettingsController extends GetxController {
 
     if (userInfo.value.deviceOwner!.name == null &&
         userInfo.value.deviceOwner!.type == null) {
-      userInfo.value.deviceOwner!.name = await _getDeviceName;
+      userInfo.value.deviceOwner!.name = await _userService.getDeviceName;
       currentDeviceName.value = userInfo.value.deviceOwner!.name!;
-      userInfo.value.deviceOwner!.type = await _getDeviceType;
+      userInfo.value.deviceOwner!.type = await _userService.getDeviceType;
     } else {
       currentDeviceName.value = userInfo.value.deviceOwner!.name!;
     }
@@ -244,45 +244,6 @@ class SettingsController extends GetxController {
     log("userInfo: ${userInfo.value}");
     log("CurrentUserName :${currentUserName.value}");
     isLoading.value = false;
-  }
-
-  //get name of the user device
-  Future<String> get _getDeviceName async {
-    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    if (Platform.isAndroid) {
-      AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
-      return androidDeviceInfo.model!;
-    } else if (Platform.isIOS) {
-      IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
-      return iosDeviceInfo.utsname.machine!;
-    } else if (Platform.isMacOS) {
-      MacOsDeviceInfo macOsDeviceInfo = await deviceInfo.macOsInfo;
-      String macOs = macOsDeviceInfo.computerName;
-      return macOs;
-    } else if (Platform.isWindows) {
-      WindowsDeviceInfo w = await deviceInfo.windowsInfo;
-      String window = w.computerName;
-      return window;
-    } else {
-      WebBrowserInfo web = await deviceInfo.webBrowserInfo;
-      String browser = web.browserName.name;
-      return browser;
-    }
-  }
-
-  //get devicetype
-  String get _getDeviceType {
-    if (Platform.isAndroid) {
-      return "Android";
-    } else if (Platform.isIOS) {
-      return "IPhone";
-    } else if (Platform.isMacOS) {
-      return "Mac Book";
-    } else if (Platform.isWindows) {
-      return "Windows Desktop";
-    } else {
-      return "Web Browser";
-    }
   }
 
   @override

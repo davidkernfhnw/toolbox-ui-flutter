@@ -1,6 +1,6 @@
 import 'package:geiger_localstorage/src/storage_controller.dart';
-import 'package:geiger_toolbox/app/data/model/country.dart';
-import 'package:geiger_toolbox/app/data/model/partner.dart';
+import 'package:geiger_toolbox/app/model/country.dart';
+import 'package:geiger_toolbox/app/model/partner.dart';
 
 import '../abstract/geiger_utility_helper.dart';
 

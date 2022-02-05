@@ -1,27 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/data/model/threat.dart';
-import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
-import 'package:geiger_toolbox/app/routes/app_routes.dart';
-import 'package:get/get.dart';
 
 import '../../../../shared_widgets/indicator_gauge.dart';
 
 class ThreatsCard extends StatelessWidget {
-  final String? label;
+  final String label;
   final IconData? icon;
-  final double? indicatorScore;
-  final String? routeName;
-  final HomeController? controller;
-  final Threat threat;
-  const ThreatsCard(
-      {Key? key,
-      @required this.label,
-      @required this.icon,
-      @required this.indicatorScore,
-      @required this.routeName,
-      required this.threat,
-      this.controller})
-      : super(key: key);
+  final double indicatorScore;
+  final Function()? improve;
+  const ThreatsCard({
+    Key? key,
+    required this.label,
+    required this.icon,
+    required this.indicatorScore,
+    required this.improve,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +25,7 @@ class ThreatsCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Text(
-              label!,
+              label,
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
             ),
             Icon(
@@ -48,13 +40,7 @@ class ThreatsCard extends StatelessWidget {
                   score: indicatorScore,
                 ),
                 ElevatedButton(
-                  // onPressed: () async {
-                  //   await controller!.cachedUserRecommendation(threat);
-                  //   await controller!.cachedDeviceRecommendation(threat);
-                  //   Get.toNamed(Routes.RECOMMENDATION_VIEW, arguments: threat);
-                  // },
-                  onPressed: () => Get.toNamed(Routes.RECOMMENDATION_VIEW,
-                      arguments: threat),
+                  onPressed: improve,
                   child: const Text("Improve"),
                 ),
               ],

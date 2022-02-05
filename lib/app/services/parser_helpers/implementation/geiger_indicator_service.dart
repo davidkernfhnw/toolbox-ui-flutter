@@ -1,20 +1,18 @@
 import 'dart:developer';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:geiger_toolbox/app/data/model/geiger_score_threats.dart';
-import 'package:geiger_toolbox/app/data/model/global_recommendation.dart';
-import 'package:geiger_toolbox/app/data/model/indicator_recommendation.dart';
-import 'package:geiger_toolbox/app/data/model/recommendation.dart';
-import 'package:geiger_toolbox/app/data/model/threat.dart';
-import 'package:geiger_toolbox/app/data/model/threat_score.dart';
+import 'package:geiger_toolbox/app/model/geiger_score_threats.dart';
+import 'package:geiger_toolbox/app/model/global_recommendation.dart';
+import 'package:geiger_toolbox/app/model/indicator_recommendation.dart';
+import 'package:geiger_toolbox/app/model/recommendation.dart';
+import 'package:geiger_toolbox/app/model/threat.dart';
+import 'package:geiger_toolbox/app/model/threat_score.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/abstract/global_data.dart';
-
 
 class GeigerIndicatorService extends GlobalData {
   GeigerIndicatorService(this.storageController) : super(storageController);
 
   final StorageController storageController;
-
 
   ///@return Future<GeigerScoreThreats>
   ///@param required path ex: Users:uuid:gi:data:GeigerScoreAggregate
@@ -26,33 +24,29 @@ class GeigerIndicatorService extends GlobalData {
     try {
       Node node = await storageController.get(path);
       log(node.toString());
-      List<Node> nodes = await storageController
-          .search(SearchCriteria(searchPath: path));
+      List<Node> nodes =
+          await storageController.search(SearchCriteria(searchPath: path));
       for (Node node in nodes) {
         //check if node exist
         //Todo : test this
         if (node.path == path) {
-          NodeValue? nodeValueG = await storageController.getValue(
-              path,
-              "GEIGER_score");
+          NodeValue? nodeValueG =
+              await storageController.getValue(path, "GEIGER_score");
 
           geigerScore = nodeValueG!.value;
 
-          NodeValue? nodeValueT = await storageController.getValue(
-              path
-              "threats_score");
+          NodeValue? nodeValueT =
+              await storageController.getValue(path, "threats_score");
 
           String threatScore = nodeValueT!.value;
 
-          List<String> splitThreatScores =
-          threatScore.split(";"); // split on semi-colon
+          // split on semi-colon
+          List<String> splitThreatScores = threatScore.split(";");
 
           log(splitThreatScores.toString());
 
-
           for (String splitThreatScore in splitThreatScores) {
             List<String> tS = splitThreatScore.split(",");
-
 
             //log(splitThreatScore.toString());
             if (splitThreatScore.isNotEmpty) {
@@ -60,10 +54,9 @@ class GeigerIndicatorService extends GlobalData {
               String score = tS[1];
               //log(tS.isEmpty.toString());
 
-
               //filter
-              List<Threat> threat =
-              threats.where((Threat element) => element.threatId == threatId)
+              List<Threat> threat = threats
+                  .where((Threat element) => element.threatId == threatId)
                   .toList();
               for (Threat t in threat) {
                 ThreatScore ts = ThreatScore(threat: t, score: score);
@@ -73,19 +66,16 @@ class GeigerIndicatorService extends GlobalData {
               }
             }
           }
-        }
-        else {
+        } else {
           log("$path => NODE PATH NOT FOUND");
         }
       }
-    }
-    on Error catch (e, s) {
+    } on Error catch (e, s) {
       log('Got Exception while fetching data from this $path\n $e\n $s');
     }
     return GeigerScoreThreats(
         threatScores: threatsScore, geigerScore: geigerScore);
   }
-
 
   ///@param String node path,@param String threatId
   ///@ return Future<List<IndicatorRecommendation>>
@@ -93,42 +83,43 @@ class GeigerIndicatorService extends GlobalData {
       {required String nodePath, required String threatId}) async {
     List<IndicatorRecommendation> indicatorRecommendation = [];
     try {
-      List<Node> nodes = await storageController.search(
-          SearchCriteria(searchPath: nodePath));
+      List<Node> nodes =
+          await storageController.search(SearchCriteria(searchPath: nodePath));
 
       for (Node node in nodes) {
         if (node.path == nodePath) {
-          NodeValue? nodeValueI = await storageController.getValue(
-              nodePath, threatId);
-          if(nodeValueI != null){
+          NodeValue? nodeValueI =
+              await storageController.getValue(nodePath, threatId);
+          if (nodeValueI != null) {
             String reco = nodeValueI.value;
             //check if empty
             if (reco.isEmpty) {
               // return empty list
               return [];
             }
-            List<String> recoSplit = reco.split(";"); //split on semi-colon
+            //split on semi-colon
+            List<String> recoSplit = reco.split(";");
             log("indicatorRecommendation: $recoSplit");
 
             for (String reco in recoSplit) {
               if (reco.isNotEmpty) {
-                List<String> rI = reco.split(","); //split on colon
-                String recomId = rI[0]; //recomId
-                String weight = rI[1]; // weight Level
+                //split on colon
+                List<String> rI = reco.split(",");
+                //recomId
+                String recomId = rI[0];
+                //weight Level
+                String weight = rI[1];
 
                 indicatorRecommendation.add(IndicatorRecommendation(
                     recommendationId: recomId, weight: weight));
               }
             }
           }
-
-        }
-        else {
+        } else {
           log("$nodePath => NODE PATH NOT FOUND");
         }
       }
-    }
-    on Error catch (e,s) {
+    } on Error catch (e, s) {
       log('Got Exception while fetching data from this $nodePath\n $e\n $s');
     }
     return indicatorRecommendation;
@@ -140,8 +131,8 @@ class GeigerIndicatorService extends GlobalData {
       {required String geigerScoreNodePath}) async {
     List<String> implRecom = [];
     String key = "implementedRecommendations";
-    NodeValue? nodeValue = await storageController.getValue(
-        geigerScoreNodePath, key);
+    NodeValue? nodeValue =
+        await storageController.getValue(geigerScoreNodePath, key);
     String? existImplRecom = nodeValue?.value;
     if (existImplRecom != "" && existImplRecom != null) {
       List<String> implRecos = existImplRecom.split(",");
@@ -158,37 +149,37 @@ class GeigerIndicatorService extends GlobalData {
   ///List<String> implementedRecommendation is of list of recommendationIds
   Future<List<Recommendation>> getGeigerRecommendations(
       {required String recommendationPath,
-        required String threatId,
-        required geigerScorePath}) async {
+      required String threatId,
+      required geigerScorePath}) async {
     List<Recommendation> finalRecommendations = [];
     List<IndicatorRecommendation> indicatorRecommendations =
-    await _getIndicatorRecommendation(
-        nodePath: recommendationPath, threatId: threatId);
+        await _getIndicatorRecommendation(
+            nodePath: recommendationPath, threatId: threatId);
     List<GlobalRecommendation> globalRecommendations =
-    await getGlobalRecommendations();
+        await getGlobalRecommendations();
     List<String> implementedRecommendationIds =
-
-    await _getImplementedRecommendationId(geigerScoreNodePath: geigerScorePath);
+        await _getImplementedRecommendationId(
+            geigerScoreNodePath: geigerScorePath);
 
     //check if indicatorRecommendation is empty then return empty list
     if (indicatorRecommendations.isEmpty) return [];
 
-    // there are some indicator recommendations
+    //there are some indicator recommendations
     for (IndicatorRecommendation indicatorRecommendation
-    in indicatorRecommendations) {
+        in indicatorRecommendations) {
       //filter globalRecommendation using indicatorRecommendation
       List<GlobalRecommendation> globalIndicatorRecommendations =
-      globalRecommendations
-          .where((GlobalRecommendation value) =>
-      value.recommendationId ==
-          indicatorRecommendation.recommendationId)
-          .toList();
+          globalRecommendations
+              .where((GlobalRecommendation value) =>
+                  value.recommendationId ==
+                  indicatorRecommendation.recommendationId)
+              .toList();
 
       for (GlobalRecommendation gRecommendation
-      in globalIndicatorRecommendations) {
-        // Check if the recommendation has been implemented
-        final bool isImplemented =
-        implementedRecommendationIds.contains(gRecommendation.recommendationId);
+          in globalIndicatorRecommendations) {
+        //Check if the recommendation has been implemented
+        final bool isImplemented = implementedRecommendationIds
+            .contains(gRecommendation.recommendationId);
 
         Recommendation fG = Recommendation(
             recommendationId: gRecommendation.recommendationId,

@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_localstorage/src/visibility.dart' as vis;
-import 'package:geiger_toolbox/app/data/model/country.dart';
-import 'package:geiger_toolbox/app/data/model/partner.dart';
+import 'package:geiger_toolbox/app/model/country.dart';
+import 'package:geiger_toolbox/app/model/partner.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/uuid.dart';
 import 'package:intl/src/locale.dart';
 

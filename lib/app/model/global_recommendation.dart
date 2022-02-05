@@ -1,4 +1,4 @@
-import 'package:geiger_toolbox/app/data/model/related_threat_weight.dart';
+import 'package:geiger_toolbox/app/model/related_threat_weight.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'global_recommendation.g.dart';

@@ -5,13 +5,14 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:geiger_toolbox/app/data/model/geiger_score_threats.dart';
-import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
-import 'package:geiger_toolbox/app/data/model/user.dart';
+import 'package:geiger_toolbox/app/model/geiger_score_threats.dart';
+import 'package:geiger_toolbox/app/model/terms_and_conditions.dart';
+import 'package:geiger_toolbox/app/model/user.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
+import 'package:geiger_toolbox/app/services/listeners/storage_event.dart';
 import 'package:geiger_toolbox/app/services/localNotification/local_notification.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_indicator_service.dart';
@@ -26,7 +27,7 @@ class HomeController extends getX.GetxController {
   //******* start of instance **********
 
   final LocalStorageController _localStorageInstance =
-      getX.Get.find<LocalStorageController>();
+      LocalStorageController.instance;
 
   //get instance of GeigerApiConnector
   GeigerApiConnector _geigerApiConnectorInstance = GeigerApiConnector.instance;
@@ -41,6 +42,7 @@ class HomeController extends getX.GetxController {
   final LocalNotificationController _localNotificationControllerInstance =
       LocalNotificationController.instance;
 
+  final Event event = Event(EventType.update, null, null);
   //**** end of instance
 
   //**** late variables ******
@@ -54,9 +56,11 @@ class HomeController extends getX.GetxController {
   var isLoadingServices = false.obs;
   var message = "".obs;
   var isScanRequired = false.obs;
-  var grantPermission = false.obs;
   var isScanCompleted = "".obs;
   var isStorageUpdated = "".obs;
+  var dataAccess = true.obs;
+  var dataProcess = true.obs;
+
   //**** end of observable variable ***
 
   //*** observable object *****
@@ -176,6 +180,7 @@ class HomeController extends getX.GetxController {
 
   //********* start initial resources ***********
 
+  // ignore: unused_element
   Future<void> _initReplication() async {
     log("replication called");
     message.value = "Update....";
@@ -203,29 +208,27 @@ class HomeController extends getX.GetxController {
         "Geiger ToolBox Notification", event);
   }
 
-  void _runInitStorageRegister() async {
-    // String currentDeviceId = await _userService.getDeviceId;
-    // const String montimagePluginId = 'geiger-api-test-external-plugin-id';
-    // const String sensorId = 'mi-ksp-scanner-is-rooted-device';
-    //
-    //String currentUserId = await _userService.getUserId;
-    //String currentDeviceId = await _userService.getDeviceId;
-    // String indicatorId = _indicatorControllerInstance.indicatorId;
-    // String path =
-    //     ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
+  void _aggDataUpdateListener() async {
+    String currentUserId = await _userService.getUserId;
+    String indicatorId = _indicatorControllerInstance.indicatorId;
+    String path =
+        ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
 
     await _localStorageInstance.initRegisterStorageListener(
-        eventType: EventType.update,
-        eventHandler: (EventType event) {
-          isStorageUpdated.value = event.toValueString();
+        event: EventType.update,
+        eventHandlerCallback: (Event event) async {
+          isStorageUpdated.value = event.type.toValueString();
           isScanRequired.value = true;
-          _showNotification(event.toValueString());
+          log(":Local:ui event ${event.type} received");
+          log("New Node => ${event.newNode}");
+          log(":Local:ui listener id => ${await _localStorageInstance.getLocalStorageListener.hashCode}");
+          _showNotification(event.type.toValueString());
         },
-        path: ":Local:ui",
-        searchKey: "deviceInfo");
+        path: path,
+        searchKey: "GEIGER_score");
   }
 
-  void _runInitRegisterExternalPluginListener() async {
+  void _scanCompleteListener() async {
     //get instance of GeigerApiConnector
     _geigerApiConnectorInstance.initRegisterExternalPluginListener(
         scanCompletedEventHandler: (Message msg) {
@@ -237,15 +240,18 @@ class HomeController extends getX.GetxController {
     });
   }
 
-  //Todo : Listen for a change in userConsent before calling indicator
-  //Todo :if a user has not click the scan button show a loading screen
+  Future<void> _loadIndicatorWithUpdateDetails() async {
+    isLoadingServices.value = true;
+    message.value = "Updating Toolbox...";
+    await Future.delayed(Duration(seconds: 1));
+    _indicatorControllerInstance.initGeigerIndicator();
+    isLoadingServices.value = false;
+  }
+
   Future<void> _loadIndicator() async {
     isLoadingServices.value = true;
-    message.value = "Loading Toolbox..";
-
+    message.value = "Updating Toolbox...";
     _indicatorControllerInstance.initGeigerIndicator();
-
-    message.value = "Updating Toolbox..";
     isLoadingServices.value = false;
   }
 
@@ -265,6 +271,24 @@ class HomeController extends getX.GetxController {
     }
   }
 
+  Future<void> _checkConsent() async {
+    bool? result = await _userService.checkUserConsent();
+    if (result != null) {
+      if (result) {
+        bool isFirstPressed = await _userService.isButtonPressed();
+        if (!isFirstPressed) {
+          await _loadIndicator();
+        } else {
+          //load this when user as not pressed the scan Button ever
+          await _loadIndicatorWithUpdateDetails();
+        }
+      } else {
+        dataAccess.value = false;
+        dataProcess.value = false;
+      }
+    }
+  }
+
   //************* end of private methods ***********************
 
   @override
@@ -275,7 +299,7 @@ class HomeController extends getX.GetxController {
     if (isRedirect) {
       // is only called
       //if user as already accepted terms and condition
-      await _loadIndicator();
+      _checkConsent();
     }
 
     await _triggerAggCachedData();
@@ -288,9 +312,9 @@ class HomeController extends getX.GetxController {
     //await _initReplication();
 
     //storageRegister
-    _runInitStorageRegister();
+    _aggDataUpdateListener();
     //ExternalPluginListener
-    _runInitRegisterExternalPluginListener();
+    _scanCompleteListener();
 
     super.onReady();
   }

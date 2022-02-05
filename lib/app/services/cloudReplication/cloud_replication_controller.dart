@@ -13,6 +13,7 @@ class CloudReplicationController extends GetxController {
 
   late final ReplicationController _controller;
 
+  // ignore: unused_element
   void _initialReplicationController() async {
     _controller = ReplicationService();
     await _controller.initGeigerStorage();

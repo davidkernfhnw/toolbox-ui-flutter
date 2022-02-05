@@ -1,5 +1,3 @@
-//import 'dart:developer';
-
 import 'dart:async';
 import 'dart:developer';
 
@@ -13,6 +11,7 @@ class LocalStorageController extends getX.GetxController {
   //instance of LocalStorageController
   static LocalStorageController instance =
       getX.Get.find<LocalStorageController>();
+
   //get instance of GeigerApiConnector
   GeigerApiConnector _geigerApiConnector = GeigerApiConnector.instance;
 
@@ -56,16 +55,16 @@ class LocalStorageController extends getX.GetxController {
   }
 
   Future<void> initRegisterStorageListener(
-      {required EventType eventType,
-      required Function eventHandler,
+      {required EventType event,
+      required Function eventHandlerCallback,
       required String path,
       String? searchKey}) async {
     // register storageListener
     _isStorageListenerRegistered = await _registerStorageListener(
-        eventType, eventHandler, path, searchKey);
+        event, eventHandlerCallback, path, searchKey);
   }
 
-  Future<bool> _registerStorageListener(EventType eventType,
+  Future<bool> _registerStorageListener(EventType event,
       Function updatedEventHandler, String path, String? searchKey) async {
     if (_isStorageListenerRegistered == true) {
       log('StorageChangeListener ==> ${_localStorageListener.hashCode} has been registered and activated');
@@ -73,14 +72,13 @@ class LocalStorageController extends getX.GetxController {
     } else {
       if (_localStorageListener == null) {
         _localStorageListener = LocalStorageListener();
-        _localStorageListener!
-            .addMessageHandler(eventType, updatedEventHandler);
+        _localStorageListener!.addMessageHandler(event, updatedEventHandler);
       }
 
       try {
         SearchCriteria s = SearchCriteria(searchPath: path);
         if (searchKey != null) {
-          s.set(Field.key, searchKey);
+          s.set(Field.value, searchKey);
         }
         await _storageController.registerChangeListener(
             _localStorageListener!, s);
