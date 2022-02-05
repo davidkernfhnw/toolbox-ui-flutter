@@ -46,7 +46,7 @@ class ScanRiskButton extends StatelessWidget {
                           // content: Text("Geiger Toolbox need access to your data."
                           //     "Please enable Data Access and Data Processing in the Settings Screen"),
                           middleText:
-                              "Geiger Toolbox need access to your data. Please enable Data Access and Data Processing in the Settings Screen",
+                              "Geiger Toolbox needs access to your data. Please enable Data Access and Processing  in the Settings Screen",
                           confirm: ElevatedButton(
                               onPressed: () {
                                 Get.offNamed(Routes.SETTINGS_VIEW);

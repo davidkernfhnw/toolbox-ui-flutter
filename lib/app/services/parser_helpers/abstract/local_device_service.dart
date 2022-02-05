@@ -67,7 +67,7 @@ abstract class LocalDeviceService {
       String currentDeviceId = await getDeviceId;
       //assign deviceId
       device.deviceId = currentDeviceId;
-      print("${await getDeviceName}");
+      log("${await getDeviceName}");
       device.name = await getDeviceName;
       device.type = await getDeviceType;
       String deviceInfo = Device.convertToJson(device);

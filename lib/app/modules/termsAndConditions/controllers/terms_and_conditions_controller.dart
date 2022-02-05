@@ -70,8 +70,8 @@ class TermsAndConditionsController extends GetxController {
   // //load utility data
   Future<void> _loadUtilityData() async {
     await _geigerUtilityData.storeCountry();
-    await _geigerUtilityData.storeProfAss();
     await _geigerUtilityData.storeCerts();
+    await _geigerUtilityData.storeProfAss();
     await _geigerUtilityData.setPublicKey();
   }
 
@@ -85,8 +85,9 @@ class TermsAndConditionsController extends GetxController {
 
   @override
   void onReady() async {
+    _loadUtilityData();
     _userService.storeUserConsent();
-    await _loadUtilityData();
+
     super.onReady();
   }
 }

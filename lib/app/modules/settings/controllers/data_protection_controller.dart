@@ -42,6 +42,10 @@ class DataProtectionController extends GetxController {
       _homeControllerInstance.dataAccess.value = false;
     }
     log("DataAccess status ${_homeControllerInstance.dataAccess.value}");
+    bool? check = await _userService.checkUserConsent();
+    if (check!) {
+      _homeControllerInstance.checkConsent();
+    }
     return result;
   }
 
@@ -55,6 +59,10 @@ class DataProtectionController extends GetxController {
     }
 
     log("dataProcess status ${_homeControllerInstance.dataProcess.value}");
+    bool? check = await _userService.checkUserConsent();
+    if (check!) {
+      _homeControllerInstance.checkConsent();
+    }
     return result;
   }
 

@@ -19,7 +19,7 @@ abstract class LocalUserService {
   ///@param optional
   ///@return Future<bool>
   Future<bool> storeUserConsent(
-      {bool dataAccess: true, bool dataProcess: true});
+      {bool dataAccess: false, bool dataProcess: false});
 
   Future<bool> updateUserConsentDataAccess({required bool dataAccess});
 

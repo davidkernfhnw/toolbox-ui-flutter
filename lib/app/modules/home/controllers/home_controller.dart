@@ -58,8 +58,8 @@ class HomeController extends getX.GetxController {
   var isScanRequired = false.obs;
   var isScanCompleted = "".obs;
   var isStorageUpdated = "".obs;
-  var dataAccess = true.obs;
-  var dataProcess = true.obs;
+  var dataAccess = false.obs;
+  var dataProcess = false.obs;
 
   //**** end of observable variable ***
 
@@ -271,10 +271,12 @@ class HomeController extends getX.GetxController {
     }
   }
 
-  Future<void> _checkConsent() async {
+  Future<void> checkConsent() async {
     bool? result = await _userService.checkUserConsent();
     if (result != null) {
       if (result) {
+        dataAccess.value = true;
+        dataProcess.value = true;
         bool isFirstPressed = await _userService.isButtonPressed();
         if (!isFirstPressed) {
           await _loadIndicator();
@@ -299,7 +301,7 @@ class HomeController extends getX.GetxController {
     if (isRedirect) {
       // is only called
       //if user as already accepted terms and condition
-      _checkConsent();
+      checkConsent();
     }
 
     await _triggerAggCachedData();

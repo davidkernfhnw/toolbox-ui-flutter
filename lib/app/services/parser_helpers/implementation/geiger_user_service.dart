@@ -155,10 +155,7 @@ class GeigerUserService extends LocalDeviceService implements LocalUserService {
       Node node = await storageController.get(_UI_PATH);
       //Note: If nodeValue is already exist used updateValue() to update it
       await node.updateValue(NodeValueImpl(_BUTTON_KEY, value.toString()));
-      //when creating my data
-      // add this to avoid error
-      // since on package are also getStorage
-      //await ExtendedTimestamp.initializeTimestamp(_storageControllerUi);
+
       await storageController.update(node);
     } catch (e, s) {
       StorageException("Storage Error: $e", s);
@@ -187,7 +184,7 @@ class GeigerUserService extends LocalDeviceService implements LocalUserService {
 
   @override
   Future<bool> storeUserConsent(
-      {bool dataAccess = true, bool dataProcess = true}) async {
+      {bool dataAccess = false, bool dataProcess = false}) async {
     Node uiNode;
     try {
       uiNode = await storageController.get(_USER_CONSENT_PATH);
@@ -289,6 +286,7 @@ class GeigerUserService extends LocalDeviceService implements LocalUserService {
       NodeValue dataAccessValue = (await storageController.getValue(
           _USER_CONSENT_PATH, _DATA_ACCESS_KEY))!;
       bool dataAccess = dataAccessValue.value.parseBool();
+      log("Check UserConsent ==> ${await storageController.dump(_USER_CONSENT_PATH)}");
       if (dataAccess == true && dataProcess == true) {
         return true;
       } else {
