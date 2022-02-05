@@ -24,6 +24,7 @@ class GeigerApiConnector extends GetxController {
     } catch (e) {
       log("PluginEventListener has no been initialized\n $e");
     }
+    return null;
   }
 
   /// initialize this method before the start of the app
