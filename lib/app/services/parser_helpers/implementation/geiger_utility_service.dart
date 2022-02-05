@@ -2,9 +2,9 @@ import 'package:geiger_localstorage/src/storage_controller.dart';
 import 'package:geiger_toolbox/app/model/country.dart';
 import 'package:geiger_toolbox/app/model/partner.dart';
 
-import '../abstract/geiger_utility_helper.dart';
+import '../abstract/geiger_utility_abstract.dart';
 
-class GeigerUtilityService extends GeigerUtilityHelper {
+class GeigerUtilityService extends GeigerUtilityAbstract {
   GeigerUtilityService(StorageController storageController)
       : super(storageController);
 

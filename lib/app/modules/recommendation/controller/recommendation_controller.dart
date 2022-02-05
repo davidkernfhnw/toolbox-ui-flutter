@@ -8,7 +8,7 @@ import 'package:geiger_toolbox/app/model/threat_score.dart';
 import 'package:geiger_toolbox/app/model/user.dart';
 import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_indicator_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_data_service.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
 import 'package:get/get.dart' as getX;
 
@@ -32,7 +32,7 @@ class RecommendationController extends getX.GetxController {
   //**** late variables ******
   late final StorageController _storageController;
   late final GeigerUserService _userService;
-  late GeigerIndicatorService _geigerIndicatorData;
+  late GeigerDataService _geigerIndicatorData;
   //late GeigerIndicatorService _geigerIndicatorHelper;
 
   // *** end of late variables ****
@@ -215,7 +215,7 @@ class RecommendationController extends getX.GetxController {
   Future<void> _init() async {
     _storageController = _storageControllerInstance.getStorageController;
     _userService = GeigerUserService(_storageController);
-    _geigerIndicatorData = GeigerIndicatorService(_storageController);
+    _geigerIndicatorData = GeigerDataService(_storageController);
 
     // _geigerIndicatorHelper = GeigerIndicatorService(_storageController);
   }

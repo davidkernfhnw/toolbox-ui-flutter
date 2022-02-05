@@ -4,10 +4,11 @@ part 'tool.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Tool {
-  String? toolId;
-  String? name;
+  String toolId;
+  String appName;
+  String company;
 
-  Tool({String? toolId, required this.name});
+  Tool({required this.toolId, required this.appName, required this.company});
 
   factory Tool.fromJson(Map<String, dynamic> json) {
     return _$ToolFromJson(json);

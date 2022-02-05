@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/settings/controllers/data_protection_controller.dart';
+import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_switch.dart';
 import 'package:geiger_toolbox/app/shared_widgets/showCircularProgress.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
@@ -102,7 +103,9 @@ class DataProtectionView extends StatelessWidget {
                                 width: 7.0,
                               ),
                               ElevatedButton(
-                                onPressed: null,
+                                onPressed: () {
+                                  Get.toNamed(Routes.TOOLS_VIEW);
+                                },
                                 child: Text("Tools"),
                               ),
                             ],

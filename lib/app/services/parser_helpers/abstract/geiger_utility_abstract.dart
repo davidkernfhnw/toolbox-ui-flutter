@@ -7,22 +7,20 @@ import 'package:geiger_toolbox/app/model/partner.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/uuid.dart';
 import 'package:intl/src/locale.dart';
 
-import 'utility_data.dart';
-
 const String _LOCATION_PATH = ":Global:location";
 const String _CERT_PATH = ":Global:cert";
 const String _PROF_ASS_PATH = ":Global:professionAssociation";
 const String _NODE_OWNER = "geiger-toolbox";
 
-abstract class GeigerUtilityHelper extends UtilityData {
+abstract class GeigerUtilityAbstract {
   //final LocalStorageController _localStorage = LocalStorageController.instance;
   late Node _node;
   late NodeValue _nodeValue;
 
   StorageController storageController;
 
-  GeigerUtilityHelper(this.storageController);
-  @override
+  GeigerUtilityAbstract(this.storageController);
+
   Future<List<Partner>> getCert({String locale: "en"}) async {
     List<Partner> cert = <Partner>[];
     try {
@@ -54,7 +52,6 @@ abstract class GeigerUtilityHelper extends UtilityData {
     }
   }
 
-  @override
   Future<List<Country>> getCountries({String locale: "en"}) async {
     List<Country> c = <Country>[];
     try {
@@ -78,7 +75,6 @@ abstract class GeigerUtilityHelper extends UtilityData {
     }
   }
 
-  @override
   Future<List<Partner>> getProfessionAssociation({String locale: "en"}) async {
     List<Partner> professionAssociation = <Partner>[];
 
@@ -113,7 +109,6 @@ abstract class GeigerUtilityHelper extends UtilityData {
     }
   }
 
-  @override
   Future<bool> storeCert({required List<Partner> certs}) async {
     try {
       for (Partner cert in certs) {
@@ -171,7 +166,6 @@ abstract class GeigerUtilityHelper extends UtilityData {
     }
   }
 
-  @override
   Future<bool> storeCountries({required List<Country> countries}) async {
     Node _n;
     NodeValue? _nV;
@@ -205,7 +199,6 @@ abstract class GeigerUtilityHelper extends UtilityData {
     return true;
   }
 
-  @override
   Future<bool> storeProfessionAssociation(
       {required List<Partner> professionAssociation}) async {
     try {
@@ -272,10 +265,9 @@ abstract class GeigerUtilityHelper extends UtilityData {
     }
   }
 
-  @override
   Future<bool> storePublicKey() async {
     try {
-      Node node = await getNode(":Keys", storageController);
+      Node node = await _getNode(":Keys", storageController);
       String uuid = Uuids.uuid;
       await node.addValue(NodeValueImpl("publicKey", uuid));
       await storageController.addOrUpdate(node);
@@ -286,7 +278,6 @@ abstract class GeigerUtilityHelper extends UtilityData {
     }
   }
 
-  @override
   Future<String> get getPublicKey async {
     try {
       NodeValue? nodeValue =
@@ -296,6 +287,11 @@ abstract class GeigerUtilityHelper extends UtilityData {
     } catch (e, s) {
       throw StorageException("Public Key not found", s);
     }
+  }
+
+  Future<Node> _getNode(
+      String path, StorageController storageController) async {
+    return await storageController.get(path);
   }
 }
 

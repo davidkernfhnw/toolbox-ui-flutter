@@ -29,7 +29,7 @@ class GeigerIndicatorController extends GetxController {
 
   @override
   void onInit() async {
-    await _iniGeigerData();
+    _iniGeigerData();
     super.onInit();
   }
 }

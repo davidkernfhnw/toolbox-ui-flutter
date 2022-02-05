@@ -10,8 +10,8 @@ const String _UI_PATH = ":Local:ui";
 const String _DEVICE_KEY = "deviceInfo";
 const String _NODE_OWNER = "geiger-toolbox";
 
-abstract class LocalDeviceService {
-  LocalDeviceService(this.storageController);
+abstract class LocalDeviceAbstract {
+  LocalDeviceAbstract(this.storageController);
 
   StorageController storageController;
   late NodeValue _nodeValue;

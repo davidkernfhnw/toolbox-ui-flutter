@@ -15,7 +15,7 @@ import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controlle
 import 'package:geiger_toolbox/app/services/listeners/storage_event.dart';
 import 'package:geiger_toolbox/app/services/localNotification/local_notification.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_indicator_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_data_service.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
 import 'package:get/get.dart' as getX;
 import 'package:get_storage/get_storage.dart';
@@ -48,7 +48,7 @@ class HomeController extends getX.GetxController {
   //**** late variables ******
   late final StorageController _storageController;
   late final GeigerUserService _userService;
-  late final GeigerIndicatorService _geigerIndicatorHelper;
+  late final GeigerDataService _geigerDataService;
   // *** end of late variables ****
 
   //**** observable variable ****
@@ -137,7 +137,7 @@ class HomeController extends getX.GetxController {
     String path =
         ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
     GeigerScoreThreats geigerScoreThreats =
-        await _geigerIndicatorHelper.getGeigerScoreThreats(path: path);
+        await _geigerDataService.getGeigerScoreThreats(path: path);
 
     return geigerScoreThreats;
   }
@@ -200,7 +200,7 @@ class HomeController extends getX.GetxController {
     _storageController = await _localStorageInstance.getStorageController;
     _userService = GeigerUserService(_storageController);
 
-    _geigerIndicatorHelper = GeigerIndicatorService(_storageController);
+    _geigerDataService = GeigerDataService(_storageController);
   }
 
   void _showNotification(String event) async {

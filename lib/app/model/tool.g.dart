@@ -7,11 +7,13 @@ part of 'tool.dart';
 // **************************************************************************
 
 Tool _$ToolFromJson(Map<String, dynamic> json) => Tool(
-      toolId: json['toolId'] as String?,
-      name: json['name'] as String?,
+      toolId: json['toolId'] as String,
+      appName: json['appName'] as String,
+      company: json['company'] as String,
     );
 
 Map<String, dynamic> _$ToolToJson(Tool instance) => <String, dynamic>{
       'toolId': instance.toolId,
-      'name': instance.name,
+      'appName': instance.appName,
+      'company': instance.company,
     };

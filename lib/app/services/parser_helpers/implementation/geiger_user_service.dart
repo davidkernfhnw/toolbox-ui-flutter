@@ -8,8 +8,8 @@ import 'package:geiger_toolbox/app/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/model/user.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/bool_parsing_extension.dart';
 
-import '../abstract/local_device_service.dart';
-import '../abstract/local_user_service.dart';
+import '../abstract/local_device_abstract.dart';
+import '../abstract/local_user_abstract.dart';
 
 const String _LOCAL_PATH = ":Local";
 const String _UI_PATH = ":Local:ui";
@@ -21,7 +21,8 @@ const String _DATA_ACCESS_KEY = "dataAccess";
 const String _DATA_PROCESS_KEY = "dataProcess";
 //const String _IMPROVE_KEY = "improvedPressed";
 
-class GeigerUserService extends LocalDeviceService implements LocalUserService {
+class GeigerUserService extends LocalDeviceAbstract
+    implements LocalUserAbstract {
   GeigerUserService(this.storageController) : super(storageController);
 
   StorageController storageController;
