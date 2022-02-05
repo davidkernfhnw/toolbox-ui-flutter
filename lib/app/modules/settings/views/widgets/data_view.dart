@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/modules/settings/controllers/settings_controller.dart';
+import 'package:geiger_toolbox/app/modules/settings/controllers/data_controller.dart';
 import 'package:geiger_toolbox/app/shared_widgets/empty_space_card.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
 
 class DataView extends StatelessWidget {
-  final SettingsController controller;
+  final DataController controller;
   const DataView({Key? key, required this.controller}) : super(key: key);
   @override
   Widget build(BuildContext context) {

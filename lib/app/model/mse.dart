@@ -1,4 +1,4 @@
-import 'package:geiger_toolbox/app/data/model/user.dart';
+import 'package:geiger_toolbox/app/model/user.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'mse.g.dart';

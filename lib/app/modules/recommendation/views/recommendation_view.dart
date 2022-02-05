@@ -3,7 +3,6 @@ import 'package:geiger_toolbox/app/modules/recommendation/controller/recommendat
 import 'package:geiger_toolbox/app/modules/recommendation/views/device_recommendation.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/views/user_recommendation.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/views/widgets/tab_bar_builder.dart';
-import 'package:geiger_toolbox/app/shared_widgets/showCircularProgress.dart';
 import 'package:get/get.dart';
 
 class RecommendationPage extends StatelessWidget {
@@ -22,9 +21,7 @@ class RecommendationPage extends StatelessWidget {
         child: Scaffold(
             appBar: AppBar(
               centerTitle: true,
-              title: Text(controller.isLoading.value == false
-                  ? controller.userThreatScore.value.threat.name
-                  : "Geiger Toolbox"),
+              title: Text(controller.userThreatScore.value.threat.name),
               bottom: buildTabBar(tabs: [
                 Tab(
                   icon: Icon(
@@ -40,14 +37,12 @@ class RecommendationPage extends StatelessWidget {
                 ),
               ]),
             ),
-            body: controller.isLoading.value == false
-                ? TabBarView(
-                    children: [
-                      UserRecommendation(controller: controller),
-                      DeviceRecommendation(controller: controller)
-                    ],
-                  )
-                : Center(child: ShowCircularProgress(visible: true))),
+            body: TabBarView(
+              children: [
+                UserRecommendation(controller: controller),
+                DeviceRecommendation(controller: controller)
+              ],
+            )),
       );
     });
   }

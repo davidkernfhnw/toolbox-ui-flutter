@@ -1,17 +1,17 @@
 import 'dart:developer';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:geiger_toolbox/app/data/model/global_recommendation.dart';
-import 'package:geiger_toolbox/app/data/model/related_threat_weight.dart';
-import 'package:geiger_toolbox/app/data/model/threat.dart';
+import 'package:geiger_toolbox/app/model/global_recommendation.dart';
+import 'package:geiger_toolbox/app/model/related_threat_weight.dart';
+import 'package:geiger_toolbox/app/model/threat.dart';
 
-abstract class GlobalData {
-  GlobalData(this.storageController);
+const String GLOBAL_THREAT_PATH = ":Global:threats";
+const String GLOBAL_RECOMMENDATION_PATH = ":Global:Recommendations";
+
+abstract class GlobalDataAbstract {
+  GlobalDataAbstract(this.storageController);
 
   final StorageController storageController;
-
-  static const String GLOBAL_THREAT_PATH = ":Global:threats";
-  static const String GLOBAL_RECOMMENDATION_PATH = ":Global:Recommendations";
 
   ///@param optional language as string
   ///@return  list of threats from localStorage

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
-import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 import 'app/services/cloudReplication/cloud_replication_controller.dart';
+import 'app/services/indicator/geiger_indicator_controller.dart';
 import 'app/services/localNotification/local_notification.dart';
 import 'app/services/localStorage/local_storage_controller.dart';
 import 'app/translation/app_translation.dart';
@@ -14,15 +14,19 @@ import 'app/util/theme/custom_theme_data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await _initialization();
+  runApp(GeigerApp());
+}
 
+Future<void> _initialization() async {
   //initialize geigerApi for ui
   // Dynamically adding the function to handle the SCAN_COMPLETED event -> you can customize or move it somewhere if you want
   await Get.put(GeigerApiConnector()).initGeigerApi();
   //initialize localStorage for ui
-  Get.put(LocalStorageController());
+  await Get.put(LocalStorageController());
 
   //initialize indicator
-  Get.put(GeigerIndicatorController());
+  await Get.put(GeigerIndicatorController());
 
   //initialize cloudReplicationController
   Get.lazyPut<CloudReplicationController>(() => CloudReplicationController());
@@ -31,8 +35,6 @@ void main() async {
 
   //Local notification
   Get.lazyPut<LocalNotificationController>(() => LocalNotificationController());
-
-  runApp(GeigerApp());
 }
 
 class GeigerApp extends StatelessWidget {
@@ -43,7 +45,6 @@ class GeigerApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: true,
       getPages: Pages.pages,
-      //initialBinding: TermsAndConditionsBinding(),
       initialRoute: Routes.HOME_VIEW,
       translationsKeys: AppTranslation.translationsKeys,
       locale: Get.deviceLocale,
@@ -52,36 +53,3 @@ class GeigerApp extends StatelessWidget {
     );
   }
 }
-
-// class SplashView extends StatelessWidget {
-//   const SplashView({Key? key}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     //bool lightMode =
-//     MediaQuery.of(context).platformBrightness == Brightness.light;
-//     return Scaffold(
-//       // backgroundColor:
-//       // lightMode ? const Color(0xffe1f5fe) : const Color(0xff042a49),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Center(
-//           child: Container(
-//             decoration: BoxDecoration(
-//               image: DecorationImage(
-//                   image: AssetImage('assets/images/Geiger_Logo.png'),
-//                   fit: BoxFit.fitWidth),
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-//
-// class Init {
-//   Init._();
-//   static final instance = Init._();
-//
-//   Future initialize() async {}
-// }

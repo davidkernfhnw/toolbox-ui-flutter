@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:geiger_toolbox/app/data/model/share_info.dart';
-import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
+
+import 'package:geiger_toolbox/app/model/share_info.dart';
+import 'package:geiger_toolbox/app/model/terms_and_conditions.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'consent.dart';
@@ -11,6 +12,8 @@ part 'user.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 //Equatable makes it easy to compare objects
+//Todo : remove consent no more required
+
 class User {
   String? userId;
   String? userName;

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
@@ -21,7 +19,6 @@ class TopScreen extends StatelessWidget {
     double a = double.parse(controller.aggThreatsScore.value.geigerScore);
     //back to String with precision
     String agg = a.toPrecision(1).toString();
-    log("Parse Agg => $agg ");
     return agg;
   }
 
@@ -31,10 +28,18 @@ class TopScreen extends StatelessWidget {
       return Column(
         children: [
           Text(
-            parseToDouble != "0.0"
-                ? 'Your total Risk Score:'
-                : 'Start scanning your cyber threats:',
-            style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+            controller.dataAccess.value && controller.dataProcess.value
+                ? parseToDouble != "0.0"
+                    ? 'Your total Risk Score:'
+                    : 'Start scanning your cyber threats:'
+                : "Permission is required before Geiger Toolbox can process your data.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color:
+                    controller.dataAccess.value && controller.dataProcess.value
+                        ? Colors.grey
+                        : Colors.deepOrangeAccent,
+                fontWeight: FontWeight.bold),
           ),
           !controller.isScanning.value
               ? GradientText(
@@ -55,8 +60,7 @@ class TopScreen extends StatelessWidget {
               : greyText("Scanning...."),
           const SizedBox(height: 5.0),
           ScanRiskButton(
-            onScanPressed: controller.onScanButtonPressed,
-            warming: controller.isScanRequired.value,
+            controller: controller,
             changeScanBtnColor: controller.changeScanBtnColor(parseToDouble),
           ),
           const SizedBox(height: 10.0),

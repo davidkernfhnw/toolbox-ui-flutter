@@ -1,10 +1,10 @@
 import 'package:geiger_localstorage/src/storage_controller.dart';
-import 'package:geiger_toolbox/app/data/model/country.dart';
-import 'package:geiger_toolbox/app/data/model/partner.dart';
+import 'package:geiger_toolbox/app/model/country.dart';
+import 'package:geiger_toolbox/app/model/partner.dart';
 
-import '../abstract/geiger_utility_helper.dart';
+import '../abstract/geiger_utility_abstract.dart';
 
-class GeigerUtilityService extends GeigerUtilityHelper {
+class GeigerUtilityService extends GeigerUtilityAbstract {
   GeigerUtilityService(StorageController storageController)
       : super(storageController);
 
@@ -53,7 +53,7 @@ class GeigerUtilityService extends GeigerUtilityHelper {
           id: "2ce49c82-9b22-417a-a4a0-83c72ab34840"));
     }
     //store cert
-    await storeCert(certs: _cert);
+    storeCert(certs: _cert);
   }
 
   //store list of professional association base on countries
@@ -91,7 +91,7 @@ class GeigerUtilityService extends GeigerUtilityHelper {
           names: ["Netherlands Association"],
           id: "ea3afb16-6a57-4962-92b5-b054b2683c07"));
     }
-    await storeProfessionAssociation(professionAssociation: profAss);
+    storeProfessionAssociation(professionAssociation: profAss);
   }
 
   //store public key

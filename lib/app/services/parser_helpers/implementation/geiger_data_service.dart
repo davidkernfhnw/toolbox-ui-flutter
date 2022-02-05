@@ -1,16 +1,21 @@
 import 'dart:developer';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:geiger_toolbox/app/data/model/geiger_score_threats.dart';
-import 'package:geiger_toolbox/app/data/model/global_recommendation.dart';
-import 'package:geiger_toolbox/app/data/model/indicator_recommendation.dart';
-import 'package:geiger_toolbox/app/data/model/recommendation.dart';
-import 'package:geiger_toolbox/app/data/model/threat.dart';
-import 'package:geiger_toolbox/app/data/model/threat_score.dart';
-import 'package:geiger_toolbox/app/services/parser_helpers/abstract/global_data.dart';
+import 'package:geiger_toolbox/app/model/geiger_score_threats.dart';
+import 'package:geiger_toolbox/app/model/global_recommendation.dart';
+import 'package:geiger_toolbox/app/model/indicator_recommendation.dart';
+import 'package:geiger_toolbox/app/model/recommendation.dart';
+import 'package:geiger_toolbox/app/model/threat.dart';
+import 'package:geiger_toolbox/app/model/threat_score.dart';
+import 'package:geiger_toolbox/app/model/tool.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/abstract/global_data_abstract.dart';
 
-class GeigerIndicatorService extends GlobalData {
-  GeigerIndicatorService(this.storageController) : super(storageController);
+const String _LOCAL_PLUGIN = ":Local:plugin";
+const String _APP_NAME_KEY = "appname";
+const String _COMPANY_KEY = "company";
+
+class GeigerDataService extends GlobalDataAbstract {
+  GeigerDataService(this.storageController) : super(storageController);
 
   final StorageController storageController;
 
@@ -38,7 +43,8 @@ class GeigerIndicatorService extends GlobalData {
               await storageController.getValue(path, "threats_score");
 
           String threatScore = nodeValueT!.value;
-          //split on semi-colon
+
+          // split on semi-colon
           List<String> splitThreatScores = threatScore.split(";");
 
           log(splitThreatScores.toString());
@@ -137,6 +143,7 @@ class GeigerIndicatorService extends GlobalData {
         implRecom.add(i);
       }
     }
+    log("Implemented recommendation ==> $implRecom");
     return implRecom;
   }
 
@@ -190,5 +197,37 @@ class GeigerIndicatorService extends GlobalData {
       }
     }
     return finalRecommendations;
+  }
+
+  Future<List<Tool>> showExternalTools({String locale: "en"}) async {
+    List<Tool> tools = [];
+    try {
+      List<Node> nodes = await storageController
+          .search(SearchCriteria(searchPath: _LOCAL_PLUGIN));
+      for (Node node in await nodes) {
+        //check if path exist
+        //log("${node.parentPath}");
+        if (node.parentPath == ":Local") {
+          String children = await node.getChildNodesCsv();
+          List<String> toolIds = children.split(',');
+          for (String toolId in toolIds) {
+            Node toolNode =
+                await storageController.get("$_LOCAL_PLUGIN:$toolId");
+
+            tools.add(Tool(
+                toolId: await toolId,
+                company: await toolNode
+                    .getValue(_COMPANY_KEY)
+                    .then((value) => value!.getValue(locale)!),
+                appName: await toolNode
+                    .getValue(_APP_NAME_KEY)
+                    .then((value) => value!.getValue(locale)!)));
+          }
+        }
+      }
+    } catch (e) {
+      log('Got Exception while fetching list of threats: $e');
+    }
+    return tools;
   }
 }

@@ -2,10 +2,9 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:geiger_toolbox/app/data/model/consent.dart';
-import 'package:geiger_toolbox/app/data/model/device.dart';
-import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
-import 'package:geiger_toolbox/app/data/model/user.dart';
+import 'package:geiger_toolbox/app/model/consent.dart';
+import 'package:geiger_toolbox/app/model/terms_and_conditions.dart';
+import 'package:geiger_toolbox/app/model/user.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
 
 void main() {
@@ -29,16 +28,6 @@ void main() {
           reason: "failed to store userInfo first");
     });
 
-    test("get UserInfo when stored", () async {
-      //store userInfo
-      await userService.storeUserInfo(User(
-          deviceOwner: Device(deviceId: "2"),
-          termsAndConditions: TermsAndConditions(),
-          consent: Consent()));
-      print("${await userService.getUserInfo}");
-      expect(() async => await userService.getUserInfo, isNotNull);
-    });
-
     test("test storeTermsAndConditions when false", () async {
       bool result = await userService.storeTermsAndConditions(
         termsAndConditions: TermsAndConditions(),
@@ -53,15 +42,6 @@ void main() {
             ageCompliant: true, signedConsent: true, agreedPrivacy: true),
       );
       expect(result, isTrue, reason: "termsAndConditions were set to true ");
-    });
-
-    test("Store userInfo test", () async {
-      //store
-      bool result = await userService.storeUserInfo(User(
-          termsAndConditions: TermsAndConditions(),
-          consent: Consent(),
-          deviceOwner: Device(deviceId: "2")));
-      expect(result, isFalse, reason: "UserInfo already stored");
     });
 
     test("Update userInfo test", () async {

@@ -1,6 +1,6 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/data/model/recommendation.dart';
+import 'package:geiger_toolbox/app/model/recommendation.dart';
 
 class ExpansionCard extends StatelessWidget {
   final Recommendation recommendation;
@@ -38,16 +38,17 @@ class ExpansionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                // recommendation.longDescription!,
-                recommendation.recommendationId,
-                softWrap: true,
-              ),
               recommendation.longDescription == ""
-                  ? const SizedBox(
-                      height: 0,
+                  ? Text(
+                      // recommendation.longDescription!,
+                      recommendation.recommendationId,
+                      softWrap: true,
                     )
-                  : const SizedBox(height: 5),
+                  : Text(
+                      // recommendation.longDescription!,
+                      recommendation.longDescription!,
+                      softWrap: true,
+                    ),
               const Text(
                 "Required Tool:",
                 style: TextStyle(color: Colors.black45),
@@ -73,12 +74,12 @@ class ExpansionCard extends StatelessWidget {
 
   Widget _buildGetToolButton(
       Recommendation r, void Function()? onPressedGetTool) {
-    return new ElevatedButton(
-        child: new Text(recommendation.implemented ? "Active" : "Get Tool"),
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(
-                recommendation.implemented ? Colors.grey : Colors.green)),
-        onPressed: recommendation.implemented ? null : onPressedGetTool);
+    if (!r.implemented) {
+      return ElevatedButton(
+          child: new Text("Get Tool"), onPressed: onPressedGetTool);
+    } else {
+      return Container();
+    }
   }
 
   String _checkWeight(String weight) {

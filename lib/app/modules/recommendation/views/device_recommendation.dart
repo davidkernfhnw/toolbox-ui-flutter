@@ -15,7 +15,7 @@ class DeviceRecommendation extends StatelessWidget {
         return RecommendationTab(
           threatTitle: controller.deviceThreatScore.value.threat.name,
           score: double.parse("${controller.deviceGeigerScore.value}"),
-          label: controller.userName.value,
+          label: controller.deviceName.value,
           recommendations: controller.deviceGeigerRecommendations,
           recommendationLabel: "Device Recommendations",
           recommendationType: "Device",

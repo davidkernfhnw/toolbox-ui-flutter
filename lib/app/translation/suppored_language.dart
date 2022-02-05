@@ -1,4 +1,4 @@
-import 'package:geiger_toolbox/app/data/model/language.dart';
+import 'package:geiger_toolbox/app/model/language.dart';
 
 class SupportedLanguage {
   static List<Language> languages = [

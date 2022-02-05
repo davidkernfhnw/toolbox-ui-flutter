@@ -1,6 +1,7 @@
-import 'package:geiger_toolbox/app/data/model/country.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/uuid.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'country.dart';
 
 part 'partner.g.dart';
 

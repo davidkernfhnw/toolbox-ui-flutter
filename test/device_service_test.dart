@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_print
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:geiger_toolbox/app/data/model/device.dart';
+import 'package:geiger_toolbox/app/model/device.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
 
 void main() {

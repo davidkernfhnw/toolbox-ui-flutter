@@ -1,5 +1,5 @@
 name: geiger_toolbox
-description: A cyber geiger toolbox
+description: A cyber security geiger toolbox for MSEs
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -36,28 +36,27 @@ dependencies:
   simple_gradient_text: ^1.2.2
   #for expansion of cards
   expandable: ^5.0.1
-  #google fonts
-  google_fonts: ^2.1.0
   json_annotation: ^4.3.0
   qr_flutter: ^4.0.0
   qr_code_scanner: ^0.5.2
   permission_handler: ^8.2.2
-
-  flutter_form_builder: ^7.0.0
   device_info_plus: 3.2.1
 
-#  cloud_replication_package:
-#    path: ../toolbox-replication/
+  cloud_replication_package:
+    git:
+      url: git://github.com/cyber-geiger/toolbox-replication.git
+      ref: consent
 
   #state management, dependency injection
   get: ^4.6.1
   #cache data
   get_storage: ^2.0.3
   charts_flutter: ^0.12.0
-  toolbox_indicator_test: ^1.0.6
+  toolbox_indicator_test: ^2.0.0
   geiger_api: ^0.6.3
   flutter_local_notifications: ^9.2.0
   share_plus: ^3.0.4
+  initialize_geiger_data: ^1.0.3
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +78,9 @@ flutter:
      - family:  GeigerIcon
        fonts:
          - asset: assets/fonts/GeigerIcon.ttf
+     - family: Nunito
+       fonts:
+         - asset: assets/fonts/Nunito-Regular.ttf
 
 
 #Todo

@@ -1,13 +1,17 @@
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:geiger_toolbox/app/data/model/device.dart';
+import 'package:geiger_toolbox/app/model/device.dart';
 
 const String _LOCAL_PATH = ":Local";
 const String _UI_PATH = ":Local:ui";
 const String _DEVICE_KEY = "deviceInfo";
 const String _NODE_OWNER = "geiger-toolbox";
 
-abstract class LocalDeviceService {
-  LocalDeviceService(this.storageController);
+abstract class LocalDeviceAbstract {
+  LocalDeviceAbstract(this.storageController);
 
   StorageController storageController;
   late NodeValue _nodeValue;
@@ -63,6 +67,9 @@ abstract class LocalDeviceService {
       String currentDeviceId = await getDeviceId;
       //assign deviceId
       device.deviceId = currentDeviceId;
+      log("${await getDeviceName}");
+      device.name = await getDeviceName;
+      device.type = await getDeviceType;
       String deviceInfo = Device.convertToJson(device);
 
       bool success = await storageController.addOrUpdateValue(
@@ -83,7 +90,49 @@ abstract class LocalDeviceService {
     Node node = await storageController.get(":Devices");
     List<String> ids =
         await node.getChildNodesCsv().then((value) => value.split(','));
+    log("Dump devices id ==> ${await storageController.dump(":Devices")}");
     return ids;
+  }
+
+  //get name of the user device
+  Future<String> get getDeviceName async {
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
+      return androidDeviceInfo.model!;
+    } else if (Platform.isIOS) {
+      IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
+      return iosDeviceInfo.utsname.machine!;
+    } else if (Platform.isMacOS) {
+      //Todo can't get MacOs device name
+      //MacOsDeviceInfo macOsDeviceInfo = await deviceInfo.macOsInfo;
+      //String macOs = macOsDeviceInfo.model;
+      String macOs = "MacOs";
+      return macOs;
+    } else if (Platform.isWindows) {
+      WindowsDeviceInfo w = await deviceInfo.windowsInfo;
+      String window = w.computerName;
+      return window;
+    } else {
+      WebBrowserInfo web = await deviceInfo.webBrowserInfo;
+      String browser = web.browserName.name;
+      return browser;
+    }
+  }
+
+  //get devicetype
+  String get getDeviceType {
+    if (Platform.isAndroid) {
+      return "Android";
+    } else if (Platform.isIOS) {
+      return "IPhone";
+    } else if (Platform.isMacOS) {
+      return "Mac Book";
+    } else if (Platform.isWindows) {
+      return "Windows Desktop";
+    } else {
+      return "Web Browser";
+    }
   }
 
 // ----- Helpers

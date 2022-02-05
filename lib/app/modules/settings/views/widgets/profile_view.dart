@@ -43,7 +43,7 @@ class ProfileView extends StatelessWidget {
                       onChanged: controller.onChangeDeviceName,
                       validator: controller.validateDeviceName,
                     ),
-                    CustomSwitchs(
+                    CustomSwitch(
                       label: "I’m a company owner",
                       description:
                           "As an owner you can compare your company’s geiger score with others ",
