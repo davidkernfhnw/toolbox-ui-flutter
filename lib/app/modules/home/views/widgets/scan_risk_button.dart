@@ -46,12 +46,12 @@ class ScanRiskButton extends StatelessWidget {
                           // content: Text("Geiger Toolbox need access to your data."
                           //     "Please enable Data Access and Data Processing in the Settings Screen"),
                           middleText:
-                              "Geiger Toolbox needs access to your data. Please enable Data Access and Processing  in the Settings Screen",
+                              "Geiger Toolbox needs access to your data. Please grant Permission",
                           confirm: ElevatedButton(
                               onPressed: () {
                                 Get.offNamed(Routes.SETTINGS_VIEW);
                               },
-                              child: Text("Setting Screen")),
+                              child: Text("Data Protection")),
                           cancel: ElevatedButton(
                               style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
@@ -67,9 +67,11 @@ class ScanRiskButton extends StatelessWidget {
                 height: 80,
                 width: 80,
                 decoration: const BoxDecoration(shape: BoxShape.circle),
-                child: const Center(
+                child: Center(
                   child: Text(
-                    'Scan Threat',
+                    controller.dataAccess.value && controller.dataProcess.value
+                        ? 'Scan Threat'
+                        : "Access Required",
                     softWrap: true,
                     textAlign: TextAlign.center,
                     style: TextStyle(

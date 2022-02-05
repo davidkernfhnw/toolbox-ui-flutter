@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
 import 'package:geiger_toolbox/app/modules/recommendation/views/widgets/tab_bar_builder.dart';
 import 'package:geiger_toolbox/app/modules/settings/controllers/data_controller.dart';
 import 'package:geiger_toolbox/app/modules/settings/controllers/data_protection_controller.dart';
@@ -16,11 +17,15 @@ class SettingsView extends StatelessWidget {
   final DataController _dataController = DataController.instance;
   final DataProtectionController _dataProtectionController =
       DataProtectionController.instance;
+  final HomeController _homeControllerInstance = HomeController.instance;
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      initialIndex: 0,
+      initialIndex: _homeControllerInstance.dataProcess.value &&
+              _homeControllerInstance.dataAccess.value
+          ? 0
+          : 1,
       length: 3,
       child: Scaffold(
         endDrawerEnableOpenDragGesture: false,

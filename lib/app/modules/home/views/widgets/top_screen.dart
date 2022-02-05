@@ -28,10 +28,18 @@ class TopScreen extends StatelessWidget {
       return Column(
         children: [
           Text(
-            parseToDouble != "0.0"
-                ? 'Your total Risk Score:'
-                : 'Start scanning your cyber threats:',
-            style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+            controller.dataAccess.value && controller.dataProcess.value
+                ? parseToDouble != "0.0"
+                    ? 'Your total Risk Score:'
+                    : 'Start scanning your cyber threats:'
+                : "Permission is required before Geiger Toolbox can process your data.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color:
+                    controller.dataAccess.value && controller.dataProcess.value
+                        ? Colors.grey
+                        : Colors.deepOrangeAccent,
+                fontWeight: FontWeight.bold),
           ),
           !controller.isScanning.value
               ? GradientText(

@@ -24,6 +24,7 @@ class DataProtectionController extends GetxController {
 
   var _dataAccess = false.obs;
   var _dataProcess = false.obs;
+  var isLoading = false.obs;
 
   bool get getDataAccess {
     return _dataAccess.value;
@@ -34,6 +35,7 @@ class DataProtectionController extends GetxController {
   }
 
   Future<bool> updateDataAccess(bool value) async {
+    isLoading.value = false;
     _dataAccess.value = value;
     bool result = await _storeDataAccess(value);
     if (value) {
@@ -46,10 +48,12 @@ class DataProtectionController extends GetxController {
     if (check!) {
       _homeControllerInstance.checkConsent();
     }
+    isLoading.value = false;
     return result;
   }
 
   Future<bool> updateDataProcess(bool value) async {
+    isLoading.value = true;
     _dataProcess.value = value;
     bool result = await _storeDataProcess(value);
     if (value) {
@@ -63,6 +67,7 @@ class DataProtectionController extends GetxController {
     if (check!) {
       _homeControllerInstance.checkConsent();
     }
+    isLoading.value = false;
     return result;
   }
 
