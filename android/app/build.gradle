@@ -41,18 +41,18 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "cybergeigertoolbox.geiger_toolbox"
-        minSdkVersion 20
-        targetSdkVersion 31
+        minSdkVersion 23
+        targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
 
     signingConfigs {
         release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
+            storeFile file("../keystore.jks")
+            storePassword = "$System.env.KEY_PASSWORD"
+            keyAlias = "release"
+            keyPassword = "$System.env.ALIAS_PASSWORD"
         }
     }
 
@@ -61,6 +61,7 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
 
 }
 

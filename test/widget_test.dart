@@ -7,7 +7,7 @@
 
 // import 'package:flutter_test/flutter_test.dart';
 // import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
-// import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
+// import 'package:geiger_toolbox/app/services/localSorage/local_storage_controller.dart';
 //
 // import 'package:geiger_toolbox/main.dart';
 // import 'package:get/get.dart';
