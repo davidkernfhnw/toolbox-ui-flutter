@@ -85,7 +85,7 @@ class TermsAndConditionsController extends GetxController {
 
   @override
   void onReady() async {
-    _loadUtilityData();
+    await _loadUtilityData();
     _userService.storeUserConsent();
 
     super.onReady();

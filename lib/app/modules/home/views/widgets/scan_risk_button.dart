@@ -71,7 +71,7 @@ class ScanRiskButton extends StatelessWidget {
                   child: Text(
                     controller.dataAccess.value && controller.dataProcess.value
                         ? 'Scan Threat'
-                        : "Grant Permission",
+                        : "Grant Access",
                     softWrap: true,
                     textAlign: TextAlign.center,
                     style: TextStyle(

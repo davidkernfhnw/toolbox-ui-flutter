@@ -267,7 +267,6 @@ class RecommendationController extends getX.GetxController {
     isLoading.value = true;
     _showName();
     _showUserThreat();
-    await Future.delayed(Duration(milliseconds: 400));
     // _box = _homeControllerInstance.cache;
     _getUserRecommendation();
     isLoading.value = false;
@@ -277,8 +276,12 @@ class RecommendationController extends getX.GetxController {
   @override
   onReady() async {
     isLoading.value = true;
+
+    await Future.delayed(Duration(milliseconds: 1000));
     _showDeviceThreat();
+
     _getDeviceRecommendation();
+
     isLoading.value = false;
     super.onReady();
   }
