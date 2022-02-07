@@ -2,7 +2,8 @@
 
 # Author:
 Nosa Daniel Ahanor @daniel.ahanor@fhnw.ch
-# Download latest apk
+# Download latest artifacts (APK)
+Select latest successful action and download artifacts
  [https://github.com/cyber-geiger/toolbox-ui-flutter/actions](https://github.com/cyber-geiger/toolbox-ui-flutter/actions)
 
 [comment]: <> (```)
