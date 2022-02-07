@@ -169,12 +169,15 @@ class HomeController extends getX.GetxController {
   //check if termsAndConditions were accepted
   // redirect to termAndCondition if false
   Future<bool> _redirect() async {
+    isLoadingServices.value = true;
     bool checkTerms = await _isTermsAccepted();
 
     if (checkTerms == false) {
       await getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
+      isLoadingServices.value = false;
       return false;
     }
+    isLoadingServices.value = false;
     return true;
   }
 
