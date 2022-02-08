@@ -13,17 +13,16 @@ class Recommendation {
   String? weight;
   String? action;
   bool implemented;
-  bool disableActionButton;
 
-  Recommendation(
-      {required this.recommendationId,
-      required this.shortDescription,
-      this.longDescription,
-      required this.recommendationType,
-      this.weight,
-      this.action,
-      this.implemented: false,
-      this.disableActionButton: false});
+  Recommendation({
+    required this.recommendationId,
+    required this.shortDescription,
+    this.longDescription,
+    required this.recommendationType,
+    this.weight: null,
+    this.action: null,
+    this.implemented: false,
+  });
 
   factory Recommendation.fromJson(Map<String, dynamic> json) {
     return _$RecommendationFromJson(json);
@@ -43,6 +42,6 @@ class Recommendation {
 
   @override
   String toString() {
-    return '{"recommendationID:$recommendationId, shortDescription:$shortDescription,longDescription:$longDescription, recommendationType:$recommendationType weight:$weight, action:$action, implemented:$implemented, disableActionButton:$disableActionButton}';
+    return '{"recommendationID:$recommendationId, shortDescription:$shortDescription,longDescription:$longDescription, recommendationType:$recommendationType weight:$weight, action:$action, implemented:$implemented}';
   }
 }

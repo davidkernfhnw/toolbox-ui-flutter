@@ -54,8 +54,8 @@ abstract class GlobalDataAbstract {
       {String locale: "en"}) async {
     List<GlobalRecommendation> r = [];
     List<RelatedThreatWeight> tW = [];
-    String longDescription = "";
-    String action = "";
+    String? longDescription = null;
+    String? action = null;
     try {
       List<Node> nodes = await storageController
           .search(SearchCriteria(searchPath: GLOBAL_RECOMMENDATION_PATH));

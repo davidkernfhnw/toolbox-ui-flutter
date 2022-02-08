@@ -79,7 +79,7 @@ class TermsAndConditionsController extends GetxController {
   void onInit() async {
     //init storageController
     await _initializeStorageController();
-    await _loadUtilityData();
+    _loadUtilityData();
     super.onInit();
   }
 

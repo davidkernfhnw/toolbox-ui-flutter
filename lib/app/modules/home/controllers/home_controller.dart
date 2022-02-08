@@ -20,6 +20,8 @@ import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger
 import 'package:get/get.dart' as getX;
 import 'package:get_storage/get_storage.dart';
 
+import '../../../model/recommendation.dart';
+
 class HomeController extends getX.GetxController {
   //an instance of HomeController
   static HomeController get instance => getX.Get.find();
@@ -49,6 +51,7 @@ class HomeController extends getX.GetxController {
   late final StorageController _storageController;
   late final GeigerUserService _userService;
   late final GeigerDataService _geigerDataService;
+
   // *** end of late variables ****
 
   //**** observable variable ****
@@ -68,23 +71,36 @@ class HomeController extends getX.GetxController {
   getX.Rx<GeigerScoreThreats> aggThreatsScore =
       GeigerScoreThreats(threatScores: [], geigerScore: '0.0').obs;
 
+  //user recommendation
+  getX.RxList<Recommendation> userGlobalRecommendations =
+      <Recommendation>[].obs;
+  //device recommendation
+  getX.RxList<Recommendation> deviceGlobalRecommendations =
+      <Recommendation>[].obs;
+
   //**** end of observable object***
 
   //****** start of public method *****
   void onScanButtonPressed() async {
     //begin scanning
     isScanning.value = true;
+    await Future.delayed(Duration(milliseconds: 100));
     //send a broadcast to external tool
     _requestScan();
+
     //set observable aggregate threatScore
     aggThreatsScore.value = await _getAggThreatScore();
     //cached data when the user press the scan button
     _cachedAggregateData(aggThreatsScore.value);
-    //scanning is done
-    //a delay
-    await Future.delayed(Duration(seconds: 2));
 
-    log("Dump after scanning ==> ${await _storageController.dump(":")}");
+    //get recommendations
+    _getUserRecommendation();
+    await Future.delayed(Duration(milliseconds: 2000));
+    _getDeviceRecommendation();
+
+    //scanning is done
+
+    // log("Dump after scanning ==> ${await _storageController.dump(":")}");
     //set scanRequired to false if true
     isScanRequired.value = false;
 
@@ -202,7 +218,6 @@ class HomeController extends getX.GetxController {
     //get StorageController from localStorageController instance
     _storageController = await _localStorageInstance.getStorageController;
     _userService = GeigerUserService(_storageController);
-
     _geigerDataService = GeigerDataService(_storageController);
   }
 
@@ -296,6 +311,40 @@ class HomeController extends getX.GetxController {
 
   //************* end of private methods ***********************
 
+  //**************Recommendation ***************
+
+  void _getDeviceRecommendation() async {
+    User? currentUser = await _userService.getUserInfo;
+    String indicatorId = _indicatorControllerInstance.indicatorId;
+
+    String geigerScoreDevicePath =
+        ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
+
+    List<Recommendation> deviceRecommendation = await _geigerDataService
+        .getGeigerRecommendations(geigerScorePath: geigerScoreDevicePath);
+
+    deviceGlobalRecommendations.value = deviceRecommendation;
+    log("Device Recommendation ==> $deviceGlobalRecommendations");
+  }
+
+  Future<void> _getUserRecommendation() async {
+    User? currentUser = await _userService.getUserInfo;
+    String indicatorId = _indicatorControllerInstance.indicatorId;
+
+    String geigerScoreUserPath =
+        ":Users:${currentUser!.userId}:$indicatorId:data:GeigerScoreUser";
+
+    List<Recommendation> userRecommendation = await _geigerDataService
+        .getGeigerRecommendations(geigerScorePath: geigerScoreUserPath);
+
+    userGlobalRecommendations.value = userRecommendation;
+    //log("User Recommendation => $userGeigerRecommendations");
+    log("User Recommendation dump==> $userGlobalRecommendations");
+    // return geigerScoreThreats;
+  }
+
+  //************** end Recommendation ***************
+
   @override
   void onInit() async {
     //init resources
@@ -361,5 +410,5 @@ class HomeController extends getX.GetxController {
     //update aggregate threatScore from cached data
     aggThreatsScore.value = _getAggCachedData();
   }
-//********* end of resources ***********
+//********* end cache ***********
 }

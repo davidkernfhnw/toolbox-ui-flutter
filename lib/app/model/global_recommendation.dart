@@ -16,10 +16,10 @@ class GlobalRecommendation {
   GlobalRecommendation(
       {required this.recommendationId,
       required this.shortDescription,
-      this.longDescription,
-      this.action,
+      this.longDescription: null,
+      this.action: null,
       required this.relatedThreatsWeights,
-      this.costs,
+      this.costs: null,
       required this.recommendationType});
 
   factory GlobalRecommendation.fromJson(Map<String, dynamic> json) {

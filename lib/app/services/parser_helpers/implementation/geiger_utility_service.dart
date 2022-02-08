@@ -53,7 +53,7 @@ class GeigerUtilityService extends GeigerUtilityAbstract {
           id: "2ce49c82-9b22-417a-a4a0-83c72ab34840"));
     }
     //store cert
-    storeCert(certs: _cert);
+    await storeCert(certs: _cert);
   }
 
   //store list of professional association base on countries

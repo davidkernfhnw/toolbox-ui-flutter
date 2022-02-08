@@ -109,8 +109,22 @@ abstract class GeigerUtilityAbstract {
     }
   }
 
-  //Todo fix issues when a user close the app before accepting teams/condition, exception is throw on the setting view
-  //Todo: possible fix refactor this method to look like storeCoutries method
+  Future<String> get getPublicKey async {
+    try {
+      NodeValue? nodeValue =
+          await storageController.getValue(":Keys", "publicKey");
+      String publicKey = nodeValue!.value;
+      return publicKey;
+    } catch (e, s) {
+      throw StorageException("Public Key not found", s);
+    }
+  }
+
+  //Todo: fix refactor this method to look like storeCoutries method
+  //Todo: add Location as another param
+  //Todo: create cert model(id,name)
+  //Todo: store as stated in the wiki replace
+
   Future<bool> storeCert({required List<Partner> certs}) async {
     try {
       for (Partner cert in certs) {
@@ -201,6 +215,7 @@ abstract class GeigerUtilityAbstract {
     return true;
   }
 
+  //Todo: fix refactor this method to look like storeCoutries method
   Future<bool> storeProfessionAssociation(
       {required List<Partner> professionAssociation}) async {
     try {
@@ -277,17 +292,6 @@ abstract class GeigerUtilityAbstract {
       return true;
     } catch (e) {
       return false;
-    }
-  }
-
-  Future<String> get getPublicKey async {
-    try {
-      NodeValue? nodeValue =
-          await storageController.getValue(":Keys", "publicKey");
-      String publicKey = nodeValue!.value;
-      return publicKey;
-    } catch (e, s) {
-      throw StorageException("Public Key not found", s);
     }
   }
 
