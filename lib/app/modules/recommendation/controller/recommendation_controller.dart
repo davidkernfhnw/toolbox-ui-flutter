@@ -260,16 +260,17 @@ class RecommendationController extends getX.GetxController {
   }
 
   //*** end public method *****
-
+//Todo improve loading time of the recommendation screen
+  //Todo suggestion: this can be done by loading recommendation in homeController
   @override
   onInit() async {
     await _init();
     isLoading.value = true;
     _showName();
     _showUserThreat();
-    await Future.delayed(Duration(milliseconds: 300));
     // _box = _homeControllerInstance.cache;
     _getUserRecommendation();
+
     isLoading.value = false;
     super.onInit();
   }

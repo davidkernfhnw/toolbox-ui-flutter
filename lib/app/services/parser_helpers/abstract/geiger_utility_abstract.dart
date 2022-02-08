@@ -109,6 +109,8 @@ abstract class GeigerUtilityAbstract {
     }
   }
 
+  //Todo fix issues when a user close the app before accepting teams/condition, exception is throw on the setting view
+  //Todo: possible fix refactor this method to look like storeCoutries method
   Future<bool> storeCert({required List<Partner> certs}) async {
     try {
       for (Partner cert in certs) {
@@ -119,7 +121,7 @@ abstract class GeigerUtilityAbstract {
         NodeValue _nodeLocation = NodeValueImpl("location", cert.location.id!);
         NodeValue _nodeLocationName =
             NodeValueImpl("locationName", cert.location.name);
-
+        //I mean need this
         _nodeValue.setValue(cert.names.join(","), Locale.parse(cert.locale));
 
         //await _node.addOrUpdateValue(_nodeValue);
