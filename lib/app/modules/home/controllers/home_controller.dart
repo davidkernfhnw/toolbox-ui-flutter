@@ -94,10 +94,11 @@ class HomeController extends getX.GetxController {
     _cachedAggregateData(aggThreatsScore.value);
 
     //get recommendations
-    _getUserRecommendation();
+    userGlobalRecommendations.value = await _getUserRecommendation();
     await Future.delayed(Duration(milliseconds: 2000));
-    _getDeviceRecommendation();
-
+    deviceGlobalRecommendations.value = await _getDeviceRecommendation();
+    _cachedUserAndDeviceRecommendation(
+        user: userGlobalRecommendations, device: deviceGlobalRecommendations);
     //scanning is done
 
     // log("Dump after scanning ==> ${await _storageController.dump(":")}");
@@ -285,7 +286,8 @@ class HomeController extends getX.GetxController {
       //log("${await _userService.checkNewUserStatus()}");
     } else {
       //populate data from cached
-      await _showAggCachedData();
+      _showAggCachedData();
+      _showRecommendationCachedData();
     }
   }
 
@@ -313,7 +315,7 @@ class HomeController extends getX.GetxController {
 
   //**************Recommendation ***************
 
-  void _getDeviceRecommendation() async {
+  Future<List<Recommendation>> _getDeviceRecommendation() async {
     User? currentUser = await _userService.getUserInfo;
     String indicatorId = _indicatorControllerInstance.indicatorId;
 
@@ -323,11 +325,11 @@ class HomeController extends getX.GetxController {
     List<Recommendation> deviceRecommendation = await _geigerDataService
         .getGeigerRecommendations(geigerScorePath: geigerScoreDevicePath);
 
-    deviceGlobalRecommendations.value = deviceRecommendation;
     log("Device Recommendation ==> $deviceGlobalRecommendations");
+    return deviceRecommendation;
   }
 
-  Future<void> _getUserRecommendation() async {
+  Future<List<Recommendation>> _getUserRecommendation() async {
     User? currentUser = await _userService.getUserInfo;
     String indicatorId = _indicatorControllerInstance.indicatorId;
 
@@ -337,10 +339,9 @@ class HomeController extends getX.GetxController {
     List<Recommendation> userRecommendation = await _geigerDataService
         .getGeigerRecommendations(geigerScorePath: geigerScoreUserPath);
 
-    userGlobalRecommendations.value = userRecommendation;
     //log("User Recommendation => $userGeigerRecommendations");
     log("User Recommendation dump==> $userGlobalRecommendations");
-    // return geigerScoreThreats;
+    return userRecommendation;
   }
 
   //************** end Recommendation ***************
@@ -354,6 +355,11 @@ class HomeController extends getX.GetxController {
       // is only called
       //if user as already accepted terms and condition
       checkConsent();
+
+      //storageRegister
+      _aggDataUpdateListener();
+      //ExternalPluginListener
+      _scanCompleteListener();
     }
 
     await _triggerAggCachedData();
@@ -364,12 +370,6 @@ class HomeController extends getX.GetxController {
   @override
   void onReady() async {
     //await _initReplication();
-
-    //storageRegister
-    _aggDataUpdateListener();
-    //ExternalPluginListener
-    _scanCompleteListener();
-
     super.onReady();
   }
 
@@ -397,6 +397,13 @@ class HomeController extends getX.GetxController {
     cache.write("aggThreat", jsonEncode(value));
   }
 
+  void _cachedUserAndDeviceRecommendation(
+      {required List<Recommendation> user,
+      required List<Recommendation> device}) {
+    cache.write("userRecommendation", jsonEncode(user));
+    cache.write("deviceRecommendation", jsonEncode(device));
+  }
+
   GeigerScoreThreats _getAggCachedData() {
     var data = cache.read("aggThreat");
     var json = jsonDecode(data);
@@ -404,11 +411,29 @@ class HomeController extends getX.GetxController {
     return result;
   }
 
+  List<Recommendation> _getUserRecommendationCachedData() {
+    var userReco = cache.read("userRecommendation");
+    List<Recommendation> result = Recommendation.recommendationList(userReco);
+    log("User Recommendation json ==> $result");
+    return result;
+  }
+
+  List<Recommendation> _getDeviceRecommendationCachedData() {
+    var deviceReco = cache.read("deviceRecommendation");
+    List<Recommendation> result = Recommendation.recommendationList(deviceReco);
+    return result;
+  }
+
   // get data from cache if user has  press the scan button before
-  Future<void> _showAggCachedData() async {
-    //aggThreatsScore.value = await _getAggThreatScore();
+  void _showAggCachedData() async {
     //update aggregate threatScore from cached data
     aggThreatsScore.value = _getAggCachedData();
+  }
+
+  void _showRecommendationCachedData() async {
+    userGlobalRecommendations.value = _getUserRecommendationCachedData();
+    deviceGlobalRecommendations.value = _getDeviceRecommendationCachedData();
+    log("user recomm obs => $userGlobalRecommendations");
   }
 //********* end cache ***********
 }
