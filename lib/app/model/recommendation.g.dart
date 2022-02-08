@@ -12,10 +12,9 @@ Recommendation _$RecommendationFromJson(Map<String, dynamic> json) =>
       shortDescription: json['shortDescription'] as String,
       longDescription: json['longDescription'] as String?,
       recommendationType: json['recommendationType'] as String,
-      weight: json['weight'] as String?,
-      action: json['action'] as String?,
+      weight: json['weight'] as String? ?? null,
+      action: json['action'] as String? ?? null,
       implemented: json['implemented'] as bool? ?? false,
-      disableActionButton: json['disableActionButton'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$RecommendationToJson(Recommendation instance) =>
@@ -27,5 +26,4 @@ Map<String, dynamic> _$RecommendationToJson(Recommendation instance) =>
       'weight': instance.weight,
       'action': instance.action,
       'implemented': instance.implemented,
-      'disableActionButton': instance.disableActionButton,
     };

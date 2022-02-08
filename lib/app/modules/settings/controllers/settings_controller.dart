@@ -192,8 +192,8 @@ class SettingsController extends GetxController {
   Future<void> _getData() async {
     isLoading.value = true;
     currentCountries = await _geigerData.getCountries();
-    _profAss = await _geigerData.getProfessionAssociation();
     _cert = await _geigerData.getCert();
+    _profAss = await _geigerData.getProfessionAssociation();
     isLoading.value = false;
   }
 

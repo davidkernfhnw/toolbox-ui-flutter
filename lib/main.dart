@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
@@ -15,6 +18,23 @@ import 'app/util/theme/custom_theme_data.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _initialization();
+  if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
+    await windowManager.ensureInitialized();
+
+    // Use it only after calling `hiddenWindowAtLaunch`
+    windowManager.waitUntilReadyToShow().then((_) async {
+      // Hide window title bar
+      if (!Platform.isLinux) {
+        await windowManager.setTitleBarStyle('hidden');
+      }
+      await windowManager.setSize(Size(800, 600));
+      //await windowManager.center();
+      await windowManager.show();
+      await windowManager.focus();
+      await windowManager.setSkipTaskbar(false);
+    });
+  }
+
   runApp(GeigerApp());
 }
 

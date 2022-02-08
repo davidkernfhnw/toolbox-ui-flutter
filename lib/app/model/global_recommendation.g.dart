@@ -11,12 +11,12 @@ GlobalRecommendation _$GlobalRecommendationFromJson(
     GlobalRecommendation(
       recommendationId: json['recommendationId'] as String,
       shortDescription: json['shortDescription'] as String,
-      longDescription: json['longDescription'] as String?,
-      action: json['action'] as String?,
+      longDescription: json['longDescription'] as String? ?? null,
+      action: json['action'] as String? ?? null,
       relatedThreatsWeights: (json['relatedThreatsWeights'] as List<dynamic>)
           .map((e) => RelatedThreatWeight.fromJson(e as Map<String, dynamic>))
           .toList(),
-      costs: json['costs'] as String?,
+      costs: json['costs'] as String? ?? null,
       recommendationType: json['recommendationType'] as String,
     );
 

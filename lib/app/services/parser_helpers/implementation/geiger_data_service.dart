@@ -147,56 +147,82 @@ class GeigerDataService extends GlobalDataAbstract {
     return implRecom;
   }
 
-  ///List<IndicatorRecommendation> indicationRecommendation is a subset
-  ///of List<GlobalRecommendation>globalRecommendation
-  ///List<String> implementedRecommendation is of list of recommendationIds
-  Future<List<Recommendation>> getGeigerRecommendations(
-      {required String recommendationPath,
-      required String threatId,
-      required geigerScorePath}) async {
+  ///@return List<Recommendation> of Global recommendation with implemented field
+  ///set either true/false based recommendation that was implemented
+  Future<List<Recommendation>> getGeigerRecommendations({
+    required geigerScorePath,
+  }) async {
     List<Recommendation> finalRecommendations = [];
-    List<IndicatorRecommendation> indicatorRecommendations =
-        await _getIndicatorRecommendation(
-            nodePath: recommendationPath, threatId: threatId);
     List<GlobalRecommendation> globalRecommendations =
         await getGlobalRecommendations();
     List<String> implementedRecommendationIds =
         await _getImplementedRecommendationId(
             geigerScoreNodePath: geigerScorePath);
 
-    //check if indicatorRecommendation is empty then return empty list
+    for (GlobalRecommendation gRecommendation in globalRecommendations) {
+      //Check if the recommendation has been implemented
+      final bool isImplemented = implementedRecommendationIds
+          .contains(gRecommendation.recommendationId);
+
+      Recommendation fG = Recommendation(
+        recommendationId: gRecommendation.recommendationId,
+        shortDescription: gRecommendation.shortDescription,
+        longDescription: gRecommendation.longDescription,
+        action: gRecommendation.action,
+        recommendationType: gRecommendation.recommendationType,
+        implemented: isImplemented,
+      );
+      finalRecommendations.add(fG);
+    }
+    // }
+    return finalRecommendations;
+  }
+
+  ///@return List<Recommendation> of indicator  recommendation
+  /// @param List<Recommendation> of global recommendation
+  /// @param String recommendationPath
+  /// @param String geigerScorePath
+  Future<List<Recommendation>> getFilteredRecommendations(
+      {required List<Recommendation> gRecommendations,
+      required String recommendationPath,
+      required String geigerScorePath,
+      required String threatId}) async {
+    List<Recommendation> filteredRecommendations = [];
+
+    List<IndicatorRecommendation> indicatorRecommendations =
+        await _getIndicatorRecommendation(
+            nodePath: recommendationPath, threatId: threatId);
+
+    List<String> implementedRecommendationIds =
+        await _getImplementedRecommendationId(
+            geigerScoreNodePath: geigerScorePath);
+
     if (indicatorRecommendations.isEmpty) return [];
 
     //there are some indicator recommendations
     for (IndicatorRecommendation indicatorRecommendation
         in indicatorRecommendations) {
       //filter globalRecommendation using indicatorRecommendation
-      List<GlobalRecommendation> globalIndicatorRecommendations =
-          globalRecommendations
-              .where((GlobalRecommendation value) =>
-                  value.recommendationId ==
-                  indicatorRecommendation.recommendationId)
-              .toList();
+      Recommendation filteredRecommendation = gRecommendations.firstWhere(
+          (Recommendation value) =>
+              value.recommendationId ==
+              indicatorRecommendation.recommendationId);
+      //Check if the recommendation has been implemented
+      final bool isImplemented = implementedRecommendationIds
+          .contains(indicatorRecommendation.recommendationId);
 
-      for (GlobalRecommendation gRecommendation
-          in globalIndicatorRecommendations) {
-        //Check if the recommendation has been implemented
-        final bool isImplemented = implementedRecommendationIds
-            .contains(gRecommendation.recommendationId);
+      Recommendation r = Recommendation(
+          recommendationId: filteredRecommendation.recommendationId,
+          shortDescription: filteredRecommendation.shortDescription,
+          longDescription: filteredRecommendation.longDescription,
+          weight: indicatorRecommendation.weight,
+          action: filteredRecommendation.action,
+          implemented: isImplemented,
+          recommendationType: filteredRecommendation.recommendationType);
 
-        Recommendation fG = Recommendation(
-            recommendationId: gRecommendation.recommendationId,
-            weight: indicatorRecommendation.weight,
-            shortDescription: gRecommendation.shortDescription,
-            longDescription: gRecommendation.longDescription,
-            action: gRecommendation.action,
-            recommendationType: gRecommendation.recommendationType,
-            implemented: isImplemented,
-            disableActionButton: isImplemented);
-        finalRecommendations.add(fG);
-      }
+      filteredRecommendations.add(r);
     }
-    return finalRecommendations;
+    return filteredRecommendations;
   }
 
   Future<List<Tool>> showExternalTools({String locale: "en"}) async {

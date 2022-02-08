@@ -97,6 +97,7 @@ class DataProtectionController extends GetxController {
     await _initStorageController();
     _userService = GeigerUserService(_storageController);
     await _getUserConsent();
+    log("DUMP ON SETTING ${await _storageController.dump(":Global:cert")}");
     super.onInit();
   }
 }
