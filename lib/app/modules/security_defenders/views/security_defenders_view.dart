@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/model/country.dart';
 import 'package:geiger_toolbox/app/modules/security_defenders/views/widgets/defenders_card.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
+import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_cert.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_country.dart';
-import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_partners.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_text_field.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 
@@ -29,15 +28,15 @@ class SecurityDefendersView extends StatelessWidget {
                     children: [
                       Expanded(
                         child: CustomDropDownCountry(
-                          listItems: [Country(name: "switzerland")],
+                          countries: [],
                           hintText: "Select Country",
                           titleText: "Country",
                         ),
                       ),
                       SizedBox(width: 10),
                       Expanded(
-                        child: CustomDropDownFlutter(
-                          listItems: [],
+                        child: CustomDropDownCert(
+                          certs: [],
                           hintText: '',
                           titleText: "Association",
                         ),

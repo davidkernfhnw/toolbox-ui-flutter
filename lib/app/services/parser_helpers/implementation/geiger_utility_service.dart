@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:geiger_localstorage/src/storage_controller.dart';
 import 'package:geiger_toolbox/app/model/country.dart';
-import 'package:geiger_toolbox/app/model/partner.dart';
+import 'package:geiger_toolbox/app/model/professional_association.dart';
 
+import '../../../model/cert.dart';
 import '../abstract/geiger_utility_abstract.dart';
 
 class GeigerUtilityService extends GeigerUtilityAbstract {
@@ -21,77 +24,125 @@ class GeigerUtilityService extends GeigerUtilityAbstract {
   //store list of CERT base on countries
   //available in the localStorage-
   Future<void> storeCerts() async {
-    List<Partner> _cert = [];
+    await _storeSwissCerts();
+    await _storeNetherLandsCerts();
+    await _storeRomaniaCerts();
+  }
+
+  Future<void> _storeSwissCerts() async {
+    List<Cert> swissCerts = [
+      Cert(id: "330e1d39-aad3-43ea-9f32-f89fc82899d9", name: "NCSC Switzerland")
+    ];
     //get countries store in localStore
     List<Country> countries = await getCountries();
 
     //filter countries
     Country s =
         countries.firstWhere((element) => element.name == "switzerland");
+    log("Swiss Country => ${s.name}, ${s.id}");
+    for (Cert swissCert in swissCerts) {
+      swissCert.locationId = s.id;
+      await storeCert(cert: swissCert);
+    }
+  }
 
+  Future<void> _storeNetherLandsCerts() async {
+    List<Cert> netherLandsCerts = [
+      Cert(
+          id: "ac2b9cd0-d731-43e7-afc2-f354f856e085",
+          name: "Digital Trust Centre Netherlands")
+    ];
+    //get countries store in localStore
+    List<Country> countries = await getCountries();
+
+    //filter countries
     Country n =
         countries.firstWhere((element) => element.name == "netherlands");
-
-    Country r = countries.firstWhere((element) => element.name == "romania");
-
-    var exist = countries.where((element) => element.name == "switzerland");
-    // ignore: unused_local_variable
-    for (Country country in exist) {
-      _cert.add(Partner(
-          location: s,
-          names: ["NCSC Switzerland"],
-          id: "1d79a419-f2cc-4f39-b216-ee84c25d858f"));
-
-      _cert.add(Partner(
-          location: n,
-          names: ["Digital Trust Centre Netherlands"],
-          id: "e1274119-1b2c-4703-8c2e-b0b1a0b0f01a"));
-
-      _cert.add(Partner(
-          location: r,
-          names: ["CERT Romania"],
-          id: "2ce49c82-9b22-417a-a4a0-83c72ab34840"));
+    for (Cert netherLandsCert in netherLandsCerts) {
+      netherLandsCert.locationId = n.id;
+      await storeCert(cert: netherLandsCert);
     }
-    //store cert
-    await storeCert(certs: _cert);
+  }
+
+  Future<void> _storeRomaniaCerts() async {
+    List<Cert> romaniaCerts = [
+      Cert(id: "e60c88f2-7ab7-4e9f-bd26-5d2a062b4af9", name: "CERT Romania")
+    ];
+
+    //get countries store in localStore
+    List<Country> countries = await getCountries();
+    //filter countries
+    Country r = countries.firstWhere((element) => element.name == "romania");
+    for (Cert romaniaCert in romaniaCerts) {
+      romaniaCert.locationId = r.id;
+      await storeCert(cert: romaniaCert);
+    }
   }
 
   //store list of professional association base on countries
   //available in the localStorage-
   Future<void> storeProfAss() async {
-    List<Partner> profAss = [];
+    await _storeSwissProfAss();
+    await _storeNetherlandsProfAss();
+    await _storeRomainProfAss();
+  }
+
+  Future<void> _storeSwissProfAss() async {
+    List<ProfessionalAssociation> swissProfAss = [
+      ProfessionalAssociation(
+          id: "8d14468b-30c2-414e-95b1-667844529aa3",
+          name: "Swiss Yoga Association"),
+      ProfessionalAssociation(
+          id: "1f850c91-ba00-4691-90c8-9602b24d8815", name: "Coiffure Suisse"),
+      ProfessionalAssociation(
+          id: "5ea818af-9b8b-4029-bafe-5aa421bef113",
+          name: "Swiss SME Association")
+    ];
+    //get countries store in localStore
     List<Country> countries = await getCountries();
 
     //filter countries
     Country s =
         countries.firstWhere((element) => element.name == "switzerland");
+    for (ProfessionalAssociation profAss in swissProfAss) {
+      profAss.locationId = s.id;
+      await storeProfessionAssociation(professionalAssociation: profAss);
+    }
+  }
 
+  Future<void> _storeNetherlandsProfAss() async {
+    List<ProfessionalAssociation> netherlandsProfAss = [
+      ProfessionalAssociation(
+          id: "cf0b8dc8-ee49-4e0a-85a6-42e4c72770ee",
+          name: "NetherLands Association")
+    ];
+    //get countries store in localStore
+    List<Country> countries = await getCountries();
+
+    //filter countries
     Country n =
         countries.firstWhere((element) => element.name == "netherlands");
-
-    Country r = countries.firstWhere((element) => element.name == "romania");
-
-    var exist = countries.where((element) => element.name == "switzerland");
-    // ignore: unused_local_variable
-    for (Country country in exist) {
-      profAss.add(Partner(
-          location: s,
-          names: [
-            "Swiss Yoga Association",
-            "Coiffure Suisse",
-            "Swiss SME Association"
-          ],
-          id: "f2a30f42-37c3-4f54-9dd9-97ffe923aa76"));
-      profAss.add(Partner(
-          location: r,
-          names: ["Romania Association"],
-          id: "ff409674-11a3-41b6-9823-a64b4469c034"));
-      profAss.add(Partner(
-          location: n,
-          names: ["Netherlands Association"],
-          id: "ea3afb16-6a57-4962-92b5-b054b2683c07"));
+    for (ProfessionalAssociation profAss in netherlandsProfAss) {
+      profAss.locationId = n.id;
+      await storeProfessionAssociation(professionalAssociation: profAss);
     }
-    storeProfessionAssociation(professionAssociation: profAss);
+  }
+
+  Future<void> _storeRomainProfAss() async {
+    List<ProfessionalAssociation> romaniaProfAss = [
+      ProfessionalAssociation(
+          id: "25d0930f-f0ba-4a95-a53d-7c402fc6ddea",
+          name: "Romania Association")
+    ];
+    //get countries store in localStore
+    List<Country> countries = await getCountries();
+
+    //filter countries
+    Country r = countries.firstWhere((element) => element.name == "romania");
+    for (ProfessionalAssociation profAss in romaniaProfAss) {
+      profAss.locationId = r.id;
+      await storeProfessionAssociation(professionalAssociation: profAss);
+    }
   }
 
   //store public key

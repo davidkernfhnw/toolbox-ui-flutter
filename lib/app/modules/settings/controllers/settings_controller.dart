@@ -3,8 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/model/consent.dart';
+import 'package:geiger_toolbox/app/model/country.dart';
 import 'package:geiger_toolbox/app/model/language.dart';
-import 'package:geiger_toolbox/app/model/partner.dart';
+import 'package:geiger_toolbox/app/model/professional_association.dart';
 import 'package:geiger_toolbox/app/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/model/user.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
@@ -12,6 +13,8 @@ import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_utility_service.dart';
 import 'package:geiger_toolbox/app/translation/suppored_language.dart';
 import 'package:get/get.dart';
+
+import '../../../model/cert.dart';
 
 class SettingsController extends GetxController {
   //instance of SettingsController
@@ -34,24 +37,25 @@ class SettingsController extends GetxController {
   //observable variables for react Ui
   //get default language from device
   var selectedLanguage = Get.locale!.languageCode.obs;
-  var currentCert = "NCSC Switzerland".obs;
-  var currentProfAss = "Swiss Yoga Association".obs;
+  var currentCert = "".obs;
+  var currentProfAss = "".obs;
   var supervisor = false.obs;
-  var currentCountry = "".obs;
+  var currentCountryId = "".obs;
   var currentDeviceName = "".obs;
   var currentUserName = "".obs;
   var isSuccess = true.obs;
   var isLoading = false.obs;
-  List certBaseOnCountrySelected = [].obs;
-  List profAssBaseOnCountrySelected = [].obs;
-  List currentCountries = [].obs;
+  List<Cert> certBaseOnCountrySelected = <Cert>[].obs;
+  List<ProfessionalAssociation> profAssBaseOnCountrySelected =
+      <ProfessionalAssociation>[].obs;
+  List<Country> currentCountries = <Country>[].obs;
 
   //list of supported languages
   List<Language> languages = SupportedLanguage.languages;
   //list of professional association
-  late List<Partner> _profAss;
+  late List<ProfessionalAssociation> _profAss;
   //list of cert
-  late List<Partner> _cert;
+  late List<Cert> _cert;
 
   //update language
   onChangeLanguage(String? language) {
@@ -71,12 +75,12 @@ class SettingsController extends GetxController {
 
   //update country
   //default is switzerland
-  onChangedCountry([Object? country = "switzerland"]) {
+  onChangedCountry([dynamic country = "cd258b40-4dc1-486a-b000-eb59e71e7484"]) {
     //update country
-    currentCountry.value = country.toString();
+    currentCountryId.value = country.toString();
 
     //show list of cert base on country selected
-    _showCerBasedOnCountry(country.toString());
+    _showCertBasedOnCountry(country.toString());
 
     //show list of profAss base on country selected
     _showProfAssBaseOnCountry(country.toString());
@@ -139,7 +143,7 @@ class SettingsController extends GetxController {
     userInfo.deviceOwner!.name = currentDeviceName.value;
     userInfo.supervisor = supervisor.value;
 
-    userInfo.country = currentCountry.value;
+    userInfo.country = currentCountryId.value;
     userInfo.cert = currentCert.value;
     userInfo.profAss = currentProfAss.value;
 
@@ -159,24 +163,27 @@ class SettingsController extends GetxController {
     }
   }
 
-  void _showProfAssBaseOnCountry(String country) {
-    Partner selectedProfAss = _profAss
-        .firstWhere((Partner element) => country == element.location.name);
+  void _showProfAssBaseOnCountry(String countryId) {
+    List<ProfessionalAssociation> selectedProfAss = _profAss
+        .where((ProfessionalAssociation element) =>
+            countryId == element.locationId)
+        .toList();
     //for debug purpose
-    log(selectedProfAss.names.toString());
+    log(selectedProfAss.first.name.toString());
     //updates
-    profAssBaseOnCountrySelected = selectedProfAss.names;
-    currentProfAss.value = profAssBaseOnCountrySelected.first;
+    profAssBaseOnCountrySelected = selectedProfAss;
+    currentProfAss.value = profAssBaseOnCountrySelected.first.name!;
   }
 
-  void _showCerBasedOnCountry(String country) {
+  void _showCertBasedOnCountry(String countryId) {
     //show list of cert base on country selected
-    Partner selectedCert =
-        _cert.firstWhere((Partner element) => country == element.location.name);
+    List<Cert> selectedCert =
+        _cert.where((Cert element) => countryId == element.locationId).toList();
 
+    log("selectedCert => $selectedCert");
     //update observable variable
-    certBaseOnCountrySelected = selectedCert.names;
-    currentCert.value = certBaseOnCountrySelected.first;
+    certBaseOnCountrySelected = selectedCert;
+    currentCert.value = certBaseOnCountrySelected.first.name!;
 
     //for debugging purpose
     log(certBaseOnCountrySelected.toString());
@@ -192,8 +199,11 @@ class SettingsController extends GetxController {
   Future<void> _getData() async {
     isLoading.value = true;
     currentCountries = await _geigerData.getCountries();
-    _cert = await _geigerData.getCert();
-    _profAss = await _geigerData.getProfessionAssociation();
+    _cert = await _geigerData.getPartnerCert(language: selectedLanguage.value);
+    log("cert ==> $_cert");
+    _profAss =
+        await _geigerData.getPartnerProfAss(language: selectedLanguage.value);
+    log("Prof ass ==> $_profAss");
     isLoading.value = false;
   }
 
@@ -220,7 +230,7 @@ class SettingsController extends GetxController {
     if (userInfo.value.country != null &&
         userInfo.value.profAss != null &&
         userInfo.value.cert != null) {
-      currentCountry.value = userInfo.value.country!;
+      currentCountryId.value = userInfo.value.country!;
       currentProfAss.value = userInfo.value.profAss!;
       currentCert.value = userInfo.value.cert!;
     }
@@ -237,9 +247,10 @@ class SettingsController extends GetxController {
     }
     //set language
     onChangeLanguage(userInfo.value.language);
-    log("cert current: " + currentCert.value);
-    log("country: ${currentCountry.value}");
+    log("cert current: ${currentCert.value}");
+    log("country: ${currentCountryId.value}");
     log("countries: ${currentCountries}");
+    log("list of ProfAss => ${profAssBaseOnCountrySelected}");
     log("profAss: ${currentProfAss.value}");
     log("userInfo: ${userInfo.value}");
     log("CurrentUserName :${currentUserName.value}");
@@ -252,6 +263,7 @@ class SettingsController extends GetxController {
     await _getData();
     await _initUserData();
 
+    log("DUMP ON SETTING ${await _storageController.dump(":Global:professionAssociation")}");
     super.onInit();
   }
 }

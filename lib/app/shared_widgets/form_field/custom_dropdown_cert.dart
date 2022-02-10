@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
-class CustomDropDownFlutter extends StatelessWidget {
-  const CustomDropDownFlutter(
+import '../../model/cert.dart';
+
+class CustomDropDownCert extends StatelessWidget {
+  const CustomDropDownCert(
       {Key? key,
       this.titleText,
-      required this.listItems,
+      required this.certs,
       required this.hintText,
       this.onChanged,
       this.defaultValue})
       : super(key: key);
 
   final String? titleText;
-  final List listItems;
+  final List<Cert> certs;
   final String hintText;
   final String? defaultValue;
   final void Function(dynamic partner)? onChanged;
@@ -28,10 +30,10 @@ class CustomDropDownFlutter extends StatelessWidget {
       ),
       onChanged: onChanged,
       hint: Text(hintText),
-      items: listItems
-          .map((item) => DropdownMenuItem(
-                value: item,
-                child: Text('$item'),
+      items: certs
+          .map((Cert item) => DropdownMenuItem(
+                value: item.name,
+                child: Text('${item.name}'),
               ))
           .toList(),
     );

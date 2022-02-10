@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/settings/controllers/settings_controller.dart';
+import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropDown_prof_ass.dart';
+import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_cert.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_country.dart';
-import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_partners.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_switch.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_text_field.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/cutom_dropdown_language.dart';
@@ -64,18 +65,18 @@ class ProfileView extends StatelessWidget {
                       height: 15,
                     ),
                     CustomDropDownCountry(
-                      listItems: controller.currentCountries,
+                      countries: controller.currentCountries,
                       onChanged: controller.onChangedCountry,
                       hintText: 'Select Your Country',
                       titleText: "Country",
-                      defaultValue: controller.currentCountry.value,
+                      defaultValue: controller.currentCountryId.value,
                     ),
                     SizedBox(
                       height: 15,
                     ),
-                    CustomDropDownFlutter(
+                    CustomDropDownCert(
                       onChanged: controller.onChangedCert,
-                      listItems: controller.certBaseOnCountrySelected,
+                      certs: controller.certBaseOnCountrySelected,
                       defaultValue: controller.currentCert.value,
                       hintText: "Select Competent CERT",
                       titleText: "Competent CERT",
@@ -83,9 +84,9 @@ class ProfileView extends StatelessWidget {
                     SizedBox(
                       height: 15,
                     ),
-                    CustomDropDownFlutter(
+                    CustomDropDownProfAss(
                       onChanged: controller.onChangedProfAss,
-                      listItems: controller.profAssBaseOnCountrySelected,
+                      certs: controller.profAssBaseOnCountrySelected,
                       defaultValue: controller.currentProfAss.value,
                       hintText: "Select Profession Association",
                       titleText: "Profession Association",
