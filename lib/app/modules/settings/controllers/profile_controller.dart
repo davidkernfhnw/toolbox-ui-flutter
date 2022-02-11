@@ -271,15 +271,10 @@ class ProfileController extends GetxController {
   void onInit() async {
     await _initStorageController();
 
-    bool? result = await _userService.checkUserConsent();
-    if (result!) {
-      await _getData();
-      await _initUserData();
+    await _getData();
+    await _initUserData();
 
-      log("DUMP ON Profile ${await _storageController.dump(":Global:professionAssociation")}");
-    } else {
-      await _getData();
-    }
+    log("DUMP ON Profile ${await _storageController.dump(":Global:professionAssociation")}");
 
     super.onInit();
   }

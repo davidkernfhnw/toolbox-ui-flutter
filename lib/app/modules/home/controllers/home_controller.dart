@@ -98,7 +98,7 @@ class HomeController extends getX.GetxController {
 
     //get recommendations
     userGlobalRecommendations.value = await _getUserRecommendation();
-    await Future.delayed(Duration(milliseconds: 2000));
+    await Future.delayed(Duration(milliseconds: 400));
     deviceGlobalRecommendations.value = await _getDeviceRecommendation();
     _cachedUserAndDeviceRecommendation(
         user: userGlobalRecommendations, device: deviceGlobalRecommendations);
