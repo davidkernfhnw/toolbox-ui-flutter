@@ -33,7 +33,6 @@ class Recommendation {
   }
 
   static List<Recommendation> recommendationList(String recommendationJson) {
-    //Todo: fix error due to some string be empty
     List<dynamic> jsonData = jsonDecode(recommendationJson);
     return jsonData
         .map((recommendationMap) => Recommendation.fromJson(recommendationMap))

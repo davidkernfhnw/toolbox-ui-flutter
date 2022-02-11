@@ -9,11 +9,16 @@ import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 import 'package:geiger_toolbox/app/util/geiger_icons.dart';
 import 'package:get/get.dart';
 
+import '../../settings/controllers/data_protection_controller.dart';
+
 class HomeView extends StatelessWidget {
   HomeView({Key? key}) : super(key: key);
 
   // getting an instance of HomeController
   final HomeController controller = HomeController.instance;
+
+  final DataProtectionController _dataProtectionController =
+      DataProtectionController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +67,8 @@ class HomeView extends StatelessWidget {
                                             t.threat.name.toLowerCase()],
                                         indicatorScore:
                                             double.parse(t.score.toString()),
-                                        improve: controller.dataProcess.value &&
-                                                controller.dataAccess.value
+                                        improve: _dataProtectionController
+                                                .getDataAccess
                                             ? () => Get.toNamed(
                                                 Routes.RECOMMENDATION_VIEW,
                                                 arguments: t.threat)

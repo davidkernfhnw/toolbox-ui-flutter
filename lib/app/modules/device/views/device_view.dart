@@ -5,7 +5,6 @@ import 'package:geiger_toolbox/app/modules/device/controllers/device_controller.
 import 'package:geiger_toolbox/app/modules/device/views/widgets/device_card.dart';
 import 'package:geiger_toolbox/app/modules/device/views/widgets/device_owner_card.dart';
 import 'package:geiger_toolbox/app/modules/device/views/widgets/device_qrcode_view.dart';
-import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
 import 'package:geiger_toolbox/app/modules/qrcode/controllers/qr_scanner_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/shared_widgets/EmployeeCard.dart';
@@ -14,12 +13,15 @@ import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
 import 'package:get/get.dart';
 
+import '../../settings/controllers/data_protection_controller.dart';
+
 class DeviceView extends StatelessWidget {
   DeviceView({Key? key}) : super(key: key);
   //instance of QrScannerController
   final QrScannerController _qrController = QrScannerController();
   final DeviceController _deviceController = DeviceController.instance;
-  final HomeController _homeControllerInstance = HomeController.instance;
+  final DataProtectionController _dataProtectionController =
+      DataProtectionController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +37,7 @@ class DeviceView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               DeviceOwnerCard(
-                  onPress: _homeControllerInstance.dataProcess.value &&
-                          _homeControllerInstance.dataAccess.value
+                  onPress: _dataProtectionController.getDataAccess
                       ? () {
                           Get.to(() => DeviceQrCodeView());
                         }
@@ -50,8 +51,7 @@ class DeviceView extends StatelessWidget {
                   btnText: "Add a Device",
                   onScan:
                       Platform.isWindows || Platform.isMacOS || Platform.isLinux
-                          ? _homeControllerInstance.dataProcess.value &&
-                                  _homeControllerInstance.dataAccess.value
+                          ? _dataProtectionController.getDataAccess
                               ? () {
                                   _qrController.requestCameraPermission(
                                       Routes.QrSCANNER_VIEW,

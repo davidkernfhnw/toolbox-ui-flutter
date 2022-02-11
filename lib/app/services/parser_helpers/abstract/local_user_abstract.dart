@@ -18,16 +18,11 @@ abstract class LocalUserAbstract {
 
   ///@param optional
   ///@return Future<bool>
-  Future<bool> storeUserConsent(
-      {bool dataAccess: false, bool dataProcess: false});
+  Future<bool> storeUserConsent({bool dataAccess: false});
 
   Future<bool> updateUserConsentDataAccess({required bool dataAccess});
 
-  Future<bool> updateUserConsentDataProcess({required bool dataProcess});
-
   Future<bool?> get getUserConsentDataAccess;
-
-  Future<bool?> get getUserConsentDataProcess;
 
   Future<bool?> checkUserConsent();
 

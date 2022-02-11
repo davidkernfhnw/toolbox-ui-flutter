@@ -27,8 +27,7 @@ class GeigerApiConnector extends GetxController {
     return null;
   }
 
-  // initialize this method before the start of the app
-  // LN: adding the function to handle the SCAN_COMPLETED event
+  /// initialize this method before the start of the app
   Future<void> initGeigerApi() async {
     try {
       //Todo ==> Declaration should be changed,

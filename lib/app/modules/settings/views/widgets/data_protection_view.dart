@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/settings/controllers/data_protection_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
+import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_radio_list_tile.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_switch.dart';
 import 'package:geiger_toolbox/app/shared_widgets/showCircularProgress.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
 import 'package:get/get.dart';
 
 class DataProtectionView extends StatelessWidget {
-  final DataProtectionController controller;
-  const DataProtectionView({Key? key, required this.controller})
-      : super(key: key);
+  DataProtectionView({Key? key}) : super(key: key);
 
+  final DataProtectionController controller = DataProtectionController.instance;
+  final DataProtectionController _dataProtectionController =
+      DataProtectionController.instance;
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
@@ -18,7 +20,7 @@ class DataProtectionView extends StatelessWidget {
       key: _formKey,
       child: SingleChildScrollView(
         child: Obx(() {
-          return controller.isLoading.value
+          return controller.isLoading.value || controller.isLoading.value
               ? ShowCircularProgress(visible: true)
               : Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -42,45 +44,52 @@ class DataProtectionView extends StatelessWidget {
                           }
                         },
                         defaultValue: controller.getDataAccess,
-                        label: 'This toolbox may be access your data',
+                        label: 'Data Access and Processing',
                         description:
-                            'This setting gives you the ability to work with the toolbox, pair devices, install tools, find people who could support you.',
+                            'Allow the toolbox to calculate your risk score and receive protection recommendations.',
                       ),
                       Divider(
                         height: 5.0,
                         color: Colors.black,
                       ),
-                      CustomSwitch(
-                        onChanged: (bool value) async {
-                          bool result =
-                              await controller.updateDataProcess(value);
-                          if (!Get.isSnackbarOpen) {
-                            result
-                                ? Get.snackbar("Data Process",
-                                    "Consent successfully updated.",
-                                    snackPosition: SnackPosition.BOTTOM,
-                                    backgroundColor: Colors.greenAccent)
-                                : Get.snackbar(
-                                    "Data Process", "Consent fail to updated.",
-                                    snackPosition: SnackPosition.BOTTOM,
-                                    backgroundColor: Colors.orangeAccent);
-                          }
-                        },
-                        defaultValue: controller.getDataProcess,
-                        label: 'This toolbox may be process your data',
-                        description:
-                            'This setting gives you the ability to calculate your risk score and receive protection recommendations.',
-                      ),
-                      Divider(
-                        height: 5.0,
-                        color: Colors.black,
-                      ),
-                      CustomSwitch(
-                        onChanged: null,
-                        defaultValue: false,
-                        label: 'The GEIGER cloud may access your data',
-                        description:
-                            'This setting shares your anonymize data with the GEIGER cloud. The setting gives you the ability to increase the accuracy of the risk score and more complete recommendations',
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          boldText("Data Sharing"),
+                          CustomLabeledRadio(
+                            value: 0,
+                            label: 'Do not Share',
+                            description:
+                                'Data will remain on this single device only.',
+                            groupValue: controller.isRadioSelected.value,
+                            onChanged: (int newValue) {
+                              controller.isRadioSelected.value = newValue;
+                            },
+                            padding: EdgeInsets.symmetric(vertical: 5.0),
+                          ),
+                          CustomLabeledRadio(
+                            value: 1,
+                            label: 'Replicate securely between your devices.',
+                            description:
+                                "All your data will be available on all your devices.",
+                            groupValue: controller.isRadioSelected.value,
+                            onChanged: (int newValue) {
+                              controller.isRadioSelected.value = newValue;
+                            },
+                            padding: EdgeInsets.symmetric(vertical: 5.0),
+                          ),
+                          CustomLabeledRadio(
+                            value: 2,
+                            label: 'Share data with GEIGER cloud.',
+                            description:
+                                "Your tools’ data will be used to improve GEIGER over time.",
+                            groupValue: controller.isRadioSelected.value,
+                            onChanged: (int newValue) {
+                              controller.isRadioSelected.value = newValue;
+                            },
+                            padding: EdgeInsets.symmetric(vertical: 5.0),
+                          ),
+                        ],
                       ),
                       Divider(
                         height: 5.0,
@@ -103,9 +112,12 @@ class DataProtectionView extends StatelessWidget {
                                 width: 7.0,
                               ),
                               ElevatedButton(
-                                onPressed: () {
-                                  Get.toNamed(Routes.TOOLS_VIEW);
-                                },
+                                onPressed:
+                                    _dataProtectionController.getDataAccess
+                                        ? () {
+                                            Get.toNamed(Routes.TOOLS_VIEW);
+                                          }
+                                        : null,
                                 child: Text("Tools"),
                               ),
                             ],
@@ -123,7 +135,27 @@ class DataProtectionView extends StatelessWidget {
                           Text(
                               'When experiencing an incident, you will have the ability to submit an incident report to your chosen cybersecurity agency (CERT). You will be asked each time whether you want to report the incident.'),
                         ],
-                      )
+                      ),
+                      ElevatedButton(
+                          onPressed: _dataProtectionController.getDataAccess
+                              ? () {
+                                  Get.toNamed(Routes.HOME_VIEW);
+                                }
+                              : () {
+                                  Get.defaultDialog(
+                                    barrierDismissible: false,
+                                    title: "Grant Toolbox ",
+                                    middleText: "Data Access and Processing",
+                                    middleTextStyle:
+                                        TextStyle(color: Colors.red),
+                                    cancel: ElevatedButton(
+                                        onPressed: () {
+                                          Get.back();
+                                        },
+                                        child: Text("ok")),
+                                  );
+                                },
+                          child: Text("Navigate to Scan Screen")),
                     ],
                   ),
                 );

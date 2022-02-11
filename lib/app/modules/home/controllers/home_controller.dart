@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/model/geiger_score_threats.dart';
-import 'package:geiger_toolbox/app/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/model/user.dart';
-import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
@@ -21,6 +19,9 @@ import 'package:get/get.dart' as getX;
 import 'package:get_storage/get_storage.dart';
 
 import '../../../model/recommendation.dart';
+import '../../../model/terms_and_conditions.dart';
+import '../../../routes/app_routes.dart';
+import '../../settings/controllers/data_protection_controller.dart';
 
 class HomeController extends getX.GetxController {
   //an instance of HomeController
@@ -40,6 +41,9 @@ class HomeController extends getX.GetxController {
   final GeigerIndicatorController _indicatorControllerInstance =
       GeigerIndicatorController.instance;
   final GeigerApiConnector geigerApiInstance = GeigerApiConnector.instance;
+
+  final DataProtectionController _dataProtectionController =
+      DataProtectionController.instance;
 
   final LocalNotificationController _localNotificationControllerInstance =
       LocalNotificationController.instance;
@@ -61,8 +65,7 @@ class HomeController extends getX.GetxController {
   var isScanRequired = false.obs;
   var isScanCompleted = "".obs;
   var isStorageUpdated = "".obs;
-  var dataAccess = false.obs;
-  var dataProcess = false.obs;
+  //Todo: take this variable to data_protection_controller
 
   //**** end of observable variable ***
 
@@ -94,10 +97,11 @@ class HomeController extends getX.GetxController {
     _cachedAggregateData(aggThreatsScore.value);
 
     //get recommendations
-    _getUserRecommendation();
+    userGlobalRecommendations.value = await _getUserRecommendation();
     await Future.delayed(Duration(milliseconds: 2000));
-    _getDeviceRecommendation();
-
+    deviceGlobalRecommendations.value = await _getDeviceRecommendation();
+    _cachedUserAndDeviceRecommendation(
+        user: userGlobalRecommendations, device: deviceGlobalRecommendations);
     //scanning is done
 
     // log("Dump after scanning ==> ${await _storageController.dump(":")}");
@@ -158,44 +162,9 @@ class HomeController extends getX.GetxController {
     return geigerScoreThreats;
   }
 
-  //check if terms and condition values is true in the localstorage
-  // and navigate to home view (screen)
-  //if false navigate to TermAndCondition view(screen).
-  Future<bool> _isTermsAccepted() async {
-    try {
-      //get user Info
-      User? userInfo = await _userService.getUserInfo;
-
-      // assign user term and condition
-      TermsAndConditions userTermsAndConditions = userInfo!.termsAndConditions;
-      //check if true and return home view (screen)
-      if (await userTermsAndConditions.ageCompliant == true &&
-          await userTermsAndConditions.signedConsent == true &&
-          await userTermsAndConditions.agreedPrivacy == true) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      log("UserInfo not found");
-      return false;
-    }
-  }
-
+  //Todo: take this method to data_protection_controller
   //check if termsAndConditions were accepted
   // redirect to termAndCondition if false
-  Future<bool> _redirect() async {
-    isLoadingServices.value = true;
-    bool checkTerms = await _isTermsAccepted();
-
-    if (checkTerms == false) {
-      await getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
-      isLoadingServices.value = false;
-      return false;
-    }
-    isLoadingServices.value = false;
-    return true;
-  }
 
   //********* start initial resources ***********
 
@@ -212,13 +181,6 @@ class HomeController extends getX.GetxController {
     await Future.delayed(Duration(seconds: 2));
     log("isLoading is : $isLoadingServices");
     message.value = "Almost done!";
-  }
-
-  Future<void> _initStorageResources() async {
-    //get StorageController from localStorageController instance
-    _storageController = await _localStorageInstance.getStorageController;
-    _userService = GeigerUserService(_storageController);
-    _geigerDataService = GeigerDataService(_storageController);
   }
 
   void _showNotification(String event) async {
@@ -285,16 +247,16 @@ class HomeController extends getX.GetxController {
       //log("${await _userService.checkNewUserStatus()}");
     } else {
       //populate data from cached
-      await _showAggCachedData();
+      _showAggCachedData();
+      _showRecommendationCachedData();
     }
   }
 
-  Future<void> checkConsent() async {
+  Future<void> _checkConsent() async {
     bool? result = await _userService.checkUserConsent();
     if (result != null) {
       if (result) {
-        dataAccess.value = true;
-        dataProcess.value = true;
+        _dataProtectionController.setDataAccess = true;
         bool isFirstPressed = await _userService.isButtonPressed();
         if (!isFirstPressed) {
           await _loadIndicator();
@@ -303,8 +265,60 @@ class HomeController extends getX.GetxController {
           await _loadIndicatorWithUpdateDetails();
         }
       } else {
-        dataAccess.value = false;
-        dataProcess.value = false;
+        _dataProtectionController.setDataAccess = false;
+      }
+    }
+  }
+
+  //check if terms and condition values is true in the localstorage
+  // and navigate to Setting(screen)
+  //if false navigate to TermAndCondition view(screen).
+  Future<bool> _isTermsAccepted() async {
+    try {
+      //get user Info
+      User? userInfo = await _userService.getUserInfo;
+
+      // assign user term and condition
+      TermsAndConditions userTermsAndConditions = userInfo!.termsAndConditions;
+      //check if true and return home view (screen)
+      if (await userTermsAndConditions.ageCompliant == true &&
+          await userTermsAndConditions.signedConsent == true &&
+          await userTermsAndConditions.agreedPrivacy == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      log("UserInfo not found");
+      return false;
+    }
+  }
+
+  //Todo: take this method to data_protection_controller
+  //check if termsAndConditions were accepted
+  // redirect to termAndCondition view if false else
+  // then check for userConsent if true
+  // redirect to Home view
+  //else remain in setting screen
+
+  Future<bool> _redirect() async {
+    isLoadingServices.value = true;
+    bool checkTerms = await _isTermsAccepted();
+
+    if (checkTerms == false) {
+      await getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
+      isLoadingServices.value = false;
+      return false;
+    } else {
+      bool? result = await _userService.checkUserConsent();
+
+      if (result! == false) {
+        await getX.Get.offNamed(Routes.SETTINGS_VIEW);
+        isLoadingServices.value = false;
+        return false;
+      } else {
+        isLoadingServices.value = false;
+        return true;
       }
     }
   }
@@ -313,7 +327,7 @@ class HomeController extends getX.GetxController {
 
   //**************Recommendation ***************
 
-  void _getDeviceRecommendation() async {
+  Future<List<Recommendation>> _getDeviceRecommendation() async {
     User? currentUser = await _userService.getUserInfo;
     String indicatorId = _indicatorControllerInstance.indicatorId;
 
@@ -323,11 +337,11 @@ class HomeController extends getX.GetxController {
     List<Recommendation> deviceRecommendation = await _geigerDataService
         .getGeigerRecommendations(geigerScorePath: geigerScoreDevicePath);
 
-    deviceGlobalRecommendations.value = deviceRecommendation;
     log("Device Recommendation ==> $deviceGlobalRecommendations");
+    return deviceRecommendation;
   }
 
-  Future<void> _getUserRecommendation() async {
+  Future<List<Recommendation>> _getUserRecommendation() async {
     User? currentUser = await _userService.getUserInfo;
     String indicatorId = _indicatorControllerInstance.indicatorId;
 
@@ -337,39 +351,42 @@ class HomeController extends getX.GetxController {
     List<Recommendation> userRecommendation = await _geigerDataService
         .getGeigerRecommendations(geigerScorePath: geigerScoreUserPath);
 
-    userGlobalRecommendations.value = userRecommendation;
     //log("User Recommendation => $userGeigerRecommendations");
     log("User Recommendation dump==> $userGlobalRecommendations");
-    // return geigerScoreThreats;
+    return userRecommendation;
   }
 
   //************** end Recommendation ***************
+
+  Future<void> _initStorageResources() async {
+    //get StorageController from localStorageController instance
+    _storageController = await _localStorageInstance.getStorageController;
+    _userService = GeigerUserService(_storageController);
+    _geigerDataService = GeigerDataService(_storageController);
+  }
 
   @override
   void onInit() async {
     //init resources
     await _initStorageResources();
-    bool isRedirect = await _redirect();
-    if (isRedirect) {
-      // is only called
-      //if user as already accepted terms and condition
-      checkConsent();
+    bool redirect = await _redirect();
+    if (redirect) {
+      //check userConsent before load indication
+      _checkConsent();
+
+      //storageRegister
+      _aggDataUpdateListener();
+      //ExternalPluginListener
+      _scanCompleteListener();
+
+      await _triggerAggCachedData();
     }
-
-    await _triggerAggCachedData();
-
     super.onInit();
   }
 
   @override
   void onReady() async {
     //await _initReplication();
-
-    //storageRegister
-    _aggDataUpdateListener();
-    //ExternalPluginListener
-    _scanCompleteListener();
-
     super.onReady();
   }
 
@@ -397,6 +414,13 @@ class HomeController extends getX.GetxController {
     cache.write("aggThreat", jsonEncode(value));
   }
 
+  void _cachedUserAndDeviceRecommendation(
+      {required List<Recommendation> user,
+      required List<Recommendation> device}) {
+    cache.write("userRecommendation", jsonEncode(user));
+    cache.write("deviceRecommendation", jsonEncode(device));
+  }
+
   GeigerScoreThreats _getAggCachedData() {
     var data = cache.read("aggThreat");
     var json = jsonDecode(data);
@@ -404,11 +428,29 @@ class HomeController extends getX.GetxController {
     return result;
   }
 
+  List<Recommendation> _getUserRecommendationCachedData() {
+    var userReco = cache.read("userRecommendation");
+    List<Recommendation> result = Recommendation.recommendationList(userReco);
+    log("User Recommendation json ==> $result");
+    return result;
+  }
+
+  List<Recommendation> _getDeviceRecommendationCachedData() {
+    var deviceReco = cache.read("deviceRecommendation");
+    List<Recommendation> result = Recommendation.recommendationList(deviceReco);
+    return result;
+  }
+
   // get data from cache if user has  press the scan button before
-  Future<void> _showAggCachedData() async {
-    //aggThreatsScore.value = await _getAggThreatScore();
+  void _showAggCachedData() async {
     //update aggregate threatScore from cached data
     aggThreatsScore.value = _getAggCachedData();
+  }
+
+  void _showRecommendationCachedData() async {
+    userGlobalRecommendations.value = _getUserRecommendationCachedData();
+    deviceGlobalRecommendations.value = _getDeviceRecommendationCachedData();
+    log("user recomm obs => $userGlobalRecommendations");
   }
 //********* end cache ***********
 }

@@ -252,15 +252,12 @@ class RecommendationController extends getX.GetxController {
   }
 
   //*** end public method *****
-//Todo improve loading time of the recommendation screen
-  //Todo suggestion: this can be done by loading recommendation in homeController
   @override
   onInit() async {
     await _init();
     isLoading.value = true;
     _showName();
     _showUserThreat();
-    // _box = _homeControllerInstance.cache;
     _getFilteredUserRecommendation();
 
     isLoading.value = false;
@@ -270,12 +267,8 @@ class RecommendationController extends getX.GetxController {
   @override
   onReady() async {
     isLoading.value = true;
-
-    //Future.delayed(Duration(milliseconds: 200));
     _showDeviceThreat();
-
     _getFilteredDeviceRecommendation();
-
     isLoading.value = false;
     super.onReady();
   }

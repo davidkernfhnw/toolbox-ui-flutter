@@ -4,6 +4,7 @@ import 'package:geiger_toolbox/app/util/style.dart';
 import 'package:get/get.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
+import '../../../settings/controllers/data_protection_controller.dart';
 import 'scan_risk_button.dart';
 
 class TopScreen extends StatelessWidget {
@@ -11,8 +12,11 @@ class TopScreen extends StatelessWidget {
 
   final void Function()? onChangeUserId;
 
-  const TopScreen({Key? key, this.onChangeUserId, required this.controller})
+  TopScreen({Key? key, this.onChangeUserId, required this.controller})
       : super(key: key);
+
+  final DataProtectionController _dataProtectionController =
+      DataProtectionController.instance;
 
   String get parseToDouble {
     //convert to geiger_score aggregate to double
@@ -28,17 +32,16 @@ class TopScreen extends StatelessWidget {
       return Column(
         children: [
           Text(
-            controller.dataAccess.value && controller.dataProcess.value
+            _dataProtectionController.getDataAccess
                 ? parseToDouble != "0.0"
                     ? 'Your total Risk Score:'
                     : 'Start scanning your cyber threats:'
                 : "Permission is required before Geiger Toolbox can process your data.",
             textAlign: TextAlign.center,
             style: TextStyle(
-                color:
-                    controller.dataAccess.value && controller.dataProcess.value
-                        ? Colors.grey
-                        : Colors.deepOrangeAccent,
+                color: _dataProtectionController.getDataAccess
+                    ? Colors.grey
+                    : Colors.deepOrangeAccent,
                 fontWeight: FontWeight.bold),
           ),
           !controller.isScanning.value

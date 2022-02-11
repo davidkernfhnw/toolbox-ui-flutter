@@ -34,6 +34,7 @@ class TermsAndConditionsController extends GetxController {
   var signedConsent = false.obs;
   var agreedPrivacy = false.obs;
   var errorMsg = false.obs;
+  Rx<int> isRadioSelected = 0.obs;
 
   //store accepted termsAndCondition
   //show error message if all terms and condition are not check
@@ -55,7 +56,8 @@ class TermsAndConditionsController extends GetxController {
       if (success) {
         //set scanButton has not be pressed to true
         await _userService.setButtonNotPressed();
-        Get.offNamed(Routes.HOME_VIEW);
+        //redirect to setting view
+        Get.offNamed(Routes.SETTINGS_VIEW);
       } else {
         //set errorMsg to true
         errorMsg.value = true;

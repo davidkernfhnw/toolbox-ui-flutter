@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:get/get.dart';
 
 class SideMenu extends StatelessWidget {
-  final HomeController controller = HomeController.instance;
-
   SideMenu({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {

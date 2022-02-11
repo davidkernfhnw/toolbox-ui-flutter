@@ -3,8 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/model/consent.dart';
+import 'package:geiger_toolbox/app/model/country.dart';
 import 'package:geiger_toolbox/app/model/language.dart';
-import 'package:geiger_toolbox/app/model/partner.dart';
+import 'package:geiger_toolbox/app/model/professional_association.dart';
 import 'package:geiger_toolbox/app/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/model/user.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
@@ -13,9 +14,11 @@ import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger
 import 'package:geiger_toolbox/app/translation/suppored_language.dart';
 import 'package:get/get.dart';
 
-class SettingsController extends GetxController {
+import '../../../model/cert.dart';
+
+class ProfileController extends GetxController {
   //instance of SettingsController
-  static final SettingsController instance = Get.find<SettingsController>();
+  static final ProfileController instance = Get.find<ProfileController>();
 
   late final StorageController _storageController;
   //userService
@@ -34,24 +37,25 @@ class SettingsController extends GetxController {
   //observable variables for react Ui
   //get default language from device
   var selectedLanguage = Get.locale!.languageCode.obs;
-  var currentCert = "NCSC Switzerland".obs;
-  var currentProfAss = "Swiss Yoga Association".obs;
+  var currentCert = "".obs;
+  var currentProfAss = "".obs;
   var supervisor = false.obs;
-  var currentCountry = "".obs;
+  var currentCountryId = "cd258b40-4dc1-486a-b000-eb59e71e7484".obs;
   var currentDeviceName = "".obs;
   var currentUserName = "".obs;
   var isSuccess = true.obs;
   var isLoading = false.obs;
-  List certBaseOnCountrySelected = [].obs;
-  List profAssBaseOnCountrySelected = [].obs;
-  List currentCountries = [].obs;
+  List<Cert> certBaseOnCountrySelected = <Cert>[].obs;
+  List<ProfessionalAssociation> profAssBaseOnCountrySelected =
+      <ProfessionalAssociation>[].obs;
+  List<Country> currentCountries = <Country>[].obs;
 
   //list of supported languages
   List<Language> languages = SupportedLanguage.languages;
   //list of professional association
-  late List<Partner> _profAss;
+  late List<ProfessionalAssociation> _profAss;
   //list of cert
-  late List<Partner> _cert;
+  late List<Cert> _cert;
 
   //update language
   onChangeLanguage(String? language) {
@@ -71,12 +75,12 @@ class SettingsController extends GetxController {
 
   //update country
   //default is switzerland
-  onChangedCountry([Object? country = "switzerland"]) {
+  onChangedCountry(dynamic country) {
     //update country
-    currentCountry.value = country.toString();
+    currentCountryId.value = country.toString();
 
     //show list of cert base on country selected
-    _showCerBasedOnCountry(country.toString());
+    _showCertBasedOnCountry(country.toString());
 
     //show list of profAss base on country selected
     _showProfAssBaseOnCountry(country.toString());
@@ -131,6 +135,22 @@ class SettingsController extends GetxController {
     }
   }
 
+  String? validateCert(String? value) {
+    if (value!.isEmpty) {
+      return "";
+    } else {
+      return null;
+    }
+  }
+
+  String? validateProfAss(String? value) {
+    if (value!.isEmpty) {
+      return "";
+    } else {
+      return null;
+    }
+  }
+
   //call when the update button  is pressed
   void updateUserInfo(User userInfo) {
     //check dis
@@ -139,7 +159,7 @@ class SettingsController extends GetxController {
     userInfo.deviceOwner!.name = currentDeviceName.value;
     userInfo.supervisor = supervisor.value;
 
-    userInfo.country = currentCountry.value;
+    userInfo.country = currentCountryId.value;
     userInfo.cert = currentCert.value;
     userInfo.profAss = currentProfAss.value;
 
@@ -159,24 +179,27 @@ class SettingsController extends GetxController {
     }
   }
 
-  void _showProfAssBaseOnCountry(String country) {
-    Partner selectedProfAss = _profAss
-        .firstWhere((Partner element) => country == element.location.name);
+  void _showProfAssBaseOnCountry(String countryId) {
+    List<ProfessionalAssociation> selectedProfAss = _profAss
+        .where((ProfessionalAssociation element) =>
+            countryId == element.locationId)
+        .toList();
     //for debug purpose
-    log(selectedProfAss.names.toString());
+    log(selectedProfAss.first.name.toString());
     //updates
-    profAssBaseOnCountrySelected = selectedProfAss.names;
-    currentProfAss.value = profAssBaseOnCountrySelected.first;
+    profAssBaseOnCountrySelected = selectedProfAss;
+    currentProfAss.value = profAssBaseOnCountrySelected.first.name!;
   }
 
-  void _showCerBasedOnCountry(String country) {
+  void _showCertBasedOnCountry(String countryId) {
     //show list of cert base on country selected
-    Partner selectedCert =
-        _cert.firstWhere((Partner element) => country == element.location.name);
+    List<Cert> selectedCert =
+        _cert.where((Cert element) => countryId == element.locationId).toList();
 
+    log("selectedCert => $selectedCert");
     //update observable variable
-    certBaseOnCountrySelected = selectedCert.names;
-    currentCert.value = certBaseOnCountrySelected.first;
+    certBaseOnCountrySelected = selectedCert;
+    currentCert.value = certBaseOnCountrySelected.first.name!;
 
     //for debugging purpose
     log(certBaseOnCountrySelected.toString());
@@ -186,71 +209,77 @@ class SettingsController extends GetxController {
   Future<void> _initStorageController() async {
     _storageController = await _localStorage.getStorageController;
     _geigerData = GeigerUtilityService(_storageController);
+    _userService = GeigerUserService(_storageController);
   }
 
   //init util data
   Future<void> _getData() async {
     isLoading.value = true;
+    currentDeviceName.value = await _userService.getDeviceName;
     currentCountries = await _geigerData.getCountries();
-    _cert = await _geigerData.getCert();
-    _profAss = await _geigerData.getProfessionAssociation();
+    _cert = await _geigerData.getPartnerCert(language: selectedLanguage.value);
+    log("cert ==> $_cert");
+    _profAss =
+        await _geigerData.getPartnerProfAss(language: selectedLanguage.value);
+    log("Prof ass ==> $_profAss");
     isLoading.value = false;
   }
 
   //initial User Data
   Future<void> _initUserData() async {
     isLoading.value = true;
-    _userService = GeigerUserService(_storageController);
+
     User? user = await _userService.getUserInfo;
     if (user != null) {
       userInfo.value = user;
-    }
-    //init value in ui
-    supervisor.value = userInfo.value.supervisor;
+      //init value in ui
+      supervisor.value = userInfo.value.supervisor;
 
-    if (userInfo.value.deviceOwner!.name == null &&
-        userInfo.value.deviceOwner!.type == null) {
-      userInfo.value.deviceOwner!.name = await _userService.getDeviceName;
       currentDeviceName.value = userInfo.value.deviceOwner!.name!;
-      userInfo.value.deviceOwner!.type = await _userService.getDeviceType;
-    } else {
-      currentDeviceName.value = userInfo.value.deviceOwner!.name!;
-    }
-    //init for ui
-    if (userInfo.value.country != null &&
-        userInfo.value.profAss != null &&
-        userInfo.value.cert != null) {
-      currentCountry.value = userInfo.value.country!;
-      currentProfAss.value = userInfo.value.profAss!;
-      currentCert.value = userInfo.value.cert!;
-    }
-    if (userInfo.value.userName != null) {
-      currentUserName.value = userInfo.value.userName!;
-    }
 
-    //default country
-    //Todo: auto get country by location
-    if (userInfo.value.country != null) {
-      onChangedCountry(userInfo.value.country!.toLowerCase());
-    } else {
-      onChangedCountry();
+      //init for ui
+      if (userInfo.value.country != null &&
+          userInfo.value.profAss != null &&
+          userInfo.value.cert != null) {
+        currentCountryId.value = userInfo.value.country!;
+        currentProfAss.value = userInfo.value.profAss!;
+        currentCert.value = userInfo.value.cert!;
+      }
+      if (userInfo.value.userName != null) {
+        currentUserName.value = userInfo.value.userName!;
+      }
+
+      //default country
+      //Todo: auto get country by location
+      if (userInfo.value.country != null) {
+        onChangedCountry(userInfo.value.country!);
+      }
+      //set language
+      onChangeLanguage(userInfo.value.language);
+      log("cert current: ${currentCert.value}");
+      log("country: ${currentCountryId.value}");
+      log("countries: ${currentCountries}");
+      log("list of ProfAss => ${profAssBaseOnCountrySelected}");
+      log("profAss: ${currentProfAss.value}");
+      log("userInfo: ${userInfo.value}");
+      log("CurrentUserName :${currentUserName.value}");
     }
-    //set language
-    onChangeLanguage(userInfo.value.language);
-    log("cert current: " + currentCert.value);
-    log("country: ${currentCountry.value}");
-    log("countries: ${currentCountries}");
-    log("profAss: ${currentProfAss.value}");
-    log("userInfo: ${userInfo.value}");
-    log("CurrentUserName :${currentUserName.value}");
     isLoading.value = false;
   }
 
   @override
   void onInit() async {
     await _initStorageController();
-    await _getData();
-    await _initUserData();
+
+    bool? result = await _userService.checkUserConsent();
+    if (result!) {
+      await _getData();
+      await _initUserData();
+
+      log("DUMP ON Profile ${await _storageController.dump(":Global:professionAssociation")}");
+    } else {
+      await _getData();
+    }
 
     super.onInit();
   }

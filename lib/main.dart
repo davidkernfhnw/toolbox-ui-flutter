@@ -40,7 +40,6 @@ void main() async {
 
 Future<void> _initialization() async {
   //initialize geigerApi for ui
-  // Dynamically adding the function to handle the SCAN_COMPLETED event -> you can customize or move it somewhere if you want
   await Get.put(GeigerApiConnector()).initGeigerApi();
   //initialize localStorage for ui
   await Get.put(LocalStorageController());
