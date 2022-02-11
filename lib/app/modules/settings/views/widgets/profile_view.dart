@@ -84,17 +84,18 @@ class ProfileView extends StatelessWidget {
                       defaultValue: controller.currentCert.value,
                       hintText: "Select Competent CERT",
                       titleText: "Competent CERT",
+                      validator: controller.validateCert,
                     ),
                     SizedBox(
                       height: 15,
                     ),
                     CustomDropDownProfAss(
-                      onChanged: controller.onChangedProfAss,
-                      certs: controller.profAssBaseOnCountrySelected,
-                      defaultValue: controller.currentProfAss.value,
-                      hintText: "Select Profession Association",
-                      titleText: "Profession Association",
-                    ),
+                        onChanged: controller.onChangedProfAss,
+                        certs: controller.profAssBaseOnCountrySelected,
+                        defaultValue: controller.currentProfAss.value,
+                        hintText: "Select Profession Association",
+                        titleText: "Profession Association",
+                        validator: controller.validateProfAss),
                     ElevatedButton(
                       onPressed: _dataProtectionController.getDataAccess
                           ? () {

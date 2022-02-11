@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/settings/controllers/data_protection_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
+import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_radio_list_tile.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_switch.dart';
 import 'package:geiger_toolbox/app/shared_widgets/showCircularProgress.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
@@ -51,12 +52,44 @@ class DataProtectionView extends StatelessWidget {
                         height: 5.0,
                         color: Colors.black,
                       ),
-                      CustomSwitch(
-                        onChanged: null,
-                        defaultValue: false,
-                        label: 'Data Sharing',
-                        description:
-                            'This setting shares your anonymize data with the GEIGER cloud. The setting gives you the ability to increase the accuracy of the risk score and more complete recommendations',
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          boldText("Data Sharing"),
+                          CustomLabeledRadio(
+                            value: 0,
+                            label: 'Do not Share',
+                            description:
+                                'Data will remain on this single device only.',
+                            groupValue: controller.isRadioSelected.value,
+                            onChanged: (int newValue) {
+                              controller.isRadioSelected.value = newValue;
+                            },
+                            padding: EdgeInsets.symmetric(vertical: 5.0),
+                          ),
+                          CustomLabeledRadio(
+                            value: 1,
+                            label: 'Replicate securely between your devices.',
+                            description:
+                                "All your data will be available on all your devices.",
+                            groupValue: controller.isRadioSelected.value,
+                            onChanged: (int newValue) {
+                              controller.isRadioSelected.value = newValue;
+                            },
+                            padding: EdgeInsets.symmetric(vertical: 5.0),
+                          ),
+                          CustomLabeledRadio(
+                            value: 2,
+                            label: 'Share data with GEIGER cloud.',
+                            description:
+                                "Your tools’ data will be used to improve GEIGER over time.",
+                            groupValue: controller.isRadioSelected.value,
+                            onChanged: (int newValue) {
+                              controller.isRadioSelected.value = newValue;
+                            },
+                            padding: EdgeInsets.symmetric(vertical: 5.0),
+                          ),
+                        ],
                       ),
                       Divider(
                         height: 5.0,
@@ -108,20 +141,20 @@ class DataProtectionView extends StatelessWidget {
                               ? () {
                                   Get.toNamed(Routes.HOME_VIEW);
                                 }
-                              : null, //() {
-                          //     Get.defaultDialog(
-                          //       barrierDismissible: false,
-                          //       middleText:
-                          //           "Grant Data Access and Processing",
-                          //       middleTextStyle:
-                          //           TextStyle(color: Colors.red),
-                          //       cancel: ElevatedButton(
-                          //           onPressed: () {
-                          //             Get.back();
-                          //           },
-                          //           child: Text("ok")),
-                          //     );
-                          //  },
+                              : () {
+                                  Get.defaultDialog(
+                                    barrierDismissible: false,
+                                    title: "Grant Toolbox ",
+                                    middleText: "Data Access and Processing",
+                                    middleTextStyle:
+                                        TextStyle(color: Colors.red),
+                                    cancel: ElevatedButton(
+                                        onPressed: () {
+                                          Get.back();
+                                        },
+                                        child: Text("ok")),
+                                  );
+                                },
                           child: Text("Navigate to Scan Screen")),
                     ],
                   ),

@@ -135,6 +135,22 @@ class ProfileController extends GetxController {
     }
   }
 
+  String? validateCert(String? value) {
+    if (value!.isEmpty) {
+      return "";
+    } else {
+      return null;
+    }
+  }
+
+  String? validateProfAss(String? value) {
+    if (value!.isEmpty) {
+      return "";
+    } else {
+      return null;
+    }
+  }
+
   //call when the update button  is pressed
   void updateUserInfo(User userInfo) {
     //check dis

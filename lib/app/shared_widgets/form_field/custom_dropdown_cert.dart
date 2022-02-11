@@ -9,18 +9,21 @@ class CustomDropDownCert extends StatelessWidget {
       required this.certs,
       required this.hintText,
       this.onChanged,
-      this.defaultValue})
+      this.defaultValue,
+      this.validator})
       : super(key: key);
 
   final String? titleText;
   final List<Cert> certs;
   final String hintText;
   final String? defaultValue;
+  final String? Function(String? value)? validator;
   final void Function(dynamic partner)? onChanged;
 
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField(
+      validator: validator,
       value: defaultValue,
       decoration: InputDecoration(
         labelText: titleText,

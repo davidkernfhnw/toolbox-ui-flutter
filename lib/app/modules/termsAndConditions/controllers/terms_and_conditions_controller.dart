@@ -34,6 +34,7 @@ class TermsAndConditionsController extends GetxController {
   var signedConsent = false.obs;
   var agreedPrivacy = false.obs;
   var errorMsg = false.obs;
+  Rx<int> isRadioSelected = 0.obs;
 
   //store accepted termsAndCondition
   //show error message if all terms and condition are not check

@@ -19,6 +19,8 @@ import 'package:get/get.dart' as getX;
 import 'package:get_storage/get_storage.dart';
 
 import '../../../model/recommendation.dart';
+import '../../../model/terms_and_conditions.dart';
+import '../../../routes/app_routes.dart';
 import '../../settings/controllers/data_protection_controller.dart';
 
 class HomeController extends getX.GetxController {
@@ -268,6 +270,59 @@ class HomeController extends getX.GetxController {
     }
   }
 
+  //check if terms and condition values is true in the localstorage
+  // and navigate to Setting(screen)
+  //if false navigate to TermAndCondition view(screen).
+  Future<bool> _isTermsAccepted() async {
+    try {
+      //get user Info
+      User? userInfo = await _userService.getUserInfo;
+
+      // assign user term and condition
+      TermsAndConditions userTermsAndConditions = userInfo!.termsAndConditions;
+      //check if true and return home view (screen)
+      if (await userTermsAndConditions.ageCompliant == true &&
+          await userTermsAndConditions.signedConsent == true &&
+          await userTermsAndConditions.agreedPrivacy == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      log("UserInfo not found");
+      return false;
+    }
+  }
+
+  //Todo: take this method to data_protection_controller
+  //check if termsAndConditions were accepted
+  // redirect to termAndCondition view if false else
+  // then check for userConsent if true
+  // redirect to Home view
+  //else remain in setting screen
+
+  Future<bool> _redirect() async {
+    isLoadingServices.value = true;
+    bool checkTerms = await _isTermsAccepted();
+
+    if (checkTerms == false) {
+      await getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
+      isLoadingServices.value = false;
+      return false;
+    } else {
+      bool? result = await _userService.checkUserConsent();
+
+      if (result! == false) {
+        await getX.Get.offNamed(Routes.SETTINGS_VIEW);
+        isLoadingServices.value = false;
+        return false;
+      } else {
+        isLoadingServices.value = false;
+        return true;
+      }
+    }
+  }
+
   //************* end of private methods ***********************
 
   //**************Recommendation ***************
@@ -314,16 +369,18 @@ class HomeController extends getX.GetxController {
   void onInit() async {
     //init resources
     await _initStorageResources();
-    //check userConsent before load indication
-    _checkConsent();
+    bool redirect = await _redirect();
+    if (redirect) {
+      //check userConsent before load indication
+      _checkConsent();
 
-    //storageRegister
-    _aggDataUpdateListener();
-    //ExternalPluginListener
-    _scanCompleteListener();
+      //storageRegister
+      _aggDataUpdateListener();
+      //ExternalPluginListener
+      _scanCompleteListener();
 
-    await _triggerAggCachedData();
-
+      await _triggerAggCachedData();
+    }
     super.onInit();
   }
 
