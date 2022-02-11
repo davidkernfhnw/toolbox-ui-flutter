@@ -4,6 +4,8 @@ import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
+import '../../../settings/controllers/data_protection_controller.dart';
+
 class ScanRiskButton extends StatelessWidget {
   final HomeController controller;
   final Color changeScanBtnColor;
@@ -11,6 +13,9 @@ class ScanRiskButton extends StatelessWidget {
   ScanRiskButton(
       {Key? key, required this.controller, required this.changeScanBtnColor})
       : super(key: key);
+
+  final DataProtectionController _dataProtectionController =
+      DataProtectionController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +36,11 @@ class ScanRiskButton extends StatelessWidget {
             center: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
-                primary:
-                    controller.dataProcess.value && controller.dataAccess.value
-                        ? changeScanBtnColor
-                        : Colors.grey,
+                primary: _dataProtectionController.getDataAccess
+                    ? changeScanBtnColor
+                    : Colors.grey,
               ),
-              onPressed: controller.dataProcess.value &&
-                      controller.dataAccess.value
+              onPressed: _dataProtectionController.getDataAccess
                   ? controller.onScanButtonPressed
                   : () {
                       if (!Get.isDialogOpen!) {
@@ -69,7 +72,7 @@ class ScanRiskButton extends StatelessWidget {
                 decoration: const BoxDecoration(shape: BoxShape.circle),
                 child: Center(
                   child: Text(
-                    controller.dataAccess.value && controller.dataProcess.value
+                    _dataProtectionController.getDataAccess
                         ? 'Scan Threat'
                         : "Grant Access",
                     softWrap: true,

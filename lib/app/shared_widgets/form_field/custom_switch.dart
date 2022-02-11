@@ -21,7 +21,6 @@ class CustomSwitch extends StatelessWidget {
       subtitle: Text(
         description ?? "",
         softWrap: true,
-        textAlign: TextAlign.justify,
         style: TextStyle(color: Colors.black),
       ),
       onChanged: onChanged,

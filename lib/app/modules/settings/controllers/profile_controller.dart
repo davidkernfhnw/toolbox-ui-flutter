@@ -16,9 +16,9 @@ import 'package:get/get.dart';
 
 import '../../../model/cert.dart';
 
-class SettingsController extends GetxController {
+class ProfileController extends GetxController {
   //instance of SettingsController
-  static final SettingsController instance = Get.find<SettingsController>();
+  static final ProfileController instance = Get.find<ProfileController>();
 
   late final StorageController _storageController;
   //userService
@@ -40,7 +40,7 @@ class SettingsController extends GetxController {
   var currentCert = "".obs;
   var currentProfAss = "".obs;
   var supervisor = false.obs;
-  var currentCountryId = "".obs;
+  var currentCountryId = "cd258b40-4dc1-486a-b000-eb59e71e7484".obs;
   var currentDeviceName = "".obs;
   var currentUserName = "".obs;
   var isSuccess = true.obs;
@@ -75,7 +75,7 @@ class SettingsController extends GetxController {
 
   //update country
   //default is switzerland
-  onChangedCountry([dynamic country = "cd258b40-4dc1-486a-b000-eb59e71e7484"]) {
+  onChangedCountry(dynamic country) {
     //update country
     currentCountryId.value = country.toString();
 
@@ -193,11 +193,13 @@ class SettingsController extends GetxController {
   Future<void> _initStorageController() async {
     _storageController = await _localStorage.getStorageController;
     _geigerData = GeigerUtilityService(_storageController);
+    _userService = GeigerUserService(_storageController);
   }
 
   //init util data
   Future<void> _getData() async {
     isLoading.value = true;
+    currentDeviceName.value = await _userService.getDeviceName;
     currentCountries = await _geigerData.getCountries();
     _cert = await _geigerData.getPartnerCert(language: selectedLanguage.value);
     log("cert ==> $_cert");
@@ -210,60 +212,59 @@ class SettingsController extends GetxController {
   //initial User Data
   Future<void> _initUserData() async {
     isLoading.value = true;
-    _userService = GeigerUserService(_storageController);
+
     User? user = await _userService.getUserInfo;
     if (user != null) {
       userInfo.value = user;
-    }
-    //init value in ui
-    supervisor.value = userInfo.value.supervisor;
+      //init value in ui
+      supervisor.value = userInfo.value.supervisor;
 
-    if (userInfo.value.deviceOwner!.name == null &&
-        userInfo.value.deviceOwner!.type == null) {
-      userInfo.value.deviceOwner!.name = await _userService.getDeviceName;
       currentDeviceName.value = userInfo.value.deviceOwner!.name!;
-      userInfo.value.deviceOwner!.type = await _userService.getDeviceType;
-    } else {
-      currentDeviceName.value = userInfo.value.deviceOwner!.name!;
-    }
-    //init for ui
-    if (userInfo.value.country != null &&
-        userInfo.value.profAss != null &&
-        userInfo.value.cert != null) {
-      currentCountryId.value = userInfo.value.country!;
-      currentProfAss.value = userInfo.value.profAss!;
-      currentCert.value = userInfo.value.cert!;
-    }
-    if (userInfo.value.userName != null) {
-      currentUserName.value = userInfo.value.userName!;
-    }
 
-    //default country
-    //Todo: auto get country by location
-    if (userInfo.value.country != null) {
-      onChangedCountry(userInfo.value.country!.toLowerCase());
-    } else {
-      onChangedCountry();
+      //init for ui
+      if (userInfo.value.country != null &&
+          userInfo.value.profAss != null &&
+          userInfo.value.cert != null) {
+        currentCountryId.value = userInfo.value.country!;
+        currentProfAss.value = userInfo.value.profAss!;
+        currentCert.value = userInfo.value.cert!;
+      }
+      if (userInfo.value.userName != null) {
+        currentUserName.value = userInfo.value.userName!;
+      }
+
+      //default country
+      //Todo: auto get country by location
+      if (userInfo.value.country != null) {
+        onChangedCountry(userInfo.value.country!);
+      }
+      //set language
+      onChangeLanguage(userInfo.value.language);
+      log("cert current: ${currentCert.value}");
+      log("country: ${currentCountryId.value}");
+      log("countries: ${currentCountries}");
+      log("list of ProfAss => ${profAssBaseOnCountrySelected}");
+      log("profAss: ${currentProfAss.value}");
+      log("userInfo: ${userInfo.value}");
+      log("CurrentUserName :${currentUserName.value}");
     }
-    //set language
-    onChangeLanguage(userInfo.value.language);
-    log("cert current: ${currentCert.value}");
-    log("country: ${currentCountryId.value}");
-    log("countries: ${currentCountries}");
-    log("list of ProfAss => ${profAssBaseOnCountrySelected}");
-    log("profAss: ${currentProfAss.value}");
-    log("userInfo: ${userInfo.value}");
-    log("CurrentUserName :${currentUserName.value}");
     isLoading.value = false;
   }
 
   @override
   void onInit() async {
     await _initStorageController();
-    await _getData();
-    await _initUserData();
 
-    log("DUMP ON SETTING ${await _storageController.dump(":Global:professionAssociation")}");
+    bool? result = await _userService.checkUserConsent();
+    if (result!) {
+      await _getData();
+      await _initUserData();
+
+      log("DUMP ON Profile ${await _storageController.dump(":Global:professionAssociation")}");
+    } else {
+      await _getData();
+    }
+
     super.onInit();
   }
 }

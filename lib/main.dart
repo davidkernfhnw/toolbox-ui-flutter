@@ -64,7 +64,7 @@ class GeigerApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: true,
       getPages: Pages.pages,
-      initialRoute: Routes.HOME_VIEW,
+      initialRoute: Routes.SETTINGS_VIEW,
       translationsKeys: AppTranslation.translationsKeys,
       locale: Get.deviceLocale,
       fallbackLocale: Locale('en'),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/modules/settings/controllers/settings_controller.dart';
+import 'package:geiger_toolbox/app/modules/settings/controllers/profile_controller.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropDown_prof_ass.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_cert.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_country.dart';
@@ -8,9 +8,13 @@ import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_text_field.d
 import 'package:geiger_toolbox/app/shared_widgets/form_field/cutom_dropdown_language.dart';
 import 'package:get/get.dart';
 
+import '../../controllers/data_protection_controller.dart';
+
 class ProfileView extends StatelessWidget {
-  ProfileView({required this.controller, Key? key}) : super(key: key);
-  final SettingsController controller;
+  ProfileView({Key? key}) : super(key: key);
+  final ProfileController controller = ProfileController.instance;
+  final DataProtectionController _dataProtectionController =
+      DataProtectionController.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -92,22 +96,26 @@ class ProfileView extends StatelessWidget {
                       titleText: "Profession Association",
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          controller.updateUserInfo(controller.userInfo.value);
-                          if (controller.isSuccess.value == true) {
-                            if (!Get.isSnackbarOpen) {
-                              Get.snackbar("Success", "Updated SuccessFully.",
-                                  backgroundColor: Colors.greenAccent,
-                                  snackPosition: SnackPosition.BOTTOM);
+                      onPressed: _dataProtectionController.getDataAccess
+                          ? () {
+                              if (_formKey.currentState!.validate()) {
+                                controller
+                                    .updateUserInfo(controller.userInfo.value);
+                                if (controller.isSuccess.value == true) {
+                                  if (!Get.isSnackbarOpen) {
+                                    Get.snackbar(
+                                        "Success", "Updated SuccessFully.",
+                                        backgroundColor: Colors.greenAccent,
+                                        snackPosition: SnackPosition.BOTTOM);
+                                  }
+                                } else {
+                                  Get.snackbar("Message Alert",
+                                      "Updated Failed!!!.. contact the Developer",
+                                      backgroundColor: Colors.redAccent);
+                                }
+                              }
                             }
-                          } else {
-                            Get.snackbar("Message Alert",
-                                "Updated Failed!!!.. contact the Developer",
-                                backgroundColor: Colors.redAccent);
-                          }
-                        }
-                      },
+                          : null,
                       child: Text("Update"),
                     ),
                     SizedBox(height: 10),

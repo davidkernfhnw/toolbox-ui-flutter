@@ -1,13 +1,15 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/settings/controllers/data_controller.dart';
 import 'package:geiger_toolbox/app/shared_widgets/empty_space_card.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
 
+import '../../controllers/data_protection_controller.dart';
+
 class DataView extends StatelessWidget {
-  final DataController controller;
-  const DataView({Key? key, required this.controller}) : super(key: key);
+  DataView({Key? key}) : super(key: key);
+  final DataController controller = DataController.instance;
+  final DataProtectionController _dataProtectionController =
+      DataProtectionController.instance;
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -24,9 +26,13 @@ class DataView extends StatelessWidget {
                   return SingleChildScrollView(
                       child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: greyText(
-                      jsonEncode(snapshot.data),
-                    ),
+                    child: _dataProtectionController.getDataAccess
+                        ? greyText(snapshot.data.toString())
+                        : Center(
+                            child: Text(
+                            "Allow Data Access and Process!",
+                            style: TextStyle(color: Colors.red),
+                          )),
                   ));
                 }),
           ),
@@ -36,9 +42,11 @@ class DataView extends StatelessWidget {
               //OutlinedButton(onPressed: null, child: Text("Reset")),
               //ElevatedButton(onPressed: null, child: Text("Import")),
               ElevatedButton(
-                  onPressed: () {
-                    controller.makeJsonFile();
-                  },
+                  onPressed: _dataProtectionController.getDataAccess
+                      ? () {
+                          controller.makeJsonFile();
+                        }
+                      : null,
                   child: Text("Export")),
             ],
           )

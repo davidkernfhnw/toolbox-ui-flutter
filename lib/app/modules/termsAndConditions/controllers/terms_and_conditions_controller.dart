@@ -55,7 +55,8 @@ class TermsAndConditionsController extends GetxController {
       if (success) {
         //set scanButton has not be pressed to true
         await _userService.setButtonNotPressed();
-        Get.offNamed(Routes.HOME_VIEW);
+        //redirect to setting view
+        Get.offNamed(Routes.SETTINGS_VIEW);
       } else {
         //set errorMsg to true
         errorMsg.value = true;

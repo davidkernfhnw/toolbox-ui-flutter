@@ -18,8 +18,6 @@ const String _NODE_OWNER = "geiger-toolbox";
 const String _BUTTON_KEY = "buttonPressed";
 const String _USER_CONSENT_PATH = ":Local:UserConsent";
 const String _DATA_ACCESS_KEY = "dataAccess";
-const String _DATA_PROCESS_KEY = "dataProcess";
-//const String _IMPROVE_KEY = "improvedPressed";
 
 class GeigerUserService extends LocalDeviceAbstract
     implements LocalUserAbstract {
@@ -197,11 +195,8 @@ class GeigerUserService extends LocalDeviceAbstract
       bool isDaStored = await storageController.addOrUpdateValue(
           _USER_CONSENT_PATH,
           NodeValueImpl(_DATA_ACCESS_KEY, dataAccess.toString()));
-      bool isDpStored = await storageController.addOrUpdateValue(
-          _USER_CONSENT_PATH,
-          NodeValueImpl(_DATA_PROCESS_KEY, dataProcess.toString()));
       log("Consent Data ${await storageController.dump(_USER_CONSENT_PATH)}");
-      if (isDaStored && isDpStored) {
+      if (isDaStored) {
         return true;
       } else {
         return false;
@@ -232,25 +227,6 @@ class GeigerUserService extends LocalDeviceAbstract
   }
 
   @override
-  Future<bool> updateUserConsentDataProcess({required bool dataProcess}) async {
-    Node _node;
-    try {
-      _node = await getNode(_USER_CONSENT_PATH, storageController);
-
-      NodeValue dataProcessValue =
-          NodeValueImpl(_DATA_PROCESS_KEY, dataProcess.toString());
-
-      await _node.updateValue(dataProcessValue);
-      await storageController.update(_node);
-      log("Update Process Data  ${await storageController.dump(_USER_CONSENT_PATH)}");
-      return true;
-    } catch (e, s) {
-      log("failed To update UserConsent DataProcess \n $e \n $s");
-      return false;
-    }
-  }
-
-  @override
   Future<bool?> get getUserConsentDataAccess async {
     try {
       NodeValue dataAccessValue = (await storageController.getValue(
@@ -265,30 +241,13 @@ class GeigerUserService extends LocalDeviceAbstract
   }
 
   @override
-  Future<bool?> get getUserConsentDataProcess async {
-    try {
-      NodeValue dataProcessValue = (await storageController.getValue(
-          _USER_CONSENT_PATH, _DATA_PROCESS_KEY))!;
-      bool dataProcess = dataProcessValue.value.parseBool();
-      log("Data Process ==> ${await storageController.dump(_USER_CONSENT_PATH)}");
-      return dataProcess;
-    } catch (e) {
-      log("Failed to get data from $_USER_CONSENT_PATH");
-      return null;
-    }
-  }
-
-  @override
   Future<bool?> checkUserConsent() async {
     try {
-      NodeValue dataProcessValue = (await storageController.getValue(
-          _USER_CONSENT_PATH, _DATA_PROCESS_KEY))!;
-      bool dataProcess = dataProcessValue.value.parseBool();
       NodeValue dataAccessValue = (await storageController.getValue(
           _USER_CONSENT_PATH, _DATA_ACCESS_KEY))!;
       bool dataAccess = dataAccessValue.value.parseBool();
       log("Check UserConsent ==> ${await storageController.dump(_USER_CONSENT_PATH)}");
-      if (dataAccess == true && dataProcess == true) {
+      if (dataAccess == true) {
         return true;
       } else {
         return false;
