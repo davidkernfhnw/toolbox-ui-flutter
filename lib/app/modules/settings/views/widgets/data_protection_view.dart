@@ -44,6 +44,7 @@ class DataProtectionView extends StatelessWidget {
                           }
                         },
                         defaultValue: controller.getDataAccess,
+                        permission: controller.getDataAccess,
                         label: 'Data Access and Processing',
                         description:
                             'Allow the toolbox to calculate your risk score and receive protection recommendations.',

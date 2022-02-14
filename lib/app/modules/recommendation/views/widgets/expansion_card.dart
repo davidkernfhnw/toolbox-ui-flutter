@@ -1,6 +1,6 @@
-import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/model/recommendation.dart';
+import 'package:getwidget/components/accordion/gf_accordion.dart';
 
 class ExpansionCard extends StatelessWidget {
   final Recommendation recommendation;
@@ -14,27 +14,45 @@ class ExpansionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: ExpandablePanel(
-        controller: ExpandableController(initialExpanded: true),
-        header: ListTile(
-          leading: Checkbox(
-            fillColor: MaterialStateProperty.all(Colors.green),
-            onChanged: null,
-            value: recommendation.implemented,
+      child: GFAccordion(
+          expandedTitleBackgroundColor: Colors.white,
+          titleChild: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Container(
+                child: recommendation.implemented
+                    ? Checkbox(
+                        fillColor: MaterialStateProperty.all(Colors.green),
+                        onChanged: null,
+                        value: recommendation.implemented,
+                      )
+                    : Flexible(
+                        child: Text(
+                          recommendation.shortDescription,
+                          maxLines: 2,
+                          softWrap: true,
+                        ),
+                      ),
+              ),
+              Container(
+                child: recommendation.implemented
+                    ? Flexible(
+                        child: Text(
+                          recommendation.shortDescription,
+                          maxLines: 2,
+                          softWrap: true,
+                        ),
+                      )
+                    : SizedBox(),
+              ),
+              Text(
+                _checkWeight(recommendation.weight!),
+                style:
+                    TextStyle(color: _showWeightColor(recommendation.weight!)),
+              ),
+            ],
           ),
-          title: Text(
-            recommendation.shortDescription,
-            softWrap: true,
-            style: const TextStyle(),
-          ),
-          trailing: Text(
-            _checkWeight(recommendation.weight!),
-            style: TextStyle(color: _showWeightColor(recommendation.weight!)),
-          ),
-        ),
-        collapsed: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-          child: Column(
+          contentChild: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -66,9 +84,8 @@ class ExpansionCard extends StatelessWidget {
               ),
             ],
           ),
-        ),
-        expanded: Container(),
-      ),
+          collapsedIcon: Icon(Icons.keyboard_arrow_down_sharp),
+          expandedIcon: Icon(Icons.keyboard_arrow_up_sharp)),
     );
   }
 

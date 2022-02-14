@@ -37,40 +37,22 @@ class RecommendationTab extends StatelessWidget {
           children: [
             IndicatorGauge(score: score.toDouble()),
             boldText(label),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                OutlinedButton(
-                  onPressed: null,
-                  child: Row(
-                    children: [
-                      const Icon(Icons.warning_rounded),
-                      const SizedBox(width: 5),
-                      Text("About $threatTitle"),
-                    ],
-                  ),
-                ),
-                OutlinedButton(
-                  onPressed: null,
-                  child: Row(
-                    children: [
-                      Icon(Icons.warning_rounded),
-                      SizedBox(width: 5),
-                      Text("About ${recommendationType}"),
-                    ],
-                  ),
-                ),
-              ],
+            OutlinedButton.icon(
+              icon: const Icon(Icons.warning_rounded),
+              label: Text("About $threatTitle"),
+              onPressed: null,
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 10),
             recommendations.isEmpty
                 ? SizedBox()
                 : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Text(
                         recommendationLabel ?? "",
                         style: const TextStyle(color: Colors.grey),
                       ),
+                      greyText("Risk Reduction"),
                     ],
                   ),
             const SizedBox(

@@ -7,11 +7,13 @@ class CustomSwitch extends StatelessWidget {
       required this.label,
       this.description,
       required this.defaultValue,
+      this.permission,
       this.onChanged})
       : super(key: key);
   final String label;
   final String? description;
   final bool defaultValue;
+  final bool? permission;
   final void Function(bool value)? onChanged;
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,12 @@ class CustomSwitch extends StatelessWidget {
       subtitle: Text(
         description ?? "",
         softWrap: true,
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(
+            color: permission != null
+                ? permission! == false
+                    ? Colors.red
+                    : Colors.black
+                : Colors.black),
       ),
       onChanged: onChanged,
       value: defaultValue,
