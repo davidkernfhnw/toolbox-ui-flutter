@@ -34,8 +34,6 @@ dependencies:
 
   #add multiple color gradient to text
   simple_gradient_text: ^1.2.2
-  #for expansion of cards
-  expandable: ^5.0.1
   json_annotation: ^4.3.0
   qr_flutter: ^4.0.0
   qr_code_scanner: ^0.5.2
@@ -58,6 +56,8 @@ dependencies:
   share_plus: ^3.0.4
   initialize_geiger_data: ^1.0.3
   window_manager: ^0.1.5
+  #flutter ui utils
+  getwidget: ^2.0.4
 
 dev_dependencies:
   flutter_test:
