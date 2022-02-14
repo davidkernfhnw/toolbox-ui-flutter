@@ -7,6 +7,11 @@ import 'package:geiger_toolbox/app/services/localStorage/local_storage_controlle
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_utility_service.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+const String CONSENT_FORM = 'https://project.cyber-geiger.eu/contact.html';
+const String PRIVACY_POLICY =
+    'https://project.cyber-geiger.eu/privacypolicy.html';
 
 class TermsAndConditionsController extends GetxController {
   //instance of TermsAndConditionController
@@ -75,6 +80,14 @@ class TermsAndConditionsController extends GetxController {
     await _geigerUtilityData.storeCerts();
     await _geigerUtilityData.storeProfAss();
     await _geigerUtilityData.setPublicKey();
+  }
+
+  void launchConsentUrl() async {
+    if (!await launch(CONSENT_FORM)) throw 'Could not launch $CONSENT_FORM';
+  }
+
+  void launchPrivacyUrl() async {
+    if (!await launch(PRIVACY_POLICY)) throw 'Could not launch $PRIVACY_POLICY';
   }
 
   @override

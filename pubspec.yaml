@@ -58,6 +58,7 @@ dependencies:
   window_manager: ^0.1.5
   #flutter ui utils
   getwidget: ^2.0.4
+  url_launcher: ^6.0.20
 
 dev_dependencies:
   flutter_test:

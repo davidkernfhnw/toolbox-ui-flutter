@@ -48,19 +48,29 @@ class TermsAndConditionsView extends StatelessWidget {
                       onChanged: (bool? value) {
                         _controller.signedConsent.value = value!;
                       },
-                      title: boldText('I have signed a consent form.'),
-                      subtitle:
-                          greyText('https://cloud.cyber-geiger.eu/f/25282'),
+                      title: Text('I have signed a consent form.'),
+                      subtitle: GestureDetector(
+                          onTap: _controller.launchConsentUrl,
+                          child: Text(
+                            CONSENT_FORM,
+                            style: TextStyle(color: Colors.blue),
+                          )),
                     ),
                     CheckboxListTile(
                       value: _controller.agreedPrivacy.value,
                       onChanged: (bool? value) {
                         _controller.agreedPrivacy.value = value!;
                       },
-                      title: boldText(
-                          'I have read and agree with the Privacy Policy of the GEIGER Toolbox.'),
-                      subtitle:
-                          greyText('https://cloud.cyber-geiger.eu/f/25282'),
+                      title: Text(
+                        'I have read and agree with the Privacy Policy of the GEIGER Toolbox.',
+                      ),
+                      subtitle: GestureDetector(
+                        onTap: _controller.launchPrivacyUrl,
+                        child: Text(
+                          PRIVACY_POLICY,
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ),
                     ),
                     SizedBox(height: 10),
                     Column(
