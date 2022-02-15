@@ -49,26 +49,27 @@ class DeviceView extends StatelessWidget {
                       "Pair devices that have the toolbox installed and monitor their risks",
                   btnIcon: Icon(Icons.camera_alt),
                   btnText: "Add a Device",
-                  onScan:
-                      Platform.isWindows || Platform.isMacOS || Platform.isLinux
-                          ? _dataProtectionController.getDataAccess
-                              ? () {
-                                  _qrController.requestCameraPermission(
-                                      Routes.QrSCANNER_VIEW,
-                                      arguments: "Pair a new device");
-                                }
-                              : null
-                          : () {
-                              Get.defaultDialog(
-                                middleText:
-                                    "Sorry functionality not yet available for Desktop",
-                                cancel: ElevatedButton(
-                                    onPressed: () {
-                                      Get.back();
-                                    },
-                                    child: Text("Ok")),
-                              );
-                            }),
+                  onScan: !Platform.isWindows ||
+                          !Platform.isMacOS ||
+                          !Platform.isLinux
+                      ? _dataProtectionController.getDataAccess
+                          ? () {
+                              _qrController.requestCameraPermission(
+                                  Routes.QrSCANNER_VIEW,
+                                  arguments: "Pair a new device");
+                            }
+                          : null
+                      : () {
+                          Get.defaultDialog(
+                            middleText:
+                                "Sorry functionality not yet available for Desktop",
+                            cancel: ElevatedButton(
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                child: Text("Ok")),
+                          );
+                        }),
               SizedBox(
                 height: 5,
               ),

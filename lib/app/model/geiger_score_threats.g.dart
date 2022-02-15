@@ -12,10 +12,12 @@ GeigerScoreThreats _$GeigerScoreThreatsFromJson(Map<String, dynamic> json) =>
           .map((e) => ThreatScore.fromJson(e as Map<String, dynamic>))
           .toList(),
       geigerScore: json['geigerScore'] as String,
+      threatLevel: json['threatLevel'] as String?,
     );
 
 Map<String, dynamic> _$GeigerScoreThreatsToJson(GeigerScoreThreats instance) =>
     <String, dynamic>{
       'threatScores': instance.threatScores.map((e) => e.toJson()).toList(),
       'geigerScore': instance.geigerScore,
+      'threatLevel': instance.threatLevel,
     };
