@@ -145,8 +145,9 @@ class DataProtectionView extends StatelessWidget {
                               : () {
                                   Get.defaultDialog(
                                     barrierDismissible: false,
-                                    title: "Grant Toolbox ",
-                                    middleText: "Data Access and Processing",
+                                    title: "Alert ",
+                                    middleText:
+                                        "Toolbox needs you to grant permission for data access and processing.",
                                     middleTextStyle:
                                         TextStyle(color: Colors.red),
                                     cancel: ElevatedButton(

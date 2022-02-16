@@ -7,8 +7,12 @@ part 'geiger_score_threats.g.dart';
 class GeigerScoreThreats {
   List<ThreatScore> threatScores;
   String geigerScore;
+  String? threatLevel;
 
-  GeigerScoreThreats({required this.threatScores, required this.geigerScore});
+  GeigerScoreThreats(
+      {required this.threatScores,
+      required this.geigerScore,
+      this.threatLevel});
 
   factory GeigerScoreThreats.fromJson(Map<String, dynamic> json) {
     return _$GeigerScoreThreatsFromJson(json);
@@ -20,6 +24,6 @@ class GeigerScoreThreats {
 
   @override
   String toString() {
-    return '{threatScore:$threatScores, geigerScore:$geigerScore}';
+    return '{threatScore:$threatScores, geigerScore:$geigerScore, threatLevel:$threatLevel}';
   }
 }

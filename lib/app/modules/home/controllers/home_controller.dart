@@ -87,7 +87,7 @@ class HomeController extends getX.GetxController {
   void onScanButtonPressed() async {
     //begin scanning
     isScanning.value = true;
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 50));
     //send a broadcast to external tool
     _requestScan();
 
@@ -98,7 +98,7 @@ class HomeController extends getX.GetxController {
 
     //get recommendations
     userGlobalRecommendations.value = await _getUserRecommendation();
-    await Future.delayed(Duration(milliseconds: 400));
+    await Future.delayed(Duration(milliseconds: 200));
     deviceGlobalRecommendations.value = await _getDeviceRecommendation();
     _cachedUserAndDeviceRecommendation(
         user: userGlobalRecommendations, device: deviceGlobalRecommendations);
@@ -202,7 +202,8 @@ class HomeController extends getX.GetxController {
           log(":Local:ui event ${event.type} received");
           log("New Node => ${event.newNode}");
           log(":Local:ui listener id => ${await _localStorageInstance.getLocalStorageListener.hashCode}");
-          _showNotification(event.type.toValueString());
+          _showNotification(
+              "LocalStorage ${event.type.toValueString()} new scan required.");
         },
         path: path,
         searchKey: "GEIGER_score");
@@ -212,11 +213,10 @@ class HomeController extends getX.GetxController {
     //get instance of GeigerApiConnector
     _geigerApiConnectorInstance.initRegisterExternalPluginListener(
         scanCompletedEventHandler: (Message msg) {
-      _showNotification(
-          'We have received the SCAN_COMPLETED event from ${msg.sourceId}');
+      _showNotification('An external plugin  ${msg.type}.');
       log('We have received the SCAN_COMPLETED event from ${msg.sourceId}');
-      getX.Get.snackbar(
-          '', 'The external plugin ${msg.sourceId} has finished the scanning');
+      //   getX.Get.snackbar(
+      //       '', 'The external plugin ${msg.sourceId} has finished the scanning');
     });
   }
 
@@ -248,7 +248,7 @@ class HomeController extends getX.GetxController {
     } else {
       //populate data from cached
       _showAggCachedData();
-      _showRecommendationCachedData();
+      _getRecommendationCachedData();
     }
   }
 
@@ -447,7 +447,7 @@ class HomeController extends getX.GetxController {
     aggThreatsScore.value = _getAggCachedData();
   }
 
-  void _showRecommendationCachedData() async {
+  void _getRecommendationCachedData() async {
     userGlobalRecommendations.value = _getUserRecommendationCachedData();
     deviceGlobalRecommendations.value = _getDeviceRecommendationCachedData();
     log("user recomm obs => $userGlobalRecommendations");

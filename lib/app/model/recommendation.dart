@@ -10,6 +10,7 @@ class Recommendation {
   String shortDescription;
   String? longDescription;
   String recommendationType;
+
   String? weight;
   String? action;
   bool implemented;

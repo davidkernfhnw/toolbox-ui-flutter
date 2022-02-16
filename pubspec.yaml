@@ -58,6 +58,7 @@ dependencies:
   window_manager: ^0.1.5
   #flutter ui utils
   getwidget: ^2.0.4
+  url_launcher: ^6.0.20
 
 dev_dependencies:
   flutter_test:
@@ -66,10 +67,18 @@ dev_dependencies:
   #runner for generating json
   build_runner: ^2.1.4
   flutter_lints: ^1.0.4
-  flutter_native_splash: ^2.0.2
+  flutter_native_splash: ^2.0.4
+
+flutter_native_splash:
+  color: "#ffffff"
+  color_dark: "#ffffff"
+  image: assets/images/geiger_splash_logo.png
+  image_dark: assets/images/geiger_splash_logo.png
+
+  android: true
+  ios: true
 
 
-# The following section is specific to Flutter.
 flutter:
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:

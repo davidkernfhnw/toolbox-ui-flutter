@@ -81,6 +81,29 @@ class GeigerDataService extends GlobalDataAbstract {
         threatScores: threatsScore, geigerScore: geigerScore);
   }
 
+  //don't use, it has bug
+  // Future<GeigerScoreThreats> showThreatLevel({required String path}) async {
+  //   GeigerScoreThreats geigerScoreThreats =
+  //       await getGeigerScoreThreats(path: path);
+  //   List<GlobalRecommendation> globalRecommendations =
+  //       await getGlobalRecommendations();
+  //   List<RelatedThreatWeight> relatedThreatWeights = [];
+  //
+  //   for (GlobalRecommendation globalRecommendation in globalRecommendations) {
+  //     relatedThreatWeights = globalRecommendation.relatedThreatsWeights;
+  //   }
+  //   log("RELATEDTHREATWEIGHTS ==> $relatedThreatWeights");
+  //   for (RelatedThreatWeight tw in relatedThreatWeights) {
+  //     ThreatScore threatScore = geigerScoreThreats.threatScores.firstWhere(
+  //         (element) => element.threat.threatId == tw.threat.threatId);
+  //     bool r = geigerScoreThreats.threatScores.contains(threatScore);
+  //     if (r) {
+  //       geigerScoreThreats.threatLevel = await tw.threatWeight;
+  //     }
+  //   }
+  //   return geigerScoreThreats;
+  // }
+
   ///@param String node path,@param String threatId
   ///@ return Future<List<IndicatorRecommendation>>
   Future<List<IndicatorRecommendation>> _getIndicatorRecommendation(
@@ -147,8 +170,8 @@ class GeigerDataService extends GlobalDataAbstract {
     return implRecom;
   }
 
-  ///@return List<Recommendation> of Global recommendation with implemented field
-  ///set either true/false based recommendation that was implemented
+  ///@return List<Recommendation> of Global recommendation with implemented field filtered
+  ///set either true/false implemented field based recommendation that was implemented
   Future<List<Recommendation>> getGeigerRecommendations({
     required geigerScorePath,
   }) async {

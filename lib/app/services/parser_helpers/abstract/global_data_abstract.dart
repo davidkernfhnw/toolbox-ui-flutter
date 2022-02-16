@@ -52,6 +52,7 @@ abstract class GlobalDataAbstract {
 
   Future<List<GlobalRecommendation>> getGlobalRecommendations(
       {String locale: "en"}) async {
+    log("Dump glolbal recommendation => ${await storageController.dump(GLOBAL_RECOMMENDATION_PATH)} ");
     List<GlobalRecommendation> r = [];
     List<RelatedThreatWeight> tW = [];
     String? longDescription = null;
@@ -61,13 +62,14 @@ abstract class GlobalDataAbstract {
           .search(SearchCriteria(searchPath: GLOBAL_RECOMMENDATION_PATH));
       // Node node = await storageController.get(GLOBAL_RECOMMENDATION_PATH);
       // log("Global Recommendation => $node");
+      //first loop is to get id
       for (Node node in await nodes) {
         //check first path exist
         if (node.parentPath == ":Global") {
           String children = await node.getChildNodesCsv();
 
           List<String> recommendationIds = children.split(',');
-          //check if path exist
+          //second loop is to get nodeValue
           for (String recommendationId in recommendationIds) {
             Node recommendationNode = await storageController
                 .get("$GLOBAL_RECOMMENDATION_PATH:$recommendationId");
@@ -104,17 +106,11 @@ abstract class GlobalDataAbstract {
 
               List<Threat> threats = await getGlobalThreats();
 
-              List<Threat> threat = threats
-                  .where(
-                      (Threat element) => element.threatId.contains(threatId))
-                  .toList();
-
-              for (Threat t in threat) {
-                RelatedThreatWeight relatedThreatWeight =
-                    RelatedThreatWeight(threat: t, threatWeight: threatWeight);
-                //to list of RelatedThreatWeight
-                tW.add(relatedThreatWeight);
-              }
+              Threat threat = threats.firstWhere(
+                  (Threat element) => element.threatId.contains(threatId));
+              RelatedThreatWeight r = RelatedThreatWeight(
+                  threat: threat, threatWeight: threatWeight);
+              tW.add(r);
             }
 
             r.add(GlobalRecommendation(
@@ -133,6 +129,8 @@ abstract class GlobalDataAbstract {
     } on Error catch (e, s) {
       log('Got Exception while fetching list of global recommendation: $e \n $s');
     }
+
+    log("Global recommendation ==> $r");
     return r;
   }
 
