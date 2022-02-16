@@ -71,7 +71,10 @@ dev_dependencies:
 
 flutter_native_splash:
   color: "#ffffff"
+  color_dark: "#ffffff"
   image: assets/images/geiger_splash_logo.png
+  image_dark: assets/images/geiger_splash_logo.png
+
   android: true
   ios: true
 

@@ -87,7 +87,7 @@ class HomeController extends getX.GetxController {
   void onScanButtonPressed() async {
     //begin scanning
     isScanning.value = true;
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 50));
     //send a broadcast to external tool
     _requestScan();
 
@@ -98,7 +98,7 @@ class HomeController extends getX.GetxController {
 
     //get recommendations
     userGlobalRecommendations.value = await _getUserRecommendation();
-    await Future.delayed(Duration(milliseconds: 300));
+    await Future.delayed(Duration(milliseconds: 200));
     deviceGlobalRecommendations.value = await _getDeviceRecommendation();
     _cachedUserAndDeviceRecommendation(
         user: userGlobalRecommendations, device: deviceGlobalRecommendations);
