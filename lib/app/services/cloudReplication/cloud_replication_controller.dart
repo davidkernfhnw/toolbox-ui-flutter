@@ -25,7 +25,7 @@ class CloudReplicationController extends GetxController {
           _controller.createHandler,
           _controller.renameHanlder,
           _controller.updateHanlder);
-      await _controller.endGeigerStorage();
+      // await _controller.endGeigerStorage();
       //success
       return true;
     } catch (e) {
