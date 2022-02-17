@@ -81,23 +81,22 @@ class DataProtectionView extends StatelessWidget {
                                 ? (int newValue) async {
                                     controller.isRadioSelected.value = newValue;
                                     bool? success =
-                                        await controller.checkForReplication();
-                                    if (success != null) {
-                                      if (!Get.isSnackbarOpen) {
-                                        success
-                                            ? Get.snackbar("Replication",
-                                                "Your data was successfully replicated.",
-                                                snackPosition:
-                                                    SnackPosition.BOTTOM,
-                                                backgroundColor:
-                                                    Colors.greenAccent)
-                                            : Get.snackbar("Replication",
-                                                "Your data replication failed.",
-                                                snackPosition:
-                                                    SnackPosition.BOTTOM,
-                                                backgroundColor:
-                                                    Colors.orangeAccent);
-                                      }
+                                        await controller.initReplication();
+
+                                    if (!Get.isSnackbarOpen) {
+                                      success
+                                          ? Get.snackbar("Replication",
+                                              "Your data was successfully replicated.",
+                                              snackPosition:
+                                                  SnackPosition.BOTTOM,
+                                              backgroundColor:
+                                                  Colors.greenAccent)
+                                          : Get.snackbar("Replication",
+                                              "Your data replication failed.",
+                                              snackPosition:
+                                                  SnackPosition.BOTTOM,
+                                              backgroundColor:
+                                                  Colors.orangeAccent);
                                     }
                                   }
                                 : (int a) {

@@ -69,7 +69,7 @@ class DataProtectionController extends GetxController {
   }
 
   // ignore: unused_element
-  Future<bool> _initReplication() async {
+  Future<bool> initReplication() async {
     isLoading.value = true;
     log("replication called");
     message.value = "Update....";
@@ -85,10 +85,10 @@ class DataProtectionController extends GetxController {
     return result;
   }
 
-  Future<bool?> checkForReplication() async {
+  Future<bool?> _checkForReplication() async {
     bool check = await _cloudReplicationInstance.checkReplication();
     if (check) {
-      bool success = await _initReplication();
+      bool success = await initReplication();
       return success;
     } else {
       replicationError.value = "Replication has been done";
