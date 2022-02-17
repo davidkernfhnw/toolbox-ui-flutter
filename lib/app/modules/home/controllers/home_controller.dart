@@ -7,7 +7,6 @@ import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_toolbox/app/model/geiger_score_threats.dart';
 import 'package:geiger_toolbox/app/model/user.dart';
-import 'package:geiger_toolbox/app/services/cloudReplication/cloud_replication_controller.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:geiger_toolbox/app/services/indicator/geiger_indicator_controller.dart';
 import 'package:geiger_toolbox/app/services/listeners/storage_event.dart';
@@ -34,9 +33,6 @@ class HomeController extends getX.GetxController {
 
   //get instance of GeigerApiConnector
   GeigerApiConnector _geigerApiConnectorInstance = GeigerApiConnector.instance;
-
-  final CloudReplicationController _cloudReplicationInstance =
-      CloudReplicationController.instance;
 
   final GeigerIndicatorController _indicatorControllerInstance =
       GeigerIndicatorController.instance;
@@ -167,21 +163,6 @@ class HomeController extends getX.GetxController {
   // redirect to termAndCondition if false
 
   //********* start initial resources ***********
-
-  // ignore: unused_element
-  Future<void> _initReplication() async {
-    log("replication called");
-    message.value = "Update....";
-
-    //initialReplication
-    message.value = "Preparing geigerToolbox...";
-
-    // only initialize replication only when terms and conditions are accepted
-    await _cloudReplicationInstance.initialReplication();
-    await Future.delayed(Duration(seconds: 2));
-    log("isLoading is : $isLoadingServices");
-    message.value = "Almost done!";
-  }
 
   void _showNotification(String event) async {
     _localNotificationControllerInstance.notification(

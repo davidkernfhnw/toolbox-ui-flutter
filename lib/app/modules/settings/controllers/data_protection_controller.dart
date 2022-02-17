@@ -5,6 +5,8 @@ import 'package:geiger_toolbox/app/services/localStorage/local_storage_controlle
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
 import 'package:get/get.dart';
 
+import '../../../services/cloudReplication/cloud_replication_controller.dart';
+
 class DataProtectionController extends GetxController {
   //instance of DataController
   static final DataProtectionController instance =
@@ -12,6 +14,9 @@ class DataProtectionController extends GetxController {
 
   //getting instance of localStorageController
   final LocalStorageController _localStorage = LocalStorageController.instance;
+
+  final CloudReplicationController _cloudReplicationInstance =
+      CloudReplicationController.instance;
 
   late final StorageController _storageController;
   late final GeigerUserService _userService;
@@ -35,7 +40,7 @@ class DataProtectionController extends GetxController {
   }
 
   Future<bool> updateDataAccess(bool value) async {
-    isLoading.value = false;
+    isLoading.value = true;
     bool result = await _storeDataAccess(value);
     if (value) {
       _dataAccess.value = value;
@@ -58,6 +63,23 @@ class DataProtectionController extends GetxController {
     bool success =
         await _userService.updateUserConsentDataAccess(dataAccess: value);
     return success;
+  }
+
+  // ignore: unused_element
+  Future<void> initReplication() async {
+    isLoading.value = true;
+    log("replication called");
+    //message.value = "Update....";
+
+    //initialReplication
+    //message.value = "Preparing geigerToolbox...";
+
+    // only initialize replication only when terms and conditions are accepted
+    await _cloudReplicationInstance.initialReplication();
+
+    isLoading.value = false;
+    //log("isLoading is : $isLoadingServices");
+    // message.value = "Almost done!";
   }
 
   @override

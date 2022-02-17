@@ -76,6 +76,7 @@ class DataProtectionView extends StatelessWidget {
                             groupValue: controller.isRadioSelected.value,
                             onChanged: (int newValue) {
                               controller.isRadioSelected.value = newValue;
+                              controller.initReplication();
                             },
                             padding: EdgeInsets.symmetric(vertical: 5.0),
                           ),
