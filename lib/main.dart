@@ -48,7 +48,7 @@ Future<void> _initialization() async {
   await Get.put(GeigerIndicatorController());
 
   //initialize cloudReplicationController
-  Get.lazyPut<CloudReplicationController>(() => CloudReplicationController());
+  Get.put<CloudReplicationController>(CloudReplicationController());
   //cached data
   await GetStorage.init();
 

@@ -21,7 +21,10 @@ class DataProtectionView extends StatelessWidget {
       child: SingleChildScrollView(
         child: Obx(() {
           return controller.isLoading.value || controller.isLoading.value
-              ? ShowCircularProgress(visible: true)
+              ? ShowCircularProgress(
+                  visible: true,
+                  message: controller.message.value,
+                )
               : Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -74,10 +77,26 @@ class DataProtectionView extends StatelessWidget {
                             description:
                                 "All your data will be available on all your devices.",
                             groupValue: controller.isRadioSelected.value,
-                            onChanged: (int newValue) {
-                              controller.isRadioSelected.value = newValue;
-                              controller.initReplication();
-                            },
+                            onChanged: _dataProtectionController.getDataAccess
+                                ? (int newValue) async {
+                                    controller.isRadioSelected.value = newValue;
+                                    await controller.initReplication();
+                                  }
+                                : (int a) {
+                                    Get.defaultDialog(
+                                      barrierDismissible: false,
+                                      title: "Alert ",
+                                      middleText:
+                                          "Toolbox needs you to grant permission for data access and processing.",
+                                      middleTextStyle:
+                                          TextStyle(color: Colors.red),
+                                      cancel: ElevatedButton(
+                                          onPressed: () {
+                                            Get.back();
+                                          },
+                                          child: Text("ok")),
+                                    );
+                                  },
                             padding: EdgeInsets.symmetric(vertical: 5.0),
                           ),
                           CustomLabeledRadio(
@@ -86,9 +105,25 @@ class DataProtectionView extends StatelessWidget {
                             description:
                                 "Your tools’ data will be used to improve GEIGER over time.",
                             groupValue: controller.isRadioSelected.value,
-                            onChanged: (int newValue) {
-                              controller.isRadioSelected.value = newValue;
-                            },
+                            onChanged: _dataProtectionController.getDataAccess
+                                ? (int newValue) {
+                                    controller.isRadioSelected.value = newValue;
+                                  }
+                                : (int a) {
+                                    Get.defaultDialog(
+                                      barrierDismissible: false,
+                                      title: "Alert ",
+                                      middleText:
+                                          "Toolbox needs you to grant permission for data access and processing.",
+                                      middleTextStyle:
+                                          TextStyle(color: Colors.red),
+                                      cancel: ElevatedButton(
+                                          onPressed: () {
+                                            Get.back();
+                                          },
+                                          child: Text("ok")),
+                                    );
+                                  },
                             padding: EdgeInsets.symmetric(vertical: 5.0),
                           ),
                         ],

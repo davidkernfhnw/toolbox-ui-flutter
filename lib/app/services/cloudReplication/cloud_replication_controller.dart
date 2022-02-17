@@ -13,7 +13,6 @@ class CloudReplicationController extends GetxController {
 
   late final ReplicationController _controller;
 
-  // ignore: unused_element
   void _initialReplicationController() async {
     _controller = ReplicationService();
     await _controller.initGeigerStorage();
@@ -31,13 +30,13 @@ class CloudReplicationController extends GetxController {
         await _controller.endGeigerStorage();
       }
     } catch (e) {
-      log("Failed to initialReplication");
+      log("Failed to initialReplication $e");
     }
   }
 
   @override
-  void onInit() async {
-    //_initialReplicationController();
+  void onInit() {
+    _initialReplicationController();
     super.onInit();
   }
 }

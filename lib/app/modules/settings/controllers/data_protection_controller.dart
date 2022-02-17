@@ -29,6 +29,7 @@ class DataProtectionController extends GetxController {
   var _dataAccess = false.obs;
   var isLoading = false.obs;
   var isLoadingServices = false.obs;
+  var message = "".obs;
   Rx<int> isRadioSelected = 0.obs;
 
   bool get getDataAccess {
@@ -69,17 +70,17 @@ class DataProtectionController extends GetxController {
   Future<void> initReplication() async {
     isLoading.value = true;
     log("replication called");
-    //message.value = "Update....";
+    message.value = "Update....";
 
     //initialReplication
-    //message.value = "Preparing geigerToolbox...";
+    message.value = "Replicating user dara...";
 
     // only initialize replication only when terms and conditions are accepted
     await _cloudReplicationInstance.initialReplication();
 
     isLoading.value = false;
     //log("isLoading is : $isLoadingServices");
-    // message.value = "Almost done!";
+    message.value = "Almost done!";
   }
 
   @override
