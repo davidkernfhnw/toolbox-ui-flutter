@@ -80,7 +80,25 @@ class DataProtectionView extends StatelessWidget {
                             onChanged: _dataProtectionController.getDataAccess
                                 ? (int newValue) async {
                                     controller.isRadioSelected.value = newValue;
-                                    await controller.initReplication();
+                                    bool? success =
+                                        await controller.checkForReplication();
+                                    if (success != null) {
+                                      if (!Get.isSnackbarOpen) {
+                                        success
+                                            ? Get.snackbar("Replication",
+                                                "Your data was successfully replicated.",
+                                                snackPosition:
+                                                    SnackPosition.BOTTOM,
+                                                backgroundColor:
+                                                    Colors.greenAccent)
+                                            : Get.snackbar("Replication",
+                                                "Your data replication failed.",
+                                                snackPosition:
+                                                    SnackPosition.BOTTOM,
+                                                backgroundColor:
+                                                    Colors.orangeAccent);
+                                      }
+                                    }
                                   }
                                 : (int a) {
                                     Get.defaultDialog(

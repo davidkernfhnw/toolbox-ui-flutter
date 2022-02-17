@@ -40,10 +40,13 @@ dependencies:
   permission_handler: ^8.2.2
   device_info_plus: 3.2.1
 
+#  cloud_replication_package:
+#    git:
+#      url: git://github.com/cyber-geiger/toolbox-replication.git
+#      ref: development
+
   cloud_replication_package:
-    git:
-      url: git://github.com/cyber-geiger/toolbox-replication.git
-      ref: development
+    path: ../toolbox-replication
 
   #state management, dependency injection
   get: ^4.6.1

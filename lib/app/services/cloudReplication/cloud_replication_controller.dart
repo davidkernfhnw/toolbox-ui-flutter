@@ -18,19 +18,30 @@ class CloudReplicationController extends GetxController {
     await _controller.initGeigerStorage();
   }
 
-  Future<void> initialReplication() async {
+  Future<bool> initialReplication() async {
     try {
-      bool checkReplication = await _controller.checkReplication();
-      if (checkReplication == false) {
-        await _controller.geigerReplication(
-            _controller.deleteHandler,
-            _controller.createHandler,
-            _controller.renameHanlder,
-            _controller.updateHanlder);
-        await _controller.endGeigerStorage();
-      }
+      await _controller.geigerReplication(
+          _controller.deleteHandler,
+          _controller.createHandler,
+          _controller.renameHanlder,
+          _controller.updateHanlder);
+      await _controller.endGeigerStorage();
+      //success
+      return true;
     } catch (e) {
       log("Failed to initialReplication $e");
+      return false;
+    }
+  }
+
+  Future<bool> checkReplication() async {
+    bool checkReplication = await _controller.checkReplication();
+    if (checkReplication == false) {
+      //do replication
+      return true;
+    } else {
+      //replication has be done before
+      return false;
     }
   }
 

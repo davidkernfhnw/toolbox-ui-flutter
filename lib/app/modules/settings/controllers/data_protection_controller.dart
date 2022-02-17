@@ -30,6 +30,8 @@ class DataProtectionController extends GetxController {
   var isLoading = false.obs;
   var isLoadingServices = false.obs;
   var message = "".obs;
+  var replicationError = "".obs;
+
   Rx<int> isRadioSelected = 0.obs;
 
   bool get getDataAccess {
@@ -67,20 +69,31 @@ class DataProtectionController extends GetxController {
   }
 
   // ignore: unused_element
-  Future<void> initReplication() async {
+  Future<bool> _initReplication() async {
     isLoading.value = true;
     log("replication called");
     message.value = "Update....";
 
     //initialReplication
+    bool result = await _cloudReplicationInstance.initialReplication();
+
     message.value = "Replicating user dara...";
 
-    // only initialize replication only when terms and conditions are accepted
-    await _cloudReplicationInstance.initialReplication();
-
-    isLoading.value = false;
     //log("isLoading is : $isLoadingServices");
     message.value = "Almost done!";
+    isLoading.value = false;
+    return result;
+  }
+
+  Future<bool?> checkForReplication() async {
+    bool check = await _cloudReplicationInstance.checkReplication();
+    if (check) {
+      bool success = await _initReplication();
+      return success;
+    } else {
+      replicationError.value = "Replication has been done";
+      return null;
+    }
   }
 
   @override
