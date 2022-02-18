@@ -31,19 +31,58 @@ class DataProtectionView extends StatelessWidget {
                     children: [
                       CustomSwitch(
                         onChanged: (bool value) async {
-                          bool result =
-                              await controller.updateDataAccess(value);
+                          //check if granted
+                          if (_dataProtectionController.getDataAccess) {
+                            Get.defaultDialog(
+                              barrierDismissible: false,
+                              title: "Warning",
+                              middleText:
+                                  "Are you sure you want to disable Data Access and Processing?\n"
+                                  "The setting will be applied after you restart the app.",
+                              middleTextStyle: TextStyle(color: Colors.red),
+                              confirm: OutlinedButton(
+                                  onPressed: () async {
+                                    bool result = await controller
+                                        .updateDataAccess(value);
+                                    Get.back();
+                                    if (!Get.isSnackbarOpen) {
+                                      result
+                                          ? Get.snackbar("Data Access",
+                                              "Consent successfully updated.",
+                                              snackPosition:
+                                                  SnackPosition.BOTTOM,
+                                              backgroundColor:
+                                                  Colors.greenAccent)
+                                          : Get.snackbar("Data Access",
+                                              "Consent fail to update.",
+                                              snackPosition:
+                                                  SnackPosition.BOTTOM,
+                                              backgroundColor:
+                                                  Colors.orangeAccent);
+                                    }
+                                  },
+                                  child: Text("ok")),
+                              cancel: TextButton(
+                                  onPressed: () {
+                                    Get.back();
+                                  },
+                                  child: Text("Cancel")),
+                            );
+                          } else {
+                            bool result =
+                                await controller.updateDataAccess(value);
 
-                          if (!Get.isSnackbarOpen) {
-                            result
-                                ? Get.snackbar("Data Access",
-                                    "Consent successfully updated.",
-                                    snackPosition: SnackPosition.BOTTOM,
-                                    backgroundColor: Colors.greenAccent)
-                                : Get.snackbar(
-                                    "Data Access", "Consent fail to update.",
-                                    snackPosition: SnackPosition.BOTTOM,
-                                    backgroundColor: Colors.orangeAccent);
+                            if (!Get.isSnackbarOpen) {
+                              result
+                                  ? Get.snackbar("Data Access",
+                                      "Consent successfully updated.",
+                                      snackPosition: SnackPosition.BOTTOM,
+                                      backgroundColor: Colors.greenAccent)
+                                  : Get.snackbar(
+                                      "Data Access", "Consent fail to update.",
+                                      snackPosition: SnackPosition.BOTTOM,
+                                      backgroundColor: Colors.orangeAccent);
+                            }
                           }
                         },
                         defaultValue: controller.getDataAccess,
