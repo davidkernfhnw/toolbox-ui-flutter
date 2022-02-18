@@ -32,6 +32,9 @@ class DataProtectionController extends GetxController {
   var message = "".obs;
   var replicationError = "".obs;
 
+  Rx<int> doNoShareValue = 0.obs;
+  Rx<int> replicateValue = 1.obs;
+
   Rx<int> isRadioSelected = 0.obs;
 
   bool get getDataAccess {
@@ -96,10 +99,32 @@ class DataProtectionController extends GetxController {
     }
   }
 
+  Future<void> _getReplicateConsent() async {
+    int? data = await _userService.getReplicateConsent;
+    int? data1 = await _userService.getDoNotShareConsent;
+    if (data != null && data1 != null) {
+      if (data == isRadioSelected.value) {
+        isRadioSelected.value = 1;
+      } else {
+        isRadioSelected.value = data1;
+      }
+    }
+  }
+
+  void updateDoNotShare(int newValue) async {
+    await _userService.updateDoNotShareConsent(doNotShareData: newValue);
+  }
+
+  void updateReplicateConsent(int newValue) async {
+    await _userService.updateReplicateConsent(replicateData: newValue);
+  }
+
   @override
   void onInit() async {
     await _initStorageController();
     await _getUserConsent();
+
+    _getReplicateConsent();
     // log("DUMP ON data protection ${await _storageController.dump(":Global:cert")}");
     super.onInit();
   }

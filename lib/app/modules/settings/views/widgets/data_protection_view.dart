@@ -68,6 +68,7 @@ class DataProtectionView extends StatelessWidget {
                             groupValue: controller.isRadioSelected.value,
                             onChanged: (int newValue) {
                               controller.isRadioSelected.value = newValue;
+                              controller.updateDoNotShare(1);
                             },
                             padding: EdgeInsets.symmetric(vertical: 5.0),
                           ),
@@ -80,6 +81,7 @@ class DataProtectionView extends StatelessWidget {
                             onChanged: _dataProtectionController.getDataAccess
                                 ? (int newValue) async {
                                     controller.isRadioSelected.value = newValue;
+                                    controller.updateReplicateConsent(0);
                                     bool? success =
                                         await controller.initReplication();
 

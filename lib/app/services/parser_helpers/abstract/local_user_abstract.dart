@@ -16,18 +16,28 @@ abstract class LocalUserAbstract {
   Future<bool> storeTermsAndConditions(
       {required TermsAndConditions termsAndConditions});
 
+  /// @return Future<bool>
+  Future<bool> updateUserInfo(User user);
+
   ///@param optional
   ///@return Future<bool>
   Future<bool> storeUserConsent({bool dataAccess: false});
 
   Future<bool> updateUserConsentDataAccess({required bool dataAccess});
-
   Future<bool?> get getUserConsentDataAccess;
 
   Future<bool?> checkUserConsent();
 
-  /// @return Future<bool>
-  Future<bool> updateUserInfo(User user);
+  Future<bool> storeDoNotShareConsent({int doNotShare: 0});
+  Future<bool> storeReplicateConsent({required int replicateData});
+  Future<bool> updateDoNotShareConsent({required int doNotShareData});
+  Future<bool> updateReplicateConsent({required int replicateData});
+  Future<int?> get getDoNotShareConsent;
+  Future<int?> get getReplicateConsent;
+
+  Future<bool?> checkDoNotShareConsent();
+
+  Future<bool?> checkReplicationConsent();
 
   ///set newUser to true
   Future<void> setButtonNotPressed({bool value});

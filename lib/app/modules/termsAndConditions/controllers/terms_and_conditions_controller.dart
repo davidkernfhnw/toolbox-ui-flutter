@@ -100,7 +100,9 @@ class TermsAndConditionsController extends GetxController {
 
   @override
   void onReady() async {
-    _userService.storeUserConsent();
+    await _userService.storeUserConsent();
+    await _userService.storeDoNotShareConsent(doNotShare: 0);
+    await _userService.storeReplicateConsent(replicateData: 1);
 
     super.onReady();
   }

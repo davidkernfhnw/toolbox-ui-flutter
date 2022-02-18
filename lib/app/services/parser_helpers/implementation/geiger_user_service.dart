@@ -18,6 +18,8 @@ const String _NODE_OWNER = "geiger-toolbox";
 const String _BUTTON_KEY = "buttonPressed";
 const String _USER_CONSENT_PATH = ":Local:UserConsent";
 const String _DATA_ACCESS_KEY = "dataAccess";
+const String _DO_NOT_SHARE_KEY = "doNotShare";
+const String _REPLICATE_KEY = "replicate";
 
 class GeigerUserService extends LocalDeviceAbstract
     implements LocalUserAbstract {
@@ -252,6 +254,146 @@ class GeigerUserService extends LocalDeviceAbstract
       } else {
         return false;
       }
+    } catch (e) {
+      log("Failed to get data from $_USER_CONSENT_PATH");
+      return null;
+    }
+  }
+
+  @override
+  Future<bool> storeDoNotShareConsent({int doNotShare = 0}) async {
+    try {
+      bool isDoNotShare = await storageController.addOrUpdateValue(
+          _USER_CONSENT_PATH,
+          NodeValueImpl(_DO_NOT_SHARE_KEY, doNotShare.toString()));
+
+      log("Don't share Data ${await storageController.dump(_USER_CONSENT_PATH)}");
+      if (isDoNotShare) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw StorageException(
+          "Failed to retrieve the $_USER_CONSENT_PATH node\n $e");
+    }
+  }
+
+  @override
+  Future<bool> storeReplicateConsent({required int replicateData}) async {
+    try {
+      bool rep = await storageController.addOrUpdateValue(_USER_CONSENT_PATH,
+          NodeValueImpl(_REPLICATE_KEY, replicateData.toString()));
+
+      log("Replicate Data ${await storageController.dump(_USER_CONSENT_PATH)}");
+      if (rep) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw StorageException(
+          "Failed to retrieve the $_USER_CONSENT_PATH node\n $e");
+    }
+  }
+
+  @override
+  Future<bool?> checkDoNotShareConsent() async {
+    try {
+      NodeValue doNotShareValue = (await storageController.getValue(
+          _USER_CONSENT_PATH, _DO_NOT_SHARE_KEY))!;
+      int share = int.parse(doNotShareValue.value);
+      if (share == 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      log("Failed to get data from $_USER_CONSENT_PATH");
+      return null;
+    }
+  }
+
+  @override
+  Future<bool?> checkReplicationConsent() async {
+    try {
+      NodeValue replicateValue = (await storageController.getValue(
+          _USER_CONSENT_PATH, _REPLICATE_KEY))!;
+      int rep = int.parse(replicateValue.value);
+      if (rep == 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      log("Failed to get data from $_USER_CONSENT_PATH");
+      return null;
+    }
+  }
+
+  @override
+  Future<bool> updateDoNotShareConsent({required int doNotShareData}) async {
+    Node _node;
+    try {
+      _node = await getNode(_USER_CONSENT_PATH, storageController);
+
+      NodeValue dataAccessValue =
+          NodeValueImpl(_DO_NOT_SHARE_KEY, doNotShareData.toString());
+
+      await _node.updateValue(dataAccessValue);
+      await storageController.update(_node);
+      log("DOnt share $_node");
+      return true;
+    } catch (e) {
+      log("failed To update  \n $e ");
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> updateReplicateConsent({required int replicateData}) async {
+    Node _node;
+    try {
+      _node = await getNode(_USER_CONSENT_PATH, storageController);
+
+      NodeValue dataAccessValue =
+          NodeValueImpl(_REPLICATE_KEY, replicateData.toString());
+
+      await _node.updateValue(dataAccessValue);
+
+      await storageController.update(_node);
+      log("replicate update =>$_node");
+      return true;
+    } catch (e) {
+      log("failed To update \n $e");
+      return false;
+    }
+  }
+
+  @override
+  // TODO: implement getDataSharingConsent
+  Future<int?> get getDoNotShareConsent async {
+    try {
+      NodeValue dataAccessValue = (await storageController.getValue(
+          _USER_CONSENT_PATH, _DO_NOT_SHARE_KEY))!;
+      int data = int.parse(dataAccessValue.value);
+      log("DO not share value ==> $data");
+      return data;
+    } catch (e) {
+      log("Failed to get data from $_USER_CONSENT_PATH");
+      return null;
+    }
+  }
+
+  @override
+  // TODO: implement getReplicateConsent
+  Future<int?> get getReplicateConsent async {
+    try {
+      NodeValue dataAccessValue = (await storageController.getValue(
+          _USER_CONSENT_PATH, _REPLICATE_KEY))!;
+      int data = int.parse(dataAccessValue.value);
+      log("Replicate consent Value: $data");
+      return data;
     } catch (e) {
       log("Failed to get data from $_USER_CONSENT_PATH");
       return null;
