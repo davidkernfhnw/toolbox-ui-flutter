@@ -57,13 +57,14 @@ class ProfileController extends GetxController {
   //list of cert
   late List<Cert> _cert;
 
+  late Locale _locale;
+
   //update language
   onChangeLanguage(String? language) {
-    Locale locale = new Locale(language!);
-    //update language ui
-    Get.updateLocale(locale);
+    _locale = new Locale(language!);
     //update language
     selectedLanguage.value = language;
+
     //update default language
     userInfo.value.language = selectedLanguage.value;
   }
@@ -162,7 +163,8 @@ class ProfileController extends GetxController {
     userInfo.country = currentCountryId.value;
     userInfo.cert = currentCert.value;
     userInfo.profAss = currentProfAss.value;
-
+    //update language ui
+    Get.updateLocale(_locale);
     _updateUser(userInfo);
     if (isSuccess.value) {
       log("UserInfo: Updated Successfully");
@@ -253,7 +255,13 @@ class ProfileController extends GetxController {
       //Todo: auto get country by location
       if (userInfo.value.country != null) {
         onChangedCountry(userInfo.value.country!);
+      } else {
+        onChangedCountry(currentCountryId.value);
       }
+
+      onChangeLanguage(userInfo.value.language);
+      //update language ui
+      Get.updateLocale(_locale);
       //set language
       onChangeLanguage(userInfo.value.language);
       log("cert current: ${currentCert.value}");
