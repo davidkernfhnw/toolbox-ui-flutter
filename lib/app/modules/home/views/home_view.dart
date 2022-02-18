@@ -25,7 +25,8 @@ class HomeView extends StatelessWidget {
     return Scaffold(
       drawer: SideMenu(),
       appBar: AppBar(
-        title: const Text('Geiger Toolbox'),
+        centerTitle: true,
+        title: Text("geiger-toolbox".tr),
       ),
       body: Obx(
         () {

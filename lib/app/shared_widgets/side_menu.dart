@@ -10,10 +10,10 @@ class SideMenu extends StatelessWidget {
         child: ListView(
       padding: EdgeInsets.zero,
       children: <Widget>[
-        const DrawerHeader(
+        DrawerHeader(
           child: Center(
             child: Text(
-              'Geiger Toolbox',
+              "geiger-toolbox".tr,
               style: TextStyle(fontSize: 32, fontWeight: FontWeight.w800),
               softWrap: true,
             ),

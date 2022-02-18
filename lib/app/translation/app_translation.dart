@@ -7,7 +7,35 @@ abstract class AppTranslation {
   };
 }
 
-final Map<String, String> en = {"title": "Settings"};
-final Map<String, String> deCh = {"title": "Einstellungen"};
-final Map<String, String> ro = {"title": "setări"};
-final Map<String, String> nlNl = {"title": "instellingen"};
+final Map<String, String> en = {
+  "geiger-toolbox": "Geiger Toolbox",
+  "update-button-label": "Update",
+  "title-settings": "Settings",
+  "profile": "Profile",
+  "data-protection": "Data Protection",
+  "data": "Data"
+};
+final Map<String, String> deCh = {
+  "geiger-toolbox": "Geiger Werkzeugkasten",
+  "update-button-label": "Aktualisieren",
+  "title-settings": "Einstellungen",
+  "profile": "Profil",
+  "data-protection": "Datenschutz",
+  "data": "Daten"
+};
+final Map<String, String> ro = {
+  "geiger-toolbox": "Geiger Toolbox",
+  "update-button-label": "Actualizați",
+  "title-settings": "setări",
+  "profile": "Profil",
+  "data-protection": "Protejarea datelor",
+  "data": "Date"
+};
+final Map<String, String> nlNl = {
+  "geiger-toolbox": "Geiger-gereedschapskist",
+  "update-button-label": "Bijwerken",
+  "title-settings": "instellingen",
+  "profile": "Profiel",
+  "data-protection": "Gegevensbescherming",
+  "data": "Gegevens"
+};
