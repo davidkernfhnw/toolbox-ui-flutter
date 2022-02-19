@@ -1,5 +1,0 @@
-{
-  "threatScores": [ {"threatId":"1234ph", "name":"Phishing", "score":{"score":"40.20"}}, {"threatId":"1234ml", "name":"Malware", "score" :{"score":"80.23"}}],
-  "numberMetrics": "2",
-  "geigerScore" : "50.0"
-}
