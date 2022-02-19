@@ -17,4 +17,9 @@ class Cert {
   Map<String, dynamic> toJson() {
     return _$CertToJson(this);
   }
+
+  @override
+  String toString() {
+    return "{'id':$id, 'name':$name, 'locationId':$locationId}";
+  }
 }

@@ -19,18 +19,18 @@ abstract class GeigerUtilityAbstract {
   GeigerUtilityAbstract(this.storageController);
 
   Future<List<Cert>> getPartnerCert({String language: "en"}) async {
-    List<Cert> certs = await _getCert(locale: language);
+    List<Cert> certs = await _getCert(language: language);
     return certs;
   }
 
   Future<List<ProfessionalAssociation>> getPartnerProfAss(
       {String language: "en"}) async {
     List<ProfessionalAssociation> profAss =
-        await _getProfessionAssociations(locale: language);
+        await _getProfessionAssociations(language: language);
     return profAss;
   }
 
-  Future<List<Cert>> _getCert({String locale: "en"}) async {
+  Future<List<Cert>> _getCert({String language: "en"}) async {
     List<Cert> cert = <Cert>[];
     Node _node;
     try {
@@ -42,7 +42,7 @@ abstract class GeigerUtilityAbstract {
         Node certNode = (await storageController.get("$_CERT_PATH:${certId}"));
         //print(countryNode);
         NodeValue? certNodeValue = await certNode.getValue("name");
-        String certName = certNodeValue!.getValue(locale)!;
+        String certName = certNodeValue!.getValue(language)!;
         NodeValue? certLocId = await certNode.getValue("location");
         String? certLocValueId = certLocId!.value;
 
@@ -61,7 +61,7 @@ abstract class GeigerUtilityAbstract {
     }
   }
 
-  Future<List<Country>> getCountries({String locale: "en"}) async {
+  Future<List<Country>> getCountries({String language: "en"}) async {
     List<Country> c = <Country>[];
     Node _node;
     try {
@@ -75,7 +75,7 @@ abstract class GeigerUtilityAbstract {
 
         //print(countryNode);
         NodeValue? countryNodeValue = await countryNode.getValue("name");
-        String? countryName = countryNodeValue!.getValue(locale);
+        String? countryName = countryNodeValue!.getValue(language);
         c.add(Country(id: countryId, name: countryName!));
       }
       return c;
@@ -86,7 +86,7 @@ abstract class GeigerUtilityAbstract {
   }
 
   Future<List<ProfessionalAssociation>> _getProfessionAssociations(
-      {String locale: "en"}) async {
+      {String language: "en"}) async {
     List<ProfessionalAssociation> professionAssociations =
         <ProfessionalAssociation>[];
     Node _node;
@@ -101,9 +101,9 @@ abstract class GeigerUtilityAbstract {
             (await storageController.get("$_PROF_ASS_PATH:${profAssId}"));
         //print(countryNode);
         NodeValue? profAssNodeValue = await certNode.getValue("name");
-        String profAssName = profAssNodeValue!.getValue(locale)!;
+        String profAssName = profAssNodeValue!.getValue(language)!;
         NodeValue? profAssLocId = await certNode.getValue("location");
-        String? profAssLocValueId = profAssLocId!.getValue(locale);
+        String? profAssLocValueId = profAssLocId!.getValue(language);
 
         professionAssociations.add(ProfessionalAssociation(
             id: profAssId, locationId: profAssLocValueId!, name: profAssName));
