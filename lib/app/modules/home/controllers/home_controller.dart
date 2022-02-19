@@ -60,6 +60,8 @@ class HomeController extends getX.GetxController {
   var isScanRequired = false.obs;
   var isScanCompleted = "".obs;
   var isStorageUpdated = "".obs;
+  //device language
+  var _defaultLanguage = getX.Get.locale!.languageCode.obs;
   //Todo: take this variable to data_protection_controller
 
   //**** end of observable variable ***
@@ -286,7 +288,6 @@ class HomeController extends getX.GetxController {
     }
   }
 
-  //Todo: take this method to data_protection_controller
   //check if termsAndConditions were accepted
   // redirect to termAndCondition view if false else
   // then check for userConsent if true
@@ -296,7 +297,7 @@ class HomeController extends getX.GetxController {
   Future<bool> _redirect() async {
     isLoadingServices.value = true;
     bool checkTerms = await _isTermsAccepted();
-
+    await _setSelectedLanguage();
     if (checkTerms == false) {
       await getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
       isLoadingServices.value = false;
@@ -313,6 +314,25 @@ class HomeController extends getX.GetxController {
         return true;
       }
     }
+  }
+
+  //set language gotten from storage
+  Future<void> _setSelectedLanguage() async {
+    User? user = await _userService.getUserInfo;
+
+    if (user != null) {
+      String currentLanguage = user.language;
+      _setLanguage(currentLanguage);
+    } else {
+      //use default device language
+      _setLanguage(_defaultLanguage.value);
+    }
+  }
+
+  _setLanguage(String localeCode) {
+    Locale _locale = Locale(localeCode);
+    //update language ui
+    getX.Get.updateLocale(_locale);
   }
 
   //************* end of private methods ***********************

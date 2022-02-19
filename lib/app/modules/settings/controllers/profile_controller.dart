@@ -60,12 +60,19 @@ class ProfileController extends GetxController {
   late Locale _locale;
 
   //update language
-  onChangeLanguage(String? language) {
-    _locale = new Locale(language!);
+  onChangeLanguage(String? language) async {
+    _locale = Locale(language!);
     //update language
     selectedLanguage.value = language;
+    //update language ui
+    Get.updateLocale(_locale);
 
-    //update default language
+    //update data list
+    await _getData(language);
+
+    //set default country
+    onChangedCountry(currentCountryId.value);
+
     userInfo.value.language = selectedLanguage.value;
   }
 
@@ -215,71 +222,70 @@ class ProfileController extends GetxController {
   }
 
   //init util data
-  Future<void> _getData() async {
+  Future<void> _getData(String language) async {
     isLoading.value = true;
     currentDeviceName.value = await _userService.getDeviceName;
-    currentCountries = await _geigerData.getCountries();
-    _cert = await _geigerData.getPartnerCert(language: selectedLanguage.value);
+    currentCountries = await _geigerData.getCountries(language: language);
+    _cert = await _geigerData.getPartnerCert(language: language);
     log("cert ==> $_cert");
-    _profAss =
-        await _geigerData.getPartnerProfAss(language: selectedLanguage.value);
+    _profAss = await _geigerData.getPartnerProfAss(language: language);
     log("Prof ass ==> $_profAss");
     isLoading.value = false;
+  }
+
+  Future<void> _initialUserInfo() async {
+    User? user = await _userService.getUserInfo;
+    if (user != null) {
+      userInfo.value = user;
+    }
   }
 
   //initial User Data
   Future<void> _initUserData() async {
     isLoading.value = true;
 
-    User? user = await _userService.getUserInfo;
-    if (user != null) {
-      userInfo.value = user;
-      //init value in ui
-      supervisor.value = userInfo.value.supervisor;
+    //init value in ui
+    supervisor.value = userInfo.value.supervisor;
 
-      currentDeviceName.value = userInfo.value.deviceOwner!.name!;
+    currentDeviceName.value = userInfo.value.deviceOwner!.name!;
 
-      //init for ui
-      if (userInfo.value.country != null &&
-          userInfo.value.profAss != null &&
-          userInfo.value.cert != null) {
-        currentCountryId.value = userInfo.value.country!;
-        currentProfAss.value = userInfo.value.profAss!;
-        currentCert.value = userInfo.value.cert!;
-      }
-      if (userInfo.value.userName != null) {
-        currentUserName.value = userInfo.value.userName!;
-      }
-
-      //default country
-      //Todo: auto get country by location
-      if (userInfo.value.country != null) {
-        onChangedCountry(userInfo.value.country!);
-      } else {
-        onChangedCountry(currentCountryId.value);
-      }
-
-      onChangeLanguage(userInfo.value.language);
-      //update language ui
-      Get.updateLocale(_locale);
-      //set language
-      onChangeLanguage(userInfo.value.language);
-      log("cert current: ${currentCert.value}");
-      log("country: ${currentCountryId.value}");
-      log("countries: ${currentCountries}");
-      log("list of ProfAss => ${profAssBaseOnCountrySelected}");
-      log("profAss: ${currentProfAss.value}");
-      log("userInfo: ${userInfo.value}");
-      log("CurrentUserName :${currentUserName.value}");
+    //init for ui
+    if (userInfo.value.country != null &&
+        userInfo.value.profAss != null &&
+        userInfo.value.cert != null) {
+      currentCountryId.value = userInfo.value.country!;
+      currentProfAss.value = userInfo.value.profAss!;
+      currentCert.value = userInfo.value.cert!;
     }
+    if (userInfo.value.userName != null) {
+      currentUserName.value = userInfo.value.userName!;
+    }
+
+    //default country
+    //Todo: auto get country by location
+    if (userInfo.value.country != null) {
+      onChangedCountry(userInfo.value.country!);
+    } else {
+      onChangedCountry(currentCountryId.value);
+    }
+
+    //set language
+    log("cert current: ${currentCert.value}");
+    log("country: ${currentCountryId.value}");
+    log("countries: ${currentCountries}");
+    log("list of ProfAss => ${profAssBaseOnCountrySelected}");
+    log("profAss: ${currentProfAss.value}");
+    log("userInfo: ${userInfo.value}");
+    log("CurrentUserName :${currentUserName.value}");
+
     isLoading.value = false;
   }
 
   @override
   void onInit() async {
     await _initStorageController();
-
-    await _getData();
+    await _initialUserInfo();
+    await _getData(userInfo.value.language);
     await _initUserData();
 
     log("DUMP ON Profile ${await _storageController.dump(":Global:professionAssociation")}");
