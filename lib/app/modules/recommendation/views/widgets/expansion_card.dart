@@ -61,6 +61,7 @@ class ExpansionCard extends StatelessWidget {
                       // recommendation.longDescription!,
                       recommendation.recommendationId,
                       softWrap: true,
+                      textAlign: TextAlign.justify,
                     )
                   : Text(
                       // recommendation.longDescription!,

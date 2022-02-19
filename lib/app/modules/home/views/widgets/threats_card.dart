@@ -6,13 +6,13 @@ class ThreatsCard extends StatelessWidget {
   final String label;
   final IconData? icon;
   final double indicatorScore;
-  final Function()? improve;
+  final Function()? onpressed;
   const ThreatsCard({
     Key? key,
     required this.label,
     required this.icon,
     required this.indicatorScore,
-    required this.improve,
+    required this.onpressed,
   }) : super(key: key);
 
   @override
@@ -40,7 +40,7 @@ class ThreatsCard extends StatelessWidget {
                   score: indicatorScore,
                 ),
                 ElevatedButton(
-                  onPressed: improve,
+                  onPressed: onpressed,
                   child: const Text("Improve"),
                 ),
               ],

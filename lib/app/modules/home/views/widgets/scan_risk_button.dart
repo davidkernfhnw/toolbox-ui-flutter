@@ -4,6 +4,7 @@ import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
+import '../../../../shared_widgets/showCircularProgress.dart';
 import '../../../settings/controllers/data_protection_controller.dart';
 
 class ScanRiskButton extends StatelessWidget {
@@ -41,7 +42,15 @@ class ScanRiskButton extends StatelessWidget {
                     : Colors.grey,
               ),
               onPressed: _dataProtectionController.getDataAccess
-                  ? controller.onScanButtonPressed
+                  ? () async {
+                      ShowCircularProgress.buildShowDialog(
+                        context,
+                        visible: true,
+                        message: "Scanning...",
+                      );
+                      await controller.onScanButtonPressed();
+                      Get.back();
+                    }
                   : () {
                       if (!Get.isDialogOpen!) {
                         Get.defaultDialog(

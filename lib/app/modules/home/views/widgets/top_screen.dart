@@ -10,10 +10,7 @@ import 'scan_risk_button.dart';
 class TopScreen extends StatelessWidget {
   final HomeController controller;
 
-  final void Function()? onChangeUserId;
-
-  TopScreen({Key? key, this.onChangeUserId, required this.controller})
-      : super(key: key);
+  TopScreen({Key? key, required this.controller}) : super(key: key);
 
   final DataProtectionController _dataProtectionController =
       DataProtectionController.instance;
@@ -67,26 +64,6 @@ class TopScreen extends StatelessWidget {
             changeScanBtnColor: controller.changeScanBtnColor(parseToDouble),
           ),
           const SizedBox(height: 10.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              OutlinedButton(
-                onPressed: onChangeUserId,
-                child: Text(
-                  'update currentUserId ',
-                  style: TextStyle(color: Colors.black54),
-                ),
-              ),
-              OutlinedButton(
-                onPressed: null,
-                autofocus: true,
-                child: Text(
-                  'Device Scores',
-                  style: TextStyle(color: Colors.black54),
-                ),
-              ),
-            ],
-          ),
           const SizedBox(height: 5.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

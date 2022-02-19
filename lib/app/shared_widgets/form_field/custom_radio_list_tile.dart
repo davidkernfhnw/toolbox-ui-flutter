@@ -34,7 +34,10 @@ class CustomLabeledRadio extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label),
+                  Text(
+                    label,
+                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                  ),
                   description != null ? Text(description ?? "") : Container(),
                 ],
               ),

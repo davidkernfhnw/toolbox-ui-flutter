@@ -25,7 +25,8 @@ class HomeView extends StatelessWidget {
     return Scaffold(
       drawer: SideMenu(),
       appBar: AppBar(
-        title: const Text('Geiger Toolbox'),
+        centerTitle: true,
+        title: Text("geiger-toolbox".tr),
       ),
       body: Obx(
         () {
@@ -42,41 +43,36 @@ class HomeView extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       TopScreen(
-                        onChangeUserId: controller.changeDeviceInfo,
                         controller: controller,
                       ),
-                      controller.isScanning.value
-                          ? ShowCircularProgress(
-                              visible: controller.isScanning.value)
-                          : controller
-                                  .aggThreatsScore.value.threatScores.isEmpty
-                              ? const Center(
-                                  child: Text(
-                                    "NO DATA FOUND",
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                )
-                              : Column(
-                                  children: controller
-                                      .aggThreatsScore.value.threatScores
-                                      .map<ThreatsCard>(
-                                    (ThreatScore t) {
-                                      return ThreatsCard(
-                                        label: t.threat.name,
-                                        icon: GeigerIcon.iconsMap[
-                                            t.threat.name.toLowerCase()],
-                                        indicatorScore:
-                                            double.parse(t.score.toString()),
-                                        improve: _dataProtectionController
-                                                .getDataAccess
+                      controller.aggThreatsScore.value.threatScores.isEmpty
+                          ? const Center(
+                              child: Text(
+                                "NO DATA FOUND",
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            )
+                          : Column(
+                              children: controller
+                                  .aggThreatsScore.value.threatScores
+                                  .map<ThreatsCard>(
+                                (ThreatScore t) {
+                                  return ThreatsCard(
+                                    label: t.threat.name,
+                                    icon: GeigerIcon
+                                        .iconsMap[t.threat.name.toLowerCase()],
+                                    indicatorScore:
+                                        double.parse(t.score.toString()),
+                                    onpressed:
+                                        _dataProtectionController.getDataAccess
                                             ? () => Get.toNamed(
                                                 Routes.RECOMMENDATION_VIEW,
                                                 arguments: t.threat)
                                             : null,
-                                      );
-                                    },
-                                  ).toList(),
-                                ),
+                                  );
+                                },
+                              ).toList(),
+                            ),
                     ],
                   ),
                 );
@@ -85,75 +81,3 @@ class HomeView extends StatelessWidget {
     );
   }
 }
-//with STACK circularIndicator
-// @override
-// Widget build(BuildContext context) {
-//   return Scaffold(
-//     drawer: const SideMenu(),
-//     appBar: AppBar(
-//       title: const Text('Geiger Toolbox'),
-//     ),
-//     body: SingleChildScrollView(
-//       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-//       child: Obx(
-//             () {
-//           return Stack(
-//             children: [
-//               controller.isLoadingServices.value == true
-//                   ? Positioned(
-//                 child: Center(
-//                   child: ShowCircularProgress(
-//                       visible: controller.isLoadingServices.value,
-//                       message: controller.message.value),
-//                 ),
-//               )
-//                   : SizedBox(),
-//               Column(
-//                 mainAxisSize: MainAxisSize.max,
-//                 children: [
-//                   TopScreen(
-//                     onScanPressed: () {
-//                       //controller.emptyThreatScores();
-//                       controller.onScanButtonPressed();
-//                     },
-//                     aggregratedScore: !controller.isScanning.value
-//                         ? controller.aggThreatsScore.value.geigerScore
-//                         : "",
-//                     warming: false,
-//                     isLoading: controller.isScanning.value,
-//                   ),
-//                   controller.isScanning.value
-//                       ? ShowCircularProgress(
-//                       visible: controller.isScanning.value)
-//                       : controller.aggThreatsScore.value.threatScores.isEmpty
-//                       ? const Center(
-//                     child: Text(
-//                       "NO DATA FOUND",
-//                       style: TextStyle(color: Colors.red),
-//                     ),
-//                   )
-//                       : Column(
-//                     children: controller
-//                         .aggThreatsScore.value.threatScores
-//                         .map<ThreatsCard>((dummy.ThreatScore t) {
-//                       return ThreatsCard(
-//                         label: t.threat.name,
-//                         icon: GeigerIcon
-//                             .iconsMap[t.threat.name.toLowerCase()],
-//                         indicatorScore:
-//                         double.parse(t.score.toString()),
-//                         routeName: Routes.RECOMMENDATION_VIEW,
-//                         routeArguments: t.threat,
-//                       );
-//                     }).toList(),
-//                   ),
-//                 ],
-//               ),
-//             ],
-//           );
-//         },
-//       ),
-//     ),
-//   );
-// }
-//

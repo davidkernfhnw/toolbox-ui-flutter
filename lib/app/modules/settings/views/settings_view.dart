@@ -25,26 +25,26 @@ class SettingsView extends StatelessWidget {
           drawer: SideMenu(),
           appBar: AppBar(
             automaticallyImplyLeading: _dataProtectionController.getDataAccess,
-            title: Text('title'.tr),
+            title: Text('title-settings'.tr),
             centerTitle: true,
             bottom: buildTabBar(tabs: [
               Tab(
                 icon: Icon(
                   Icons.person_pin_outlined,
                 ),
-                text: "Profile",
+                text: "profile".tr,
               ),
               Tab(
                 icon: Icon(
                   Icons.storage_outlined,
                 ),
-                text: "Data Protection",
+                text: "data-protection".tr,
               ),
               Tab(
                 icon: Icon(
                   Icons.storage_outlined,
                 ),
-                text: "Data",
+                text: "data".tr,
               ),
             ]),
           ),

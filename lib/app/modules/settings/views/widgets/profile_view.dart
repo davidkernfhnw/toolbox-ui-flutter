@@ -117,7 +117,7 @@ class ProfileView extends StatelessWidget {
                               }
                             }
                           : null,
-                      child: Text("Update"),
+                      child: Text("update-button-label".tr),
                     ),
                     SizedBox(height: 10),
                   ],

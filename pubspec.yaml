@@ -43,7 +43,10 @@ dependencies:
   cloud_replication_package:
     git:
       url: git://github.com/cyber-geiger/toolbox-replication.git
-      ref: consent
+      ref: development
+
+#  cloud_replication_package:
+#    path: ../toolbox-replication
 
   #state management, dependency injection
   get: ^4.6.1
@@ -72,8 +75,8 @@ dev_dependencies:
 flutter_native_splash:
   color: "#ffffff"
   color_dark: "#ffffff"
-  image: assets/images/geiger_splash_logo.png
-  image_dark: assets/images/geiger_splash_logo.png
+  image: assets/images/geiger_splash.png
+  image_dark: assets/images/geiger_splash.png
 
   android: true
   ios: true

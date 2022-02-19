@@ -14,6 +14,12 @@ ThemeData customThemeData() {
       style: TextButton.styleFrom(
           backgroundColor: Colors.green, primary: Colors.white),
     ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(primary: Colors.green),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: TextButton.styleFrom(primary: Colors.green),
+    ),
 
     textTheme: TextTheme(
       headline1: TextStyle().copyWith(
