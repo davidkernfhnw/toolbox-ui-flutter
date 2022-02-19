@@ -73,18 +73,11 @@ class DataProtectionController extends GetxController {
 
   // ignore: unused_element
   Future<bool> initReplication() async {
-    isLoading.value = true;
     log("replication called");
-    message.value = "Update....";
 
     //initialReplication
     bool result = await _cloudReplicationInstance.initialReplication();
 
-    message.value = "Replicating user dara...";
-
-    //log("isLoading is : $isLoadingServices");
-    message.value = "Almost done!";
-    isLoading.value = false;
     return result;
   }
 

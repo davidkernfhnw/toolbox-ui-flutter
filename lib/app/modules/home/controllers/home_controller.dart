@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:geiger_api/geiger_api.dart';
@@ -80,10 +79,17 @@ class HomeController extends getX.GetxController {
   //**** end of observable object***
 
   //****** start of public method *****
-  void onScanButtonPressed() async {
+
+  void _clearMessage() {
+    message.value = "";
+  }
+
+  Future<void> onScanButtonPressed() async {
     //begin scanning
+    message.value = "Scanning";
     isScanning.value = true;
-    await Future.delayed(Duration(milliseconds: 50));
+
+    await Future.delayed(Duration(milliseconds: 100));
     //send a broadcast to external tool
     _requestScan();
 
@@ -94,7 +100,7 @@ class HomeController extends getX.GetxController {
 
     //get recommendations
     userGlobalRecommendations.value = await _getUserRecommendation();
-    await Future.delayed(Duration(milliseconds: 200));
+    await Future.delayed(Duration(milliseconds: 500));
     deviceGlobalRecommendations.value = await _getDeviceRecommendation();
     _cachedUserAndDeviceRecommendation(
         user: userGlobalRecommendations, device: deviceGlobalRecommendations);
@@ -102,6 +108,9 @@ class HomeController extends getX.GetxController {
 
     // log("Dump after scanning ==> ${await _storageController.dump(":")}");
     //set scanRequired to false if true
+    message.value = "Done";
+    _clearMessage();
+
     isScanRequired.value = false;
 
     isScanning.value = false;
@@ -206,6 +215,7 @@ class HomeController extends getX.GetxController {
     message.value = "Updating Toolbox...";
     await Future.delayed(Duration(seconds: 1));
     _indicatorControllerInstance.initGeigerIndicator();
+    _clearMessage();
     isLoadingServices.value = false;
   }
 
@@ -213,6 +223,7 @@ class HomeController extends getX.GetxController {
     isLoadingServices.value = true;
     message.value = "Updating Toolbox...";
     _indicatorControllerInstance.initGeigerIndicator();
+    _clearMessage();
     isLoadingServices.value = false;
   }
 
@@ -369,23 +380,6 @@ class HomeController extends getX.GetxController {
   void onReady() async {
     //await _initReplication();
     super.onReady();
-  }
-
-//test method
-  Future<bool> changeDeviceInfo() async {
-    try {
-      NodeValue? nodeValue =
-          await _storageController.getValue(":Local:ui", "deviceInfo");
-      var r = math.Random();
-      nodeValue!.setValue("FHnwUserID${r.nextDouble()}");
-      await _storageController.updateValue(":Local:ui", nodeValue);
-
-      return true;
-    } catch (e) {
-      log('Failed to get node :Local:ui ');
-      log(e.toString());
-      return false;
-    }
   }
 
   //**************cached data*******************
