@@ -45,6 +45,14 @@ class DataProtectionController extends GetxController {
     _dataAccess.value = value;
   }
 
+  bool get getReplicationConsent {
+    if (isRadioSelected.value == 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<bool> updateDataAccess(bool value) async {
     isLoading.value = true;
     bool result = await _storeDataAccess(value);
@@ -81,6 +89,7 @@ class DataProtectionController extends GetxController {
     return result;
   }
 
+  // ignore: unused_element
   Future<bool?> _checkForReplication() async {
     bool check = await _cloudReplicationInstance.checkReplication();
     if (check) {
@@ -93,22 +102,22 @@ class DataProtectionController extends GetxController {
   }
 
   Future<void> _getReplicateConsent() async {
-    int? data = await _userService.getReplicateConsent;
-    int? data1 = await _userService.getDoNotShareConsent;
-    if (data != null && data1 != null) {
-      if (data == isRadioSelected.value) {
+    int? rep = await _userService.getReplicateConsent;
+    int? noData = await _userService.getDoNotShareConsent;
+    if (rep != null && noData != null) {
+      if (rep == isRadioSelected.value) {
         isRadioSelected.value = 1;
       } else {
-        isRadioSelected.value = data1;
+        isRadioSelected.value = 0;
       }
     }
   }
 
-  void updateDoNotShare(int newValue) async {
+  Future<void> updateDoNotShare(int newValue) async {
     await _userService.updateDoNotShareConsent(doNotShareData: newValue);
   }
 
-  void updateReplicateConsent(int newValue) async {
+  Future<void> updateReplicateConsent(int newValue) async {
     await _userService.updateReplicateConsent(replicateData: newValue);
   }
 

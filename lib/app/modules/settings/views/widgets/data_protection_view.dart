@@ -96,7 +96,31 @@ class DataProtectionView extends StatelessWidget {
                           'Data will remain on this single device only.',
                       groupValue: controller.isRadioSelected.value,
                       onChanged: (int newValue) {
-                        controller.isRadioSelected.value = newValue;
+                        controller.isRadioSelected.value != newValue
+                            ? Get.defaultDialog(
+                                barrierDismissible: false,
+                                title: "Warning",
+                                middleText:
+                                    "Are you sure you want to stop your data from be replicated ?\n"
+                                    "The setting will be applied after you restart the app.",
+                                middleTextStyle: TextStyle(color: Colors.red),
+                                confirm: OutlinedButton(
+                                    onPressed: () async {
+                                      controller.isRadioSelected.value =
+                                          newValue;
+                                      await controller.updateDoNotShare(0);
+                                      await controller
+                                          .updateReplicateConsent(1);
+                                      Get.back();
+                                    },
+                                    child: Text("ok")),
+                                cancel: TextButton(
+                                    onPressed: () {
+                                      Get.back();
+                                    },
+                                    child: Text("Cancel")),
+                              )
+                            : controller.isRadioSelected.value = newValue;
                         controller.updateDoNotShare(1);
                       },
                       padding: EdgeInsets.symmetric(vertical: 5.0),
@@ -111,7 +135,8 @@ class DataProtectionView extends StatelessWidget {
                           ? (int newValue) async {
                               ShowCircularProgress.buildShowDialog(context);
                               controller.isRadioSelected.value = newValue;
-                              controller.updateReplicateConsent(0);
+                              await controller.updateReplicateConsent(0);
+                              await controller.updateDoNotShare(1);
                               bool? success =
                                   await controller.initReplication();
                               Get.back();

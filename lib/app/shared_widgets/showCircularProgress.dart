@@ -45,7 +45,9 @@ class ShowCircularProgress extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircularProgressIndicator(),
+                CircularProgressIndicator.adaptive(
+                  backgroundColor: Colors.green,
+                ),
                 SizedBox(
                   height: 10,
                 ),

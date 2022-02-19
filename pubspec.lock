@@ -165,9 +165,11 @@ packages:
   cloud_replication_package:
     dependency: "direct main"
     description:
-      path: "../toolbox-replication"
-      relative: true
-    source: path
+      path: "."
+      ref: development
+      resolved-ref: cde4750e3f142bed549e9b8b1b20b554a821b811
+      url: "git://github.com/cyber-geiger/toolbox-replication.git"
+    source: git
     version: "0.0.1"
   code_builder:
     dependency: transitive
