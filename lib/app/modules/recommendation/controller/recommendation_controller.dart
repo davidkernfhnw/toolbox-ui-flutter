@@ -99,8 +99,6 @@ class RecommendationController extends getX.GetxController {
 
   //returns user GeigerScoreThreats
   Future<GeigerScoreThreats> _getUserThreatScore() async {
-    User? currentUser = await _userService.getUserInfo;
-    String indicatorId = _indicatorControllerInstance.indicatorId;
     String path = _homeControllerInstance.getUserScorePath;
     //get user geigerScoreThreats
     GeigerScoreThreats geigerScoreThreats =
@@ -111,8 +109,6 @@ class RecommendationController extends getX.GetxController {
 
   //returns device of GeigerScoreThreats
   Future<GeigerScoreThreats> _getDeviceThreatScore() async {
-    User? currentUser = await _userService.getUserInfo;
-    String indicatorId = _indicatorControllerInstance.indicatorId;
     String path = _homeControllerInstance.getDeviceScorePath;
     //get device geigerScoreThreats
     GeigerScoreThreats geigerScoreThreats =

@@ -372,9 +372,6 @@ class HomeController extends getX.GetxController {
   //**************Recommendation ***************
 
   Future<List<Recommendation>> _getDeviceRecommendation() async {
-    User? currentUser = await _userService.getUserInfo;
-    String indicatorId = _indicatorControllerInstance.indicatorId;
-
     //path to get device implemented recommendation id
     // key is implementedRecommendation
 
@@ -389,9 +386,6 @@ class HomeController extends getX.GetxController {
 
   //Re
   Future<List<Recommendation>> _getUserRecommendation() async {
-    User? currentUser = await _userService.getUserInfo;
-    String indicatorId = _indicatorControllerInstance.indicatorId;
-
     //path to get user implemented recommendation id
     // key is implementedRecommendation
     String geigerScoreUserPath = _userScorePath;
