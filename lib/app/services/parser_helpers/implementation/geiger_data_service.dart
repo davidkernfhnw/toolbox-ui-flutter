@@ -173,7 +173,7 @@ class GeigerDataService extends GlobalDataAbstract {
   }
 
   ///@return List<Recommendation> of Global recommendation with implemented field filtered
-  ///set either true/false implemented field based recommendation that was implemented
+  ///set either true/false implemented field based on recommendation that was implemented
   Future<List<Recommendation>> getGeigerRecommendations({
     required geigerScorePath,
   }) async {
@@ -203,7 +203,7 @@ class GeigerDataService extends GlobalDataAbstract {
     return finalRecommendations;
   }
 
-  ///@return List<Recommendation> of indicator  recommendation
+  ///@return List<Recommendation> recommended by the geiger_indicator
   /// @param List<Recommendation> of global recommendation
   /// @param String recommendationPath
   /// @param String geigerScorePath

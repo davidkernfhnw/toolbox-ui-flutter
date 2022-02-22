@@ -54,6 +54,11 @@ class HomeController extends getX.GetxController {
   // *** end of late variables ****
 
   //**** observable variable ****
+
+  String _userAggrScorePath = "";
+  String _deviceScorePath = "";
+  String _userScorePath = "";
+
   var isScanning = false.obs;
   var isLoadingServices = false.obs;
   var message = "".obs;
@@ -157,23 +162,53 @@ class HomeController extends getX.GetxController {
     //await geigerApiInstance.getEvents();
   }
 
-  //returns aggregate of GeigerScoreThreats
-  Future<GeigerScoreThreats> _getAggThreatScore() async {
+  // set Node path of usersAggrPath
+  Future<void> _setUserAggrPath() async {
     String currentUserId = await _userService.getUserId;
     String indicatorId = _indicatorControllerInstance.indicatorId;
-    String path =
+
+    _userAggrScorePath =
         ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
+  }
+
+  // set Node path userScorePath
+  Future<void> _setUserScorePath() async {
+    User? currentUser = await _userService.getUserInfo;
+    String indicatorId = _indicatorControllerInstance.indicatorId;
+
+    _userScorePath =
+        ":Users:${currentUser!.userId}:$indicatorId:data:GeigerScoreUser";
+  }
+
+  //set Node path deviceScorePath
+  Future<void> _setDeviceScorePath() async {
+    User? currentUser = await _userService.getUserInfo;
+    String indicatorId = _indicatorControllerInstance.indicatorId;
+
+    _deviceScorePath =
+        ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
+  }
+
+  String get getDeviceScorePath {
+    return _deviceScorePath;
+  }
+
+  String get getUserScorePath {
+    return _userScorePath;
+  }
+
+  String get getUserAggPath {
+    return _userAggrScorePath;
+  }
+
+  //returns aggregate of GeigerScoreThreats
+  Future<GeigerScoreThreats> _getAggThreatScore() async {
+    String path = _userAggrScorePath;
     GeigerScoreThreats geigerScoreThreats =
         await _geigerDataService.getGeigerScoreThreats(path: path);
 
     return geigerScoreThreats;
   }
-
-  //Todo: take this method to data_protection_controller
-  //check if termsAndConditions were accepted
-  // redirect to termAndCondition if false
-
-  //********* start initial resources ***********
 
   void _showNotification(String event) async {
     _localNotificationControllerInstance.notification(
@@ -181,11 +216,7 @@ class HomeController extends getX.GetxController {
   }
 
   void _aggDataUpdateListener() async {
-    String currentUserId = await _userService.getUserId;
-    String indicatorId = _indicatorControllerInstance.indicatorId;
-    String path =
-        ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
-
+    String path = _userAggrScorePath;
     await _localStorageInstance.initRegisterStorageListener(
         event: EventType.update,
         eventHandlerCallback: (Event event) async {
@@ -298,6 +329,7 @@ class HomeController extends getX.GetxController {
     isLoadingServices.value = true;
     bool checkTerms = await _isTermsAccepted();
     await _setSelectedLanguage();
+
     if (checkTerms == false) {
       await getX.Get.offNamed(Routes.TERMS_AND_CONDITIONS_VIEW);
       isLoadingServices.value = false;
@@ -343,8 +375,10 @@ class HomeController extends getX.GetxController {
     User? currentUser = await _userService.getUserInfo;
     String indicatorId = _indicatorControllerInstance.indicatorId;
 
-    String geigerScoreDevicePath =
-        ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
+    //path to get device implemented recommendation id
+    // key is implementedRecommendation
+
+    String geigerScoreDevicePath = _deviceScorePath;
 
     List<Recommendation> deviceRecommendation = await _geigerDataService
         .getGeigerRecommendations(geigerScorePath: geigerScoreDevicePath);
@@ -353,12 +387,14 @@ class HomeController extends getX.GetxController {
     return deviceRecommendation;
   }
 
+  //Re
   Future<List<Recommendation>> _getUserRecommendation() async {
     User? currentUser = await _userService.getUserInfo;
     String indicatorId = _indicatorControllerInstance.indicatorId;
 
-    String geigerScoreUserPath =
-        ":Users:${currentUser!.userId}:$indicatorId:data:GeigerScoreUser";
+    //path to get user implemented recommendation id
+    // key is implementedRecommendation
+    String geigerScoreUserPath = _userScorePath;
 
     List<Recommendation> userRecommendation = await _geigerDataService
         .getGeigerRecommendations(geigerScorePath: geigerScoreUserPath);
@@ -386,11 +422,18 @@ class HomeController extends getX.GetxController {
       //check userConsent before load indication
       _checkConsent();
 
+      //load all node path
+      await _setUserAggrPath();
+      await _setUserScorePath();
+      await _setDeviceScorePath();
+
       //storageRegister
       _aggDataUpdateListener();
       //ExternalPluginListener
       _scanCompleteListener();
 
+      //get user aggregate score from cache if scan button
+      // was recently pressed.
       await _triggerAggCachedData();
     }
     super.onInit();
@@ -398,7 +441,6 @@ class HomeController extends getX.GetxController {
 
   @override
   void onReady() async {
-    //await _initReplication();
     super.onReady();
   }
 

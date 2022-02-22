@@ -70,7 +70,7 @@ class RecommendationController extends getX.GetxController {
   //************* start of private methods ***********************
 
   //show user threat score
-  Future<void> _showUserThreat() async {
+  Future<void> _showUserThreatScore() async {
     //get userThreatScore
     GeigerScoreThreats geigerUserScore = await _getUserThreatScore();
     //GeigerScoreThreats geigerUserScore = _getUserCachedData();
@@ -84,7 +84,7 @@ class RecommendationController extends getX.GetxController {
         (ThreatScore value) => value.threat.threatId.contains(threat.threatId));
   }
 
-  Future<void> _showDeviceThreat() async {
+  Future<void> _showDeviceThreatScore() async {
     GeigerScoreThreats geigerDeviceScore = await _getDeviceThreatScore();
     //GeigerScoreThreats geigerDeviceScore = _getDeviceCachedData();
     log("GeigerDeviceScore => $geigerDeviceScore");
@@ -97,12 +97,11 @@ class RecommendationController extends getX.GetxController {
             element.threat.threatId.contains(threat.threatId));
   }
 
-  //returns user of GeigerScoreThreats
+  //returns user GeigerScoreThreats
   Future<GeigerScoreThreats> _getUserThreatScore() async {
     User? currentUser = await _userService.getUserInfo;
     String indicatorId = _indicatorControllerInstance.indicatorId;
-    String path =
-        ":Users:${currentUser!.userId}:$indicatorId:data:GeigerScoreUser";
+    String path = _homeControllerInstance.getUserScorePath;
     //get user geigerScoreThreats
     GeigerScoreThreats geigerScoreThreats =
         await _geigerDataService.getGeigerScoreThreats(path: path);
@@ -114,8 +113,7 @@ class RecommendationController extends getX.GetxController {
   Future<GeigerScoreThreats> _getDeviceThreatScore() async {
     User? currentUser = await _userService.getUserInfo;
     String indicatorId = _indicatorControllerInstance.indicatorId;
-    String path =
-        ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
+    String path = _homeControllerInstance.getDeviceScorePath;
     //get device geigerScoreThreats
     GeigerScoreThreats geigerScoreThreats =
         await _geigerDataService.getGeigerScoreThreats(path: path);
@@ -128,8 +126,10 @@ class RecommendationController extends getX.GetxController {
     String indicatorId = _indicatorControllerInstance.indicatorId;
     List<Recommendation> globalDeviceReco =
         _homeControllerInstance.userGlobalRecommendations;
+    //path to store recommendation Id
     String geigerScoreUserPath =
         ":Users:${currentUser!.userId}:$indicatorId:data:GeigerScoreUser";
+    //path to get filtered user recommendation by geiger_indicator
     String userRecommendationPath =
         ":Users:${currentUser.userId}:$indicatorId:data:recommendations";
     List<Recommendation> filterReco =
@@ -147,9 +147,10 @@ class RecommendationController extends getX.GetxController {
     String indicatorId = _indicatorControllerInstance.indicatorId;
     List<Recommendation> globalDeviceReco =
         _homeControllerInstance.deviceGlobalRecommendations;
-
+    //path to store recommendation Id
     String geigerScoreDevicePath =
         ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
+    //path to get filtered device recommendation by geiger_indicator
     String deviceRecommendationPath =
         ":Devices:${currentUser.deviceOwner!.deviceId}:$indicatorId:data:recommendations";
     List<Recommendation> filterReco =
@@ -251,13 +252,14 @@ class RecommendationController extends getX.GetxController {
     }
   }
 
-  //*** end public method *****
+  //*** end public method ****
+
   @override
   onInit() async {
     await _init();
     isLoading.value = true;
     _showName();
-    _showUserThreat();
+    _showUserThreatScore();
     _getFilteredUserRecommendation();
 
     isLoading.value = false;
@@ -267,7 +269,7 @@ class RecommendationController extends getX.GetxController {
   @override
   onReady() async {
     isLoading.value = true;
-    _showDeviceThreat();
+    _showDeviceThreatScore();
     _getFilteredDeviceRecommendation();
     isLoading.value = false;
     super.onReady();
