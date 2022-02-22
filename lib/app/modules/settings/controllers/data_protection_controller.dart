@@ -80,25 +80,25 @@ class DataProtectionController extends GetxController {
   }
 
   // ignore: unused_element
-  Future<bool> initReplication() async {
-    log("replication called");
-
-    //initialReplication
-    bool result = await _cloudReplicationInstance.initialReplication();
-
-    return result;
-  }
+  // Future<bool> initReplication() async {
+  //   log("replication called");
+  //
+  //   // //initialReplication
+  //   // bool result = await _cloudReplicationInstance.initialReplication();
+  //
+  //   return result;
+  // }
 
   // ignore: unused_element
   Future<bool?> _checkForReplication() async {
-    bool check = await _cloudReplicationInstance.checkReplication();
-    if (check) {
-      bool success = await initReplication();
-      return success;
-    } else {
-      replicationError.value = "Replication has been done";
-      return null;
-    }
+    // bool check = await _cloudReplicationInstance.checkReplication();
+    // if (check) {
+    //   bool success = await initReplication();
+    //   return success;
+    // } else {
+    //   replicationError.value = "Replication has been done";
+    //   return null;
+    // }
   }
 
   Future<void> _getReplicateConsent() async {

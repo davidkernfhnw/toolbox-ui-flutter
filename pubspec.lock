@@ -422,13 +422,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.1"
-  initialize_geiger_data:
-    dependency: "direct main"
-    description:
-      name: initialize_geiger_data
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.3"
   intl:
     dependency: transitive
     description:

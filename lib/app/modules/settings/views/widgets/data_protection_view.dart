@@ -3,7 +3,6 @@ import 'package:geiger_toolbox/app/modules/settings/controllers/data_protection_
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_radio_list_tile.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_switch.dart';
-import 'package:geiger_toolbox/app/shared_widgets/showCircularProgress.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
 import 'package:get/get.dart';
 
@@ -133,24 +132,24 @@ class DataProtectionView extends StatelessWidget {
                       groupValue: controller.isRadioSelected.value,
                       onChanged: _dataProtectionController.getDataAccess
                           ? (int newValue) async {
-                              ShowCircularProgress.buildShowDialog(context);
-                              controller.isRadioSelected.value = newValue;
-                              await controller.updateReplicateConsent(0);
-                              await controller.updateDoNotShare(1);
-                              bool? success =
-                                  await controller.initReplication();
-                              Get.back();
-                              if (!Get.isSnackbarOpen) {
-                                success
-                                    ? Get.snackbar("Replication",
-                                        "Your data was successfully replicated.",
-                                        snackPosition: SnackPosition.BOTTOM,
-                                        backgroundColor: Colors.greenAccent)
-                                    : Get.snackbar("Replication",
-                                        "Your data replication failed.",
-                                        snackPosition: SnackPosition.BOTTOM,
-                                        backgroundColor: Colors.orangeAccent);
-                              }
+                              // ShowCircularProgress.buildShowDialog(context);
+                              // controller.isRadioSelected.value = newValue;
+                              // await controller.updateReplicateConsent(0);
+                              // await controller.updateDoNotShare(1);
+                              // bool? success =
+                              //     await controller.initReplication();
+                              // Get.back();
+                              // if (!Get.isSnackbarOpen) {
+                              //   success
+                              //       ? Get.snackbar("Replication",
+                              //           "Your data was successfully replicated.",
+                              //           snackPosition: SnackPosition.BOTTOM,
+                              //           backgroundColor: Colors.greenAccent)
+                              //       : Get.snackbar("Replication",
+                              //           "Your data replication failed.",
+                              //           snackPosition: SnackPosition.BOTTOM,
+                              //           backgroundColor: Colors.orangeAccent);
+                              // }
                             }
                           : (int a) {
                               Get.defaultDialog(
