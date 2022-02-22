@@ -1,7 +1,7 @@
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/compare/controller/compare_risk_controller.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:geiger_toolbox/app/util/style.dart';
 
 class CompareRiskPage extends StatelessWidget {
@@ -13,7 +13,7 @@ class CompareRiskPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(controller.title),
       ),
-      drawer: const SideMenu(),
+      drawer: SideMenu(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

@@ -1,5 +1,3 @@
-//import 'dart:developer';
-
 import 'dart:async';
 import 'dart:developer';
 
@@ -13,12 +11,13 @@ class LocalStorageController extends getX.GetxController {
   //instance of LocalStorageController
   static LocalStorageController instance =
       getX.Get.find<LocalStorageController>();
+
   //get instance of GeigerApiConnector
   GeigerApiConnector _geigerApiConnector = GeigerApiConnector.instance;
 
   //private variables
-  late StorageController _storageController;
-  late GeigerApi _api;
+  late final StorageController _storageController;
+  late final GeigerApi _api;
 
   LocalStorageListener? _localStorageListener;
 
@@ -26,7 +25,13 @@ class LocalStorageController extends getX.GetxController {
   bool _isStorageListenerTriggered = false;
 
   StorageController get getStorageController {
-    return _storageController;
+    try {
+      log("StorageController gotten successfully $_storageController");
+      return _storageController;
+    } catch (e) {
+      log("Failed to get storageController");
+      rethrow;
+    }
   }
 
   LocalStorageListener get getLocalStorageListener {
@@ -42,28 +47,32 @@ class LocalStorageController extends getX.GetxController {
     try {
       _api = await _geigerApiConnector.getLocalMaster;
       _storageController = await _api.getStorage()!;
+
+      log("StorageController initialize successfully $_storageController");
     } catch (e) {
       log("Failed to get StorageController ===> \n $e");
     }
   }
 
   Future<void> initRegisterStorageListener(
-      updatedEventHandler, path, searchKey) async {
+      {required EventType event,
+      required Function eventHandlerCallback,
+      required String path,
+      String? searchKey}) async {
     // register storageListener
-    _isStorageListenerRegistered =
-        await _registerStorageListener(updatedEventHandler, path, searchKey);
+    _isStorageListenerRegistered = await _registerStorageListener(
+        event, eventHandlerCallback, path, searchKey);
   }
 
-  Future<bool> _registerStorageListener(Function? updatedEventHandler,
-      [String? path, String? searchKey]) async {
+  Future<bool> _registerStorageListener(EventType event,
+      Function updatedEventHandler, String path, String? searchKey) async {
     if (_isStorageListenerRegistered == true) {
       log('StorageChangeListener ==> ${_localStorageListener.hashCode} has been registered and activated');
       return true;
     } else {
       if (_localStorageListener == null) {
         _localStorageListener = LocalStorageListener();
-        _localStorageListener!
-            .addMessageHandler(EventType.update, updatedEventHandler!);
+        _localStorageListener!.addMessageHandler(event, updatedEventHandler);
       }
 
       try {
@@ -77,25 +86,21 @@ class LocalStorageController extends getX.GetxController {
 
         _isStorageListenerRegistered = true;
 
-        if (path != null) {
-          try {
-            Node node = await _storageController.get(path);
-            //trigger evaluation
-            bool e = await s.evaluate(node);
-            //isTrue means ==> node fails to evaluate successfully
-            if (e) {
-              _isStorageListenerTriggered = false;
-              log("StorageListenerTriggered ==> node FAILS to evaluate successfully");
-            } else {
-              _isStorageListenerTriggered = true;
-              log("StorageListenerTriggered => $_isStorageListenerTriggered");
-            }
-            return true;
-          } catch (e) {
-            log("Failed to get Node from this $path \n $e");
-            return false;
+        try {
+          Node node = await _storageController.get(path);
+          //trigger evaluation
+          bool e = await s.evaluate(node);
+          //isTrue means ==> node fails to evaluate successfully
+          if (e) {
+            _isStorageListenerTriggered = false;
+            log("StorageListenerTriggered ==> node FAILS to evaluate successfully");
+          } else {
+            _isStorageListenerTriggered = true;
+            log("StorageListenerTriggered => $_isStorageListenerTriggered");
           }
-        } else {
+          return true;
+        } catch (e) {
+          log("Failed to get Node from this $path \n $e");
           return false;
         }
       } catch (e) {
@@ -109,12 +114,5 @@ class LocalStorageController extends getX.GetxController {
   void onInit() async {
     await _initLocalStorage();
     super.onInit();
-  }
-
-  //close geigerApi after user
-  @override
-  void onClose() async {
-    super.onClose();
-    //await _api.close();
   }
 }

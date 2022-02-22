@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/modules/settings/controllers/settings_controller.dart';
+import 'package:geiger_toolbox/app/modules/settings/controllers/profile_controller.dart';
+import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropDown_prof_ass.dart';
+import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_cert.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_country.dart';
-import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_partners.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_switch.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_text_field.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/cutom_dropdown_language.dart';
 import 'package:get/get.dart';
 
+import '../../controllers/data_protection_controller.dart';
+
 class ProfileView extends StatelessWidget {
-  ProfileView({required this.controller, Key? key}) : super(key: key);
-  final SettingsController controller;
+  ProfileView({Key? key}) : super(key: key);
+  final ProfileController controller = ProfileController.instance;
+  final DataProtectionController _dataProtectionController =
+      DataProtectionController.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -43,7 +48,7 @@ class ProfileView extends StatelessWidget {
                       onChanged: controller.onChangeDeviceName,
                       validator: controller.validateDeviceName,
                     ),
-                    CustomSwitchs(
+                    CustomSwitch(
                       label: "I’m a company owner",
                       description:
                           "As an owner you can compare your company’s geiger score with others ",
@@ -64,50 +69,55 @@ class ProfileView extends StatelessWidget {
                       height: 15,
                     ),
                     CustomDropDownCountry(
-                      listItems: controller.currentCountries,
+                      countries: controller.currentCountries,
                       onChanged: controller.onChangedCountry,
                       hintText: 'Select Your Country',
                       titleText: "Country",
-                      defaultValue: controller.currentCountry.value,
+                      defaultValue: controller.currentCountryId.value,
                     ),
                     SizedBox(
                       height: 15,
                     ),
-                    CustomDropDownFlutter(
+                    CustomDropDownCert(
                       onChanged: controller.onChangedCert,
-                      listItems: controller.certBaseOnCountrySelected,
+                      certs: controller.certBaseOnCountrySelected,
                       defaultValue: controller.currentCert.value,
                       hintText: "Select Competent CERT",
                       titleText: "Competent CERT",
+                      validator: controller.validateCert,
                     ),
                     SizedBox(
                       height: 15,
                     ),
-                    CustomDropDownFlutter(
-                      onChanged: controller.onChangedProfAss,
-                      listItems: controller.profAssBaseOnCountrySelected,
-                      defaultValue: controller.currentProfAss.value,
-                      hintText: "Select Profession Association",
-                      titleText: "Profession Association",
-                    ),
+                    CustomDropDownProfAss(
+                        onChanged: controller.onChangedProfAss,
+                        certs: controller.profAssBaseOnCountrySelected,
+                        defaultValue: controller.currentProfAss.value,
+                        hintText: "Select Profession Association",
+                        titleText: "Profession Association",
+                        validator: controller.validateProfAss),
                     ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          controller.updateUserInfo(controller.userInfo.value);
-                          if (controller.isSuccess.value == true) {
-                            if (!Get.isSnackbarOpen) {
-                              Get.snackbar("Success", "Updated SuccessFully.",
-                                  backgroundColor: Colors.greenAccent,
-                                  snackPosition: SnackPosition.BOTTOM);
+                      onPressed: _dataProtectionController.getDataAccess
+                          ? () {
+                              if (_formKey.currentState!.validate()) {
+                                controller
+                                    .updateUserInfo(controller.userInfo.value);
+                                if (controller.isSuccess.value == true) {
+                                  if (!Get.isSnackbarOpen) {
+                                    Get.snackbar(
+                                        "Success", "Updated SuccessFully.",
+                                        backgroundColor: Colors.greenAccent,
+                                        snackPosition: SnackPosition.BOTTOM);
+                                  }
+                                } else {
+                                  Get.snackbar("Message Alert",
+                                      "Updated Failed!!!.. contact the Developer",
+                                      backgroundColor: Colors.redAccent);
+                                }
+                              }
                             }
-                          } else {
-                            Get.snackbar("Message Alert",
-                                "Updated Failed!!!.. contact the Developer",
-                                backgroundColor: Colors.redAccent);
-                          }
-                        }
-                      },
-                      child: Text("Update"),
+                          : null,
+                      child: Text("update-button-label".tr),
                     ),
                     SizedBox(height: 10),
                   ],

@@ -44,7 +44,7 @@ class LocalStorageListener implements StorageListener {
     Function? handler = messageHandler[e.type];
     if (handler != null) {
       numberHandledEvents++;
-      handler(e.type);
+      handler(e);
     } else {
       log("localStorageEventListener does not handle message type ${e.type}");
     }

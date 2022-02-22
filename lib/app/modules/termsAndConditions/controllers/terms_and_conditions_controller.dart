@@ -1,29 +1,37 @@
 import 'dart:developer';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:geiger_toolbox/app/data/model/terms_and_conditions.dart';
-import 'package:geiger_toolbox/app/data/model/user.dart';
+import 'package:geiger_toolbox/app/model/terms_and_conditions.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
+import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_utility_service.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+const String CONSENT_FORM = 'https://project.cyber-geiger.eu/contact.html';
+const String PRIVACY_POLICY =
+    'https://project.cyber-geiger.eu/privacypolicy.html';
 
 class TermsAndConditionsController extends GetxController {
   //instance of TermsAndConditionController
   static TermsAndConditionsController instance = Get.find();
 
   //get instance of LocalStorageController
-  LocalStorageController _localStorageInstance =
+  final LocalStorageController _localStorageInstance =
       LocalStorageController.instance;
 
   //declaring storageController
   late StorageController _storageController;
   late GeigerUserService _userService;
+  late final GeigerUtilityService _geigerUtilityData;
 
   //initialize _storageController using _localStorage instance
-  _initializeStorageController() {
-    _storageController = _localStorageInstance.getStorageController;
+  Future<void> _initializeStorageController() async {
+    log("InitialStorageController from TermsAndCondition called");
+    _storageController = await _localStorageInstance.getStorageController;
     _userService = GeigerUserService(_storageController);
+    _geigerUtilityData = GeigerUtilityService(_storageController);
   }
 
   // declaring variable for creativeness
@@ -31,37 +39,7 @@ class TermsAndConditionsController extends GetxController {
   var signedConsent = false.obs;
   var agreedPrivacy = false.obs;
   var errorMsg = false.obs;
-
-  //check if terms and condition values is true in the localstorage
-  // and navigate to home view (screen)
-  //if false navigate to TermAndCondition view(screen).
-  Future<bool> isTermsAccepted() async {
-    try {
-      //get user Info
-      User? userInfo = await _userService.getUserInfo;
-      if (userInfo != null) {
-        // assign user term and condition
-        TermsAndConditions userTermsAndConditions = userInfo.termsAndConditions;
-        //check if true and return home view (screen)
-        if (await userTermsAndConditions.ageCompliant == true &&
-            await userTermsAndConditions.signedConsent == true &&
-            await userTermsAndConditions.agreedPrivacy == true) {
-          return true;
-          //Show home view
-        }
-        // else {
-        //   //Get.offNamed(Routes.HOME_VIEW);
-        //   return false;
-        //   //show default screen(Home view)
-        // }
-      }
-      return false;
-    } catch (e) {
-      log("Something went wrong $e");
-      log("UserInfo not found");
-      return false;
-    }
-  }
+  Rx<int> isRadioSelected = 0.obs;
 
   //store accepted termsAndCondition
   //show error message if all terms and condition are not check
@@ -81,14 +59,10 @@ class TermsAndConditionsController extends GetxController {
               signedConsent: signedConsent.value,
               agreedPrivacy: agreedPrivacy.value));
       if (success) {
+        //set scanButton has not be pressed to true
         await _userService.setButtonNotPressed();
-
-        // //store utility data
-        // await _localStorageInstance.storeCountry();
-        // await _localStorageInstance.storeProfAss();
-        // await _localStorageInstance.storeCert();
-        // await _localStorageInstance.storePublicKey();
-        Get.offNamed(Routes.HOME_VIEW);
+        //redirect to setting view
+        Get.offNamed(Routes.SETTINGS_VIEW);
       } else {
         //set errorMsg to true
         errorMsg.value = true;
@@ -100,34 +74,36 @@ class TermsAndConditionsController extends GetxController {
     }
   }
 
+  // //load utility data
+  Future<void> _loadUtilityData() async {
+    await _geigerUtilityData.storeCountry();
+    await _geigerUtilityData.storeCerts();
+    await _geigerUtilityData.storeProfAss();
+    await _geigerUtilityData.setPublicKey();
+  }
+
+  void launchConsentUrl() async {
+    if (!await launch(CONSENT_FORM)) throw 'Could not launch $CONSENT_FORM';
+  }
+
+  void launchPrivacyUrl() async {
+    if (!await launch(PRIVACY_POLICY)) throw 'Could not launch $PRIVACY_POLICY';
+  }
+
   @override
   void onInit() async {
     //init storageController
-    _initializeStorageController();
-    // if (await isTermsAccepted() == true) {
-    //   return Get.offNamed(Routes.HOME_VIEW);
-    // } else {
-    //   //store utility data
-    //   await _localStorageInstance.storeCountry();
-    //   await _localStorageInstance.storeProfAss();
-    //   await _localStorageInstance.storeCert();
-    //   await _localStorageInstance.storePublicKey();
-    //   return;
-    // }
-
-    //check if terms and condition were previously agreed
-    //await checkExistingTerms();
+    await _initializeStorageController();
+    _loadUtilityData();
     super.onInit();
   }
 
   @override
   void onReady() async {
-    super.onReady();
-  }
+    await _userService.storeUserConsent();
+    await _userService.storeDoNotShareConsent(doNotShare: 0);
+    await _userService.storeReplicateConsent(replicateData: 1);
 
-  @override
-  void onClose() async {
-    super.onClose();
-    //close storageController after use
+    super.onReady();
   }
 }

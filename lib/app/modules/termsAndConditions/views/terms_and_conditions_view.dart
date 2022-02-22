@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/shared_widgets/empty_space_card.dart';
+import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_radio_list_tile.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
-
 import 'package:get/get.dart';
 
 import '../controllers/terms_and_conditions_controller.dart';
@@ -21,80 +21,110 @@ class TermsAndConditionsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text("Terms and Conditions"),
-        elevation: 0,
+        elevation: 1,
         centerTitle: true,
       ),
       body: Obx(() {
         return Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(12.0),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               EmptySpaceCard(
-                size: size.width,
                 child: ListView(
                   children: [
-                    ListTile(
-                      leading: Checkbox(
-                        value: _controller.ageCompliant.value,
-                        onChanged: (bool? value) {
-                          _controller.ageCompliant.value = value!;
-                        },
-                      ),
+                    CheckboxListTile(
+                      onChanged: (bool? value) {
+                        _controller.ageCompliant.value = value!;
+                      },
+                      value: _controller.ageCompliant.value,
                       title: boldText('I am at least 16 years old.'),
                     ),
-                    ListTile(
-                      leading: Checkbox(
-                        value: _controller.signedConsent.value,
-                        onChanged: (bool? value) {
-                          _controller.signedConsent.value = value!;
-                        },
-                      ),
-                      title: boldText('I have signed a consent form.'),
-                      subtitle:
-                          greyText('https://cloud.cyber-geiger.eu/f/25282'),
+                    CheckboxListTile(
+                      value: _controller.signedConsent.value,
+                      onChanged: (bool? value) {
+                        _controller.signedConsent.value = value!;
+                      },
+                      title: Text('I have signed a consent form.'),
+                      subtitle: GestureDetector(
+                          onTap: _controller.launchConsentUrl,
+                          child: Text(
+                            CONSENT_FORM,
+                            style: TextStyle(color: Colors.blue),
+                          )),
                     ),
-                    ListTile(
-                      leading: Checkbox(
-                        value: _controller.agreedPrivacy.value,
-                        onChanged: (bool? value) {
-                          _controller.agreedPrivacy.value = value!;
-                        },
-                      ),
-                      title: boldText(
-                          'I have read and agree with the Privacy Policy of the GEIGER Toolbox.'),
-                      subtitle:
-                          greyText('https://cloud.cyber-geiger.eu/f/25282'),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                child: Column(
-                  children: [
-                    ListTile(
+                    CheckboxListTile(
+                      value: _controller.agreedPrivacy.value,
+                      onChanged: (bool? value) {
+                        _controller.agreedPrivacy.value = value!;
+                      },
                       title: Text(
-                        'In order to use the toolbox all terms above have to be accepted',
-                        style: TextStyle(
-                            color: _controller.errorMsg.value
-                                ? Colors.red
-                                : Colors.grey),
+                        'I have read and agree with the Privacy Policy of the GEIGER Toolbox.',
+                      ),
+                      subtitle: GestureDetector(
+                        onTap: _controller.launchPrivacyUrl,
+                        child: Text(
+                          PRIVACY_POLICY,
+                          style: TextStyle(color: Colors.blue),
+                        ),
                       ),
                     ),
-                    ListTile(
-                      title: ElevatedButton(
-                        onPressed: () {
-                          _controller.acceptTerms();
-                        },
-                        child: Text("Continue"),
-                      ),
+                    SizedBox(height: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: boldText("Your company does..."),
+                        ),
+                        CustomLabeledRadio(
+                          label: "only consume digital products",
+                          padding: EdgeInsets.symmetric(horizontal: 20.0),
+                          groupValue: _controller.isRadioSelected.value,
+                          value: 0,
+                          onChanged: (int newValue) {
+                            _controller.isRadioSelected.value = newValue;
+                          },
+                        ),
+                        CustomLabeledRadio(
+                          label: "sell digital products but not develop them",
+                          padding: EdgeInsets.symmetric(horizontal: 20.0),
+                          groupValue: _controller.isRadioSelected.value,
+                          value: 1,
+                          onChanged: (int newValue) {
+                            _controller.isRadioSelected.value = newValue;
+                          },
+                        ),
+                        CustomLabeledRadio(
+                          label: " develop and sell digital products itself",
+                          padding: EdgeInsets.symmetric(horizontal: 20.0),
+                          groupValue: _controller.isRadioSelected.value,
+                          value: 2,
+                          onChanged: (int newValue) {
+                            _controller.isRadioSelected.value = newValue;
+                          },
+                        )
+                      ],
                     )
                   ],
                 ),
-              )
+              ),
+              Text(
+                'In order to use the toolbox all terms above have to be accepted',
+                style: TextStyle(
+                    color:
+                        _controller.errorMsg.value ? Colors.red : Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _controller.acceptTerms();
+                },
+                child: Text("Continue"),
+              ),
             ],
           ),
         );

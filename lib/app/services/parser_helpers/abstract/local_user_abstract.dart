@@ -1,0 +1,50 @@
+import 'dart:async';
+
+import 'package:geiger_toolbox/app/model/terms_and_conditions.dart';
+import 'package:geiger_toolbox/app/model/user.dart';
+
+abstract class LocalUserAbstract {
+  /// @return userId as a Future<String>
+  /// from the Local node
+  Future<String> get getUserId;
+
+  /// @return Future<User?>
+  /// retrieve user from Local node
+  Future<User?> get getUserInfo;
+
+  /// @return Future<bool>
+  Future<bool> storeTermsAndConditions(
+      {required TermsAndConditions termsAndConditions});
+
+  /// @return Future<bool>
+  Future<bool> updateUserInfo(User user);
+
+  ///@param optional
+  ///@return Future<bool>
+  Future<bool> storeUserConsent({bool dataAccess: false});
+
+  Future<bool> updateUserConsentDataAccess({required bool dataAccess});
+  Future<bool?> get getUserConsentDataAccess;
+
+  Future<bool?> checkUserConsent();
+
+  Future<bool> storeDoNotShareConsent({int doNotShare: 0});
+  Future<bool> storeReplicateConsent({required int replicateData});
+  Future<bool> updateDoNotShareConsent({required int doNotShareData});
+  Future<bool> updateReplicateConsent({required int replicateData});
+  Future<int?> get getDoNotShareConsent;
+  Future<int?> get getReplicateConsent;
+
+  Future<bool?> checkDoNotShareConsent();
+
+  Future<bool?> checkReplicationConsent();
+
+  ///set newUser to true
+  Future<void> setButtonNotPressed({bool value});
+
+  ///update newUser to false
+  Future<void> updateButtonPressed({bool value});
+
+  /// @return Future<bool>
+  Future<bool> isButtonPressed();
+}

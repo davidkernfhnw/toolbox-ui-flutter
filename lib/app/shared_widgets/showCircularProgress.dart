@@ -27,4 +27,45 @@ class ShowCircularProgress extends StatelessWidget {
       ),
     );
   }
+
+  static buildShowDialog(BuildContext context,
+      {String message: "Replicating...",
+      bool visible: true,
+      Color color: Colors.white}) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Visibility(
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            visible: visible,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator.adaptive(
+                  backgroundColor: Colors.green,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  padding: EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.transparent),
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.green,
+                  ),
+                  child: Text(
+                    message,
+                    style: TextStyle(color: color, fontWeight: FontWeight.bold),
+                  ),
+                )
+              ],
+            ),
+          );
+        });
+  }
 }

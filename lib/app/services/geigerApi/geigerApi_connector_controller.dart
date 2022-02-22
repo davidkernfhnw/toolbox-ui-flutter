@@ -24,14 +24,16 @@ class GeigerApiConnector extends GetxController {
     } catch (e) {
       log("PluginEventListener has no been initialized\n $e");
     }
+    return null;
   }
 
   /// initialize this method before the start of the app
-  // LN: adding the function to handle the SCAN_COMPLETED event
   Future<void> initGeigerApi() async {
     try {
+      //Todo ==> Declaration should be changed,
+      //Todo ==> get correct initialization of geigerApi from Martin
       _localMaster = (await getGeigerApi(
-          "geiger_toolbox", GeigerApi.masterId, Declaration.doShareData))!;
+          "", GeigerApi.masterId, Declaration.doShareData))!;
     } catch (e) {
       log('Failed to get GeigerAPI ===> \n $e');
     }

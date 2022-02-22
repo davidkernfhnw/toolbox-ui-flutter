@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/data/model/language.dart';
+import 'package:geiger_toolbox/app/model/language.dart';
 
 class CustomDropdownLanguage extends StatelessWidget {
   const CustomDropdownLanguage(
