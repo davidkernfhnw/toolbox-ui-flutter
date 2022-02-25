@@ -93,35 +93,38 @@ class HomeController extends getX.GetxController {
   }
 
   Future<void> onScanButtonPressed() async {
-    //begin scanning
-    message.value = "Scanning";
-    isScanning.value = true;
+    try {
+      //begin scanning
+      message.value = "Scanning";
+      isScanning.value = true;
 
-    await Future.delayed(Duration(milliseconds: 100));
-    //send a broadcast to external tool
-    _requestScan();
+      await Future.delayed(Duration(milliseconds: 100));
+      //send a broadcast to external tool
+      _requestScan();
 
-    //set observable aggregate threatScore
-    aggThreatsScore.value = await _getAggThreatScore();
-    //cached data when the user press the scan button
-    _cachedAggregateData(aggThreatsScore.value);
+      //set observable aggregate threatScore
+      aggThreatsScore.value = (await _getAggThreatScore())!;
+      //cached data when the user press the scan button
+      _cachedAggregateData(aggThreatsScore.value);
 
-    //get recommendations
-    userGlobalRecommendations.value = await _getUserRecommendation();
-    await Future.delayed(Duration(milliseconds: 500));
-    deviceGlobalRecommendations.value = await _getDeviceRecommendation();
-    _cachedUserAndDeviceRecommendation(
-        user: userGlobalRecommendations, device: deviceGlobalRecommendations);
-    //scanning is done
+      //get recommendations
+      userGlobalRecommendations.value = await _getUserRecommendation();
+      await Future.delayed(Duration(milliseconds: 500));
+      deviceGlobalRecommendations.value = await _getDeviceRecommendation();
+      _cachedUserAndDeviceRecommendation(
+          user: userGlobalRecommendations, device: deviceGlobalRecommendations);
+      //scanning is done
 
-    // log("Dump after scanning ==> ${await _storageController.dump(":")}");
-    //set scanRequired to false if true
-    message.value = "Done";
-    _clearMessage();
+      // log("Dump after scanning ==> ${await _storageController.dump(":")}");
+      //set scanRequired to false if true
+      message.value = "Done";
+      _clearMessage();
 
-    isScanRequired.value = false;
-
-    isScanning.value = false;
+      isScanRequired.value = false;
+    } catch (e) {
+      isScanning.value = false;
+      log("SOME BAD HAPPENED....");
+    }
   }
 
   Color changeScanBtnColor(String score) {
@@ -165,29 +168,41 @@ class HomeController extends getX.GetxController {
 
   // set Node path of usersAggrPath
   Future<void> _setUserAggrPath() async {
-    String currentUserId = await _userService.getUserId;
-    String indicatorId = _indicatorControllerInstance.indicatorId;
+    try {
+      String currentUserId = await _userService.getUserId;
+      String indicatorId = _indicatorControllerInstance.indicatorId;
 
-    _userAggrScorePath =
-        ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
+      _userAggrScorePath =
+          ":Users:$currentUserId:$indicatorId:data:GeigerScoreAggregate";
+    } catch (e) {
+      log("Failed to get GeigerScoreAggregate path");
+    }
   }
 
   // set Node path userScorePath
   Future<void> _setUserScorePath() async {
-    User? currentUser = await _userService.getUserInfo;
-    String indicatorId = _indicatorControllerInstance.indicatorId;
+    try {
+      User? currentUser = await _userService.getUserInfo;
+      String indicatorId = _indicatorControllerInstance.indicatorId;
 
-    _userScorePath =
-        ":Users:${currentUser!.userId}:$indicatorId:data:GeigerScoreUser";
+      _userScorePath =
+          ":Users:${currentUser!.userId}:$indicatorId:data:GeigerScoreUser";
+    } catch (e) {
+      log("Failed to get GeigerScoreUser path");
+    }
   }
 
   //set Node path deviceScorePath
   Future<void> _setDeviceScorePath() async {
-    User? currentUser = await _userService.getUserInfo;
-    String indicatorId = _indicatorControllerInstance.indicatorId;
+    try {
+      User? currentUser = await _userService.getUserInfo;
+      String indicatorId = _indicatorControllerInstance.indicatorId;
 
-    _deviceScorePath =
-        ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
+      _deviceScorePath =
+          ":Devices:${currentUser!.deviceOwner!.deviceId}:$indicatorId:data:GeigerScoreDevice";
+    } catch (e) {
+      log("Failed to get GeigerScoreDevice path");
+    }
   }
 
   String get getDeviceScorePath {
@@ -203,12 +218,17 @@ class HomeController extends getX.GetxController {
   }
 
   //returns aggregate of GeigerScoreThreats
-  Future<GeigerScoreThreats> _getAggThreatScore() async {
-    String path = _userAggrScorePath;
-    GeigerScoreThreats geigerScoreThreats =
-        await _geigerDataService.getGeigerScoreThreats(path: path);
+  Future<GeigerScoreThreats?> _getAggThreatScore() async {
+    try {
+      String path = _userAggrScorePath;
+      GeigerScoreThreats geigerScoreThreats =
+          await _geigerDataService.getGeigerScoreThreats(path: path);
 
-    return geigerScoreThreats;
+      return geigerScoreThreats;
+    } catch (e) {
+      log("Fail to get aggregate score ");
+      return null;
+    }
   }
 
   void _showNotification(String event) async {
@@ -217,50 +237,83 @@ class HomeController extends getX.GetxController {
   }
 
   void _aggDataUpdateListener() async {
-    String path = _userAggrScorePath;
-    await _localStorageInstance.initRegisterStorageListener(
-        event: EventType.update,
-        eventHandlerCallback: (Event event) async {
-          isStorageUpdated.value = event.type.toValueString();
-          isScanRequired.value = true;
-          log(":Local:ui event ${event.type} received");
-          log("New Node => ${event.newNode}");
-          log(":Local:ui listener id => ${await _localStorageInstance.getLocalStorageListener.hashCode}");
-          _showNotification(
-              "LocalStorage ${event.type.toValueString()} new scan required.");
-        },
-        path: path,
-        searchKey: "GEIGER_score");
+    try {
+      String path = _userAggrScorePath;
+      await _localStorageInstance.initRegisterStorageListener(
+          event: EventType.update,
+          eventHandlerCallback: (Event event) async {
+            isStorageUpdated.value = event.type.toValueString();
+            isScanRequired.value = true;
+            log(":Local:ui event ${event.type} received");
+            log("New Node => ${event.newNode}");
+            log(":Local:ui listener id => ${await _localStorageInstance.getLocalStorageListener.hashCode}");
+            _showNotification(
+                "LocalStorage ${event.type.toValueString()} new scan required.");
+          },
+          path: path,
+          searchKey: "GEIGER_score");
+    } catch (e) {
+      log("Failed to run aggDataUpdateListener");
+    }
   }
 
   void _scanCompleteListener() async {
     //get instance of GeigerApiConnector
-    _geigerApiConnectorInstance.addMessageHandler(MessageType.scanCompleted,
-        (Message msg) {
-      _showNotification('An external plugin  ${msg.type}.');
-      log('We have received the SCAN_COMPLETED event from ${msg.sourceId}');
-      //   getX.Get.snackbar(PluginListener
-      //       '', 'The external plugin ${msg.sourceId} has finished the scanning');
-    });
+    try {
+      _geigerApiConnectorInstance.addMessageHandler(MessageType.scanCompleted,
+          (Message msg) {
+        _showNotification('An external plugin  ${msg.type}.');
+        log('We have received the SCAN_COMPLETED event from ${msg.sourceId}');
+        //   getX.Get.snackbar(PluginListener
+        //       '', 'The external plugin ${msg.sourceId} has finished the scanning');
+      });
+    } catch (e) {
+      log("Failed run scanCompleteListener ");
+    }
   }
 
+  //add registerMenu event handler
+  void _pluginMenuListener() async {
+    try {
+      //handle registerMenu event
+      //but currently doesn't do any with this event is retrieve
+      _geigerApiConnectorInstance.addMessageHandler(
+          MessageType.registerMenu, () {});
+    } catch (e) {
+      log("Failed to registerMenu MessageHandler ");
+    }
+  }
+
+  //load indicator with one seconds delay
   Future<void> _loadIndicatorWithUpdateDetails() async {
-    isLoadingServices.value = true;
-    message.value = "Updating Toolbox...";
-    await Future.delayed(Duration(seconds: 1));
-    _indicatorControllerInstance.initGeigerIndicator();
-    _clearMessage();
-    isLoadingServices.value = false;
+    try {
+      isLoadingServices.value = true;
+      message.value = "Updating Toolbox...";
+      await Future.delayed(Duration(seconds: 1));
+      _indicatorControllerInstance.initGeigerIndicator();
+      _clearMessage();
+      isLoadingServices.value = false;
+    } catch (e) {
+      log("Fail to call indicator");
+      isLoadingServices.value = false;
+    }
   }
 
+  //load indicator without delay
   Future<void> _loadIndicator() async {
-    isLoadingServices.value = true;
-    message.value = "Updating Toolbox...";
-    _indicatorControllerInstance.initGeigerIndicator();
-    _clearMessage();
-    isLoadingServices.value = false;
+    try {
+      isLoadingServices.value = true;
+      message.value = "Updating Toolbox...";
+      _indicatorControllerInstance.initGeigerIndicator();
+      _clearMessage();
+      isLoadingServices.value = false;
+    } catch (e) {
+      log("Fail to call indicator");
+      isLoadingServices.value = false;
+    }
   }
 
+  //get data from cache if scanButton is pressed
   Future<void> _triggerAggCachedData() async {
     //check if user has previously pressed the scanButton
     bool isButtonPressed = await _userService.isButtonPressed();
@@ -270,7 +323,6 @@ class HomeController extends getX.GetxController {
       //update newUserStatus to false onScanButtonPressed
       getX.once(aggThreatsScore,
           (_) async => await _userService.updateButtonPressed());
-      //log("${await _userService.checkNewUserStatus()}");
     } else {
       //populate data from cached
       _showAggCachedData();
@@ -278,6 +330,8 @@ class HomeController extends getX.GetxController {
     }
   }
 
+  //check if userConsent is true
+  // and if scanButton has be pressed previously
   Future<void> _checkConsent() async {
     bool? result = await _userService.checkUserConsent();
     if (result != null) {
@@ -296,9 +350,9 @@ class HomeController extends getX.GetxController {
     }
   }
 
-  //check if terms and condition values is true in the localstorage
+  //check if terms and condition values is true
   // and navigate to Setting(screen)
-  //if false navigate to TermAndCondition view(screen).
+  //else navigate to TermAndCondition view(screen).
   Future<bool> _isTermsAccepted() async {
     try {
       //get user Info
@@ -315,7 +369,7 @@ class HomeController extends getX.GetxController {
         return false;
       }
     } catch (e) {
-      log("UserInfo not found");
+      log("userdata has not been created");
       return false;
     }
   }
@@ -325,7 +379,6 @@ class HomeController extends getX.GetxController {
   // then check for userConsent if true
   // redirect to Home view
   //else remain in setting screen
-
   Future<bool> _redirect() async {
     isLoadingServices.value = true;
     bool checkTerms = await _isTermsAccepted();
@@ -349,7 +402,10 @@ class HomeController extends getX.GetxController {
     }
   }
 
-  //set language gotten from storage
+  //****  loading language *******
+
+  //use language gotten from storage if found
+  //else user device default language
   Future<void> _setSelectedLanguage() async {
     User? user = await _userService.getUserInfo;
 
@@ -362,20 +418,21 @@ class HomeController extends getX.GetxController {
     }
   }
 
+  //update ui locale
   _setLanguage(String localeCode) {
     Locale _locale = Locale(localeCode);
     //update language ui
     getX.Get.updateLocale(_locale);
   }
 
-  //************* end of private methods ***********************
+  //*** end
 
   //**************Recommendation ***************
 
+  //get device recommendation
   Future<List<Recommendation>> _getDeviceRecommendation() async {
     //path to get device implemented recommendation id
-    // key is implementedRecommendation
-
+    // [key is implementedRecommendation]
     String geigerScoreDevicePath = _deviceScorePath;
 
     List<Recommendation> deviceRecommendation = await _geigerDataService
@@ -385,7 +442,7 @@ class HomeController extends getX.GetxController {
     return deviceRecommendation;
   }
 
-  //Re
+  //get user recommendation
   Future<List<Recommendation>> _getUserRecommendation() async {
     //path to get user implemented recommendation id
     // key is implementedRecommendation
@@ -401,6 +458,7 @@ class HomeController extends getX.GetxController {
 
   //************** end Recommendation ***************
 
+  //initial late variables
   Future<void> _initStorageResources() async {
     //get StorageController from localStorageController instance
     _storageController = await _localStorageInstance.getStorageController;
@@ -408,6 +466,7 @@ class HomeController extends getX.GetxController {
     _geigerDataService = GeigerDataService(_storageController);
   }
 
+  //this is called automatically with HomeView is showing
   @override
   void onInit() async {
     //init resources
@@ -426,6 +485,8 @@ class HomeController extends getX.GetxController {
       _aggDataUpdateListener();
       //ExternalPluginListener
       _scanCompleteListener();
+      // registered external plugin menuItem
+      _pluginMenuListener();
 
       //get user aggregate score from cache if scan button
       // was recently pressed.
@@ -437,10 +498,12 @@ class HomeController extends getX.GetxController {
   //**************cached data*******************
   final GetStorage cache = GetStorage();
 
+  //store aggData in cache when scanButton is pressed
   void _cachedAggregateData(GeigerScoreThreats value) {
     cache.write("aggThreat", jsonEncode(value));
   }
 
+  //store user and recommendation data in cache when scanButton is pressed
   void _cachedUserAndDeviceRecommendation(
       {required List<Recommendation> user,
       required List<Recommendation> device}) {
@@ -448,6 +511,7 @@ class HomeController extends getX.GetxController {
     cache.write("deviceRecommendation", jsonEncode(device));
   }
 
+  //read aggregate Data from cache
   GeigerScoreThreats _getAggCachedData() {
     var data = cache.read("aggThreat");
     var json = jsonDecode(data);
@@ -455,17 +519,28 @@ class HomeController extends getX.GetxController {
     return result;
   }
 
+  //read  user recommendation data from cache
   List<Recommendation> _getUserRecommendationCachedData() {
-    var userReco = cache.read("userRecommendation");
-    List<Recommendation> result = Recommendation.recommendationList(userReco);
-    log("User Recommendation json ==> $result");
-    return result;
+    try {
+      var userReco = cache.read("userRecommendation");
+      List<Recommendation> result = Recommendation.recommendationList(userReco);
+      log("User Recommendation json ==> $result");
+      return result;
+    } catch (e) {
+      return [];
+    }
   }
 
+  //read  device recommendation data from cache
   List<Recommendation> _getDeviceRecommendationCachedData() {
-    var deviceReco = cache.read("deviceRecommendation");
-    List<Recommendation> result = Recommendation.recommendationList(deviceReco);
-    return result;
+    try {
+      var deviceReco = cache.read("deviceRecommendation");
+      List<Recommendation> result =
+          Recommendation.recommendationList(deviceReco);
+      return result;
+    } catch (e) {
+      return [];
+    }
   }
 
   // get data from cache if user has  press the scan button before
@@ -477,7 +552,6 @@ class HomeController extends getX.GetxController {
   void _getRecommendationCachedData() async {
     userGlobalRecommendations.value = _getUserRecommendationCachedData();
     deviceGlobalRecommendations.value = _getDeviceRecommendationCachedData();
-    log("user recomm obs => $userGlobalRecommendations");
   }
 //********* end cache ***********
 }

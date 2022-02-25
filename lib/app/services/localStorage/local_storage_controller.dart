@@ -100,7 +100,7 @@ class LocalStorageController extends getX.GetxController {
           }
           return true;
         } catch (e) {
-          log("Failed to get Node from this $path \n $e");
+          log("Failed to get Node from this $path");
           return false;
         }
       } catch (e) {

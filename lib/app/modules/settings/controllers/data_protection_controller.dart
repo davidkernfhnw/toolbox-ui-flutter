@@ -138,12 +138,6 @@ class DataProtectionController extends GetxController {
     }
   }
 
-  //add registerMenu event handler
-  void _pluginMenuListener() async {
-    _geigerApiConnectorInstance.addMessageHandler(
-        MessageType.registerMenu, () {});
-  }
-
   void _getCurrentLanguage() async {
     User? user = await _userService.getUserInfo;
     if (user != null) {
@@ -155,8 +149,6 @@ class DataProtectionController extends GetxController {
   void onInit() async {
     await _initStorageController();
     await _getUserConsent();
-    // registered external plugin menuItem
-    _pluginMenuListener();
 
     _getReplicateConsent();
     // log("DUMP ON data protection ${await _storageController.dump(":Global:cert")}");
