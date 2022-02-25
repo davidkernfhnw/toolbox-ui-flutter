@@ -23,6 +23,9 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      endDrawerEnableOpenDragGesture: false,
+      drawerEnableOpenDragGesture: false,
+      onDrawerChanged: controller.initExternalPluginMenuItems,
       drawer: SideMenu(),
       appBar: AppBar(
         centerTitle: true,

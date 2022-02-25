@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:get/get.dart';
-import 'package:initialize_geiger_data/initialize_geiger_data.dart';
+//import 'package:initialize_geiger_data/initialize_geiger_data.dart';
 import 'package:toolbox_indicator_test/indicator.dart';
 
 class GeigerIndicatorController extends GetxController {
@@ -21,7 +21,7 @@ class GeigerIndicatorController extends GetxController {
   Future<void> _iniGeigerData() async {
     log("IniGeigerData called");
     try {
-      await initializeGeigerData(indicatorId);
+      //await initializeGeigerData(indicatorId);
     } catch (e) {
       log("Initialized GeigerData Already...\n");
     }

@@ -24,6 +24,7 @@ class SettingsView extends StatelessWidget {
           drawerEnableOpenDragGesture: false,
           drawer: SideMenu(),
           appBar: AppBar(
+            //hide menuIcon if data access is not enabled
             automaticallyImplyLeading: _dataProtectionController.getDataAccess,
             title: Text('title-settings'.tr),
             centerTitle: true,

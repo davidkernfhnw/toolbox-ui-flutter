@@ -65,6 +65,7 @@ class HomeController extends getX.GetxController {
   var isScanRequired = false.obs;
   var isScanCompleted = "".obs;
   var isStorageUpdated = "".obs;
+  getX.RxList<MenuItem> externalPluginMenuList = <MenuItem>[].obs;
   //device language
   var _defaultLanguage = getX.Get.locale!.languageCode.obs;
   //Todo: take this variable to data_protection_controller
@@ -234,13 +235,25 @@ class HomeController extends getX.GetxController {
 
   void _scanCompleteListener() async {
     //get instance of GeigerApiConnector
-    _geigerApiConnectorInstance.initRegisterExternalPluginListener(
-        scanCompletedEventHandler: (Message msg) {
+    _geigerApiConnectorInstance.addMessageHandler(MessageType.scanCompleted,
+        (Message msg) {
       _showNotification('An external plugin  ${msg.type}.');
       log('We have received the SCAN_COMPLETED event from ${msg.sourceId}');
-      //   getX.Get.snackbar(
+      //   getX.Get.snackbar(PluginListener
       //       '', 'The external plugin ${msg.sourceId} has finished the scanning');
     });
+  }
+
+  void _pluginMenuListener() async {
+    _geigerApiConnectorInstance.addMessageHandler(
+        MessageType.registerMenu, () {});
+  }
+
+  void initExternalPluginMenuItems(bool menuPressed) async {
+    if (menuPressed) {
+      externalPluginMenuList.value =
+          await _geigerApiConnectorInstance.getMenuItems();
+    }
   }
 
   Future<void> _loadIndicatorWithUpdateDetails() async {
@@ -425,17 +438,14 @@ class HomeController extends getX.GetxController {
       _aggDataUpdateListener();
       //ExternalPluginListener
       _scanCompleteListener();
+      // registered external plugin menuItem
+      _pluginMenuListener();
 
       //get user aggregate score from cache if scan button
       // was recently pressed.
       await _triggerAggCachedData();
     }
     super.onInit();
-  }
-
-  @override
-  void onReady() async {
-    super.onReady();
   }
 
   //**************cached data*******************
