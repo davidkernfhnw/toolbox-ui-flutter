@@ -1,8 +1,7 @@
 name: geiger_toolbox
 description: A cyber security geiger toolbox for MSEs
 
-# The following line prevents the package from being accidentally published to
-# pub.dev using `pub publish`. This is preferred for private packages.
+
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
@@ -24,44 +23,51 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+
   cupertino_icons: ^1.0.3
   #progress animations
+  # we might not need this
   percent_indicator: ^3.0.1
   #indicator gauge
   pretty_gauge: ^1.0.0
 
   #add multiple color gradient to text
   simple_gradient_text: ^1.2.2
+  #to deserialize/serialize ui related data
   json_annotation: ^4.3.0
+  #to generate qr code
   qr_flutter: ^4.0.0
+  # to scan qr code, only tested on ios,android
   qr_code_scanner: ^0.5.2
+  #to check for camera permission
   permission_handler: ^8.2.2
   device_info_plus: 3.2.1
 
-#  cloud_replication_package:
-#    git:
-#      url: git://github.com/cyber-geiger/toolbox-replication.git
-#      ref: development
-
   cloud_replication_package:
-    path: ../toolbox-replication
+    git:
+      url: git://github.com/cyber-geiger/toolbox-replication.git
+      ref: development
+
+#  cloud_replication_package:
+#    path: ../toolbox-replication
 
   #state management, dependency injection
   get: ^4.6.1
   #cache data
   get_storage: ^2.0.3
+  #for bar chart and other related chart
   charts_flutter: ^0.12.0
   toolbox_indicator_test: ^2.0.0
   geiger_api: ^0.7.2
   geiger_localstorage: ^0.6.38
+  #local notification
   flutter_local_notifications: ^9.2.0
   share_plus: ^3.0.4
-  #initialize_geiger_data: ^1.0.3
+  #helps to resize app size on windows
   window_manager: ^0.1.5
-  #flutter ui utils
+  #flutter ui utils, as circular animation too
   getwidget: ^2.0.4
+  #help to open web links
   url_launcher: ^6.0.20
 
 dev_dependencies:

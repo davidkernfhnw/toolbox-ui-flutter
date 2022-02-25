@@ -1,10 +1,13 @@
 import 'dart:developer';
 
+import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
+import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
 import 'package:get/get.dart';
 
+import '../../../model/user.dart';
 import '../../../services/cloudReplication/cloud_replication_controller.dart';
 
 class DataProtectionController extends GetxController {
@@ -17,7 +20,8 @@ class DataProtectionController extends GetxController {
 
   final CloudReplicationController _cloudReplicationInstance =
       CloudReplicationController.instance;
-
+  final GeigerApiConnector _geigerApiConnectorInstance =
+      GeigerApiConnector.instance;
   late final StorageController _storageController;
   late final GeigerUserService _userService;
   //init storageController
@@ -36,6 +40,10 @@ class DataProtectionController extends GetxController {
   Rx<int> replicateValue = 1.obs;
 
   Rx<int> isRadioSelected = 0.obs;
+
+  RxList<MenuItem> externalPluginMenuList = <MenuItem>[].obs;
+
+  String? currentLanguage;
 
   bool get getDataAccess {
     return _dataAccess.value;
@@ -121,10 +129,34 @@ class DataProtectionController extends GetxController {
     await _userService.updateReplicateConsent(replicateData: newValue);
   }
 
+  void getExternalPluginMenuItems(bool menuPressed) async {
+    if (menuPressed) {
+      //call to set current language from the local storage
+      _getCurrentLanguage();
+      externalPluginMenuList.value =
+          await _geigerApiConnectorInstance.getMenuItems();
+    }
+  }
+
+  //add registerMenu event handler
+  void _pluginMenuListener() async {
+    _geigerApiConnectorInstance.addMessageHandler(
+        MessageType.registerMenu, () {});
+  }
+
+  void _getCurrentLanguage() async {
+    User? user = await _userService.getUserInfo;
+    if (user != null) {
+      currentLanguage = user.language;
+    }
+  }
+
   @override
   void onInit() async {
     await _initStorageController();
     await _getUserConsent();
+    // registered external plugin menuItem
+    _pluginMenuListener();
 
     _getReplicateConsent();
     // log("DUMP ON data protection ${await _storageController.dump(":Global:cert")}");

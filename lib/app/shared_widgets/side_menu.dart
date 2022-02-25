@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:geiger_toolbox/app/modules/home/controllers/home_controller.dart';
 import 'package:geiger_toolbox/app/routes/app_routes.dart';
 import 'package:geiger_toolbox/app/services/geigerApi/geigerApi_connector_controller.dart';
 import 'package:get/get.dart';
 
+import '../modules/settings/controllers/data_protection_controller.dart';
+
 class SideMenu extends StatelessWidget {
   SideMenu({Key? key}) : super(key: key);
 
-  final HomeController _homeControllerInstance = HomeController.instance;
   final GeigerApiConnector _geigerApiConnectorInstance =
       GeigerApiConnector.instance;
 
+  final DataProtectionController _dataProtectionController =
+      DataProtectionController.instance;
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -32,11 +34,11 @@ class SideMenu extends StatelessWidget {
         menuItems(),
         Divider(),
         Column(
-          children: _homeControllerInstance.externalPluginMenuList
+          children: _dataProtectionController.externalPluginMenuList
               .map(
                 (item) => ListTile(
                   title: Text(
-                      "${item.name(languageRange: _homeControllerInstance.currentLanguage ?? "en")}"),
+                      "${item.name(languageRange: _dataProtectionController.currentLanguage ?? "en")}"),
                   tileColor: Get.currentRoute == item.enabled
                       ? Colors.grey[300]
                       : null,

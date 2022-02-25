@@ -58,7 +58,6 @@ class HomeController extends getX.GetxController {
   String _userAggrScorePath = "";
   String _deviceScorePath = "";
   String _userScorePath = "";
-  String? currentLanguage;
 
   var isScanning = false.obs;
   var isLoadingServices = false.obs;
@@ -66,7 +65,7 @@ class HomeController extends getX.GetxController {
   var isScanRequired = false.obs;
   var isScanCompleted = "".obs;
   var isStorageUpdated = "".obs;
-  getX.RxList<MenuItem> externalPluginMenuList = <MenuItem>[].obs;
+
   //device language
   var _defaultLanguage = getX.Get.locale!.languageCode.obs;
   //Todo: take this variable to data_protection_controller
@@ -154,26 +153,9 @@ class HomeController extends getX.GetxController {
     }
   }
 
-  void initExternalPluginMenuItems(bool menuPressed) async {
-    //call to set current language from the local storage
-    _getCurrentLanguage();
-    if (menuPressed) {
-      externalPluginMenuList.value =
-          await _geigerApiConnectorInstance.getMenuItems();
-    }
-  }
-
   //*** end public method *****
 
   //************* start of private methods ***********************
-
-  void _getCurrentLanguage() async {
-    User? user = await _userService.getUserInfo;
-    if (user != null) {
-      currentLanguage = user.language;
-      currentLanguage;
-    }
-  }
 
   void _requestScan() async {
     log("ScanButtonPressed called");
@@ -260,11 +242,6 @@ class HomeController extends getX.GetxController {
       //   getX.Get.snackbar(PluginListener
       //       '', 'The external plugin ${msg.sourceId} has finished the scanning');
     });
-  }
-
-  void _pluginMenuListener() async {
-    _geigerApiConnectorInstance.addMessageHandler(
-        MessageType.registerMenu, () {});
   }
 
   Future<void> _loadIndicatorWithUpdateDetails() async {
@@ -449,8 +426,6 @@ class HomeController extends getX.GetxController {
       _aggDataUpdateListener();
       //ExternalPluginListener
       _scanCompleteListener();
-      // registered external plugin menuItem
-      _pluginMenuListener();
 
       //get user aggregate score from cache if scan button
       // was recently pressed.

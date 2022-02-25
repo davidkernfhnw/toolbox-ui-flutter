@@ -25,7 +25,7 @@ class HomeView extends StatelessWidget {
     return Scaffold(
       endDrawerEnableOpenDragGesture: false,
       drawerEnableOpenDragGesture: false,
-      onDrawerChanged: controller.initExternalPluginMenuItems,
+      onDrawerChanged: _dataProtectionController.getExternalPluginMenuItems,
       drawer: SideMenu(),
       appBar: AppBar(
         centerTitle: true,

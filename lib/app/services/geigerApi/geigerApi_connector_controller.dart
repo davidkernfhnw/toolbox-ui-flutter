@@ -32,9 +32,10 @@ class GeigerApiConnector extends GetxController {
 
   // Register the External Plugin listener to listen all messages (events)
   Future<bool> _registerListener() async {
+    log("External plugin listener called");
     String id = _localMaster.id;
     if (_isPluginListenerRegistered == true) {
-      log('Plugin ${_externalPluginEventListener.hashCode} has been registered already!');
+      log('External Plugin ${_externalPluginEventListener.hashCode} has been registered already!');
       return true;
     } else {
       if (_externalPluginEventListener == null) {
@@ -105,7 +106,6 @@ class GeigerApiConnector extends GetxController {
   Future<List<MenuItem>> getMenuItems() async {
     log("MenuItems called");
     List<MenuItem> menuList = [];
-
     try {
       menuList = _localMaster.getMenuList();
     } catch (e) {
