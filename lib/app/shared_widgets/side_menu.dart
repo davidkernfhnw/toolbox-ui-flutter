@@ -35,7 +35,8 @@ class SideMenu extends StatelessWidget {
           children: _homeControllerInstance.externalPluginMenuList
               .map(
                 (item) => ListTile(
-                  title: Text("${item.name()}"),
+                  title: Text(
+                      "${item.name(languageRange: _homeControllerInstance.currentLanguage ?? "en")}"),
                   tileColor: Get.currentRoute == item.enabled
                       ? Colors.grey[300]
                       : null,

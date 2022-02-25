@@ -58,6 +58,7 @@ class HomeController extends getX.GetxController {
   String _userAggrScorePath = "";
   String _deviceScorePath = "";
   String _userScorePath = "";
+  String? currentLanguage;
 
   var isScanning = false.obs;
   var isLoadingServices = false.obs;
@@ -153,9 +154,26 @@ class HomeController extends getX.GetxController {
     }
   }
 
+  void initExternalPluginMenuItems(bool menuPressed) async {
+    //call to set current language from the local storage
+    _getCurrentLanguage();
+    if (menuPressed) {
+      externalPluginMenuList.value =
+          await _geigerApiConnectorInstance.getMenuItems();
+    }
+  }
+
   //*** end public method *****
 
   //************* start of private methods ***********************
+
+  void _getCurrentLanguage() async {
+    User? user = await _userService.getUserInfo;
+    if (user != null) {
+      currentLanguage = user.language;
+      currentLanguage;
+    }
+  }
 
   void _requestScan() async {
     log("ScanButtonPressed called");
@@ -247,13 +265,6 @@ class HomeController extends getX.GetxController {
   void _pluginMenuListener() async {
     _geigerApiConnectorInstance.addMessageHandler(
         MessageType.registerMenu, () {});
-  }
-
-  void initExternalPluginMenuItems(bool menuPressed) async {
-    if (menuPressed) {
-      externalPluginMenuList.value =
-          await _geigerApiConnectorInstance.getMenuItems();
-    }
   }
 
   Future<void> _loadIndicatorWithUpdateDetails() async {
