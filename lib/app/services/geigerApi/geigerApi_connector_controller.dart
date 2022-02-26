@@ -109,7 +109,7 @@ class GeigerApiConnector extends GetxController {
     try {
       menuList = _localMaster.getMenuList();
     } catch (e) {
-      log(e.toString());
+      log("Failed to get MenuList $e");
     }
 
     return menuList;

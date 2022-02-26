@@ -129,12 +129,14 @@ class DataProtectionController extends GetxController {
     await _userService.updateReplicateConsent(replicateData: newValue);
   }
 
+  //send request to chat box to send menuItems
   void getExternalPluginMenuItems(bool menuPressed) async {
     if (menuPressed) {
       //call to set current language from the local storage
       _getCurrentLanguage();
       externalPluginMenuList.value =
           await _geigerApiConnectorInstance.getMenuItems();
+      log("MenuItems ==> ${externalPluginMenuList}");
     }
   }
 

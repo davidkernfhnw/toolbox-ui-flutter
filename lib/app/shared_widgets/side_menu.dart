@@ -33,17 +33,18 @@ class SideMenu extends StatelessWidget {
         ),
         menuItems(),
         Divider(),
+
         Column(
           children: _dataProtectionController.externalPluginMenuList
               .map(
                 (item) => ListTile(
-                  title: Text(
-                      "${item.name(languageRange: _dataProtectionController.currentLanguage ?? "en")}"),
+                  title: Text("${item.menu.name}"),
                   tileColor: Get.currentRoute == item.enabled
                       ? Colors.grey[300]
                       : null,
                   onTap: () async {
                     _geigerApiConnectorInstance.menuPressed(item.action);
+                    Get.back();
                   },
                 ),
               )

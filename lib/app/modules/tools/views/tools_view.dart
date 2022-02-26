@@ -15,21 +15,23 @@ class ToolsView extends StatelessWidget {
         centerTitle: true,
       ),
       body: Obx(() {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: ListView.separated(
-            shrinkWrap: true,
-            itemCount: controller.tools.length,
-            itemBuilder: (BuildContext context, int index) => ToolCard(
-              companyName: controller.tools[index].company,
-              appName: controller.tools[index].appName,
-              toolId: controller.tools[index].toolId,
-              installed: controller.installed.value,
-            ),
-            separatorBuilder: (BuildContext context, int index) =>
-                const Divider(),
-          ),
-        );
+        return controller.tools.isEmpty
+            ? Center(child: Text("No Tools Registered or Activated"))
+            : Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: controller.tools.length,
+                  itemBuilder: (BuildContext context, int index) => ToolCard(
+                    companyName: controller.tools[index].company,
+                    appName: controller.tools[index].appName,
+                    toolId: controller.tools[index].toolId,
+                    installed: controller.installed.value,
+                  ),
+                  separatorBuilder: (BuildContext context, int index) =>
+                      const Divider(),
+                ),
+              );
       }),
     );
   }

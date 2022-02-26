@@ -272,18 +272,6 @@ class HomeController extends getX.GetxController {
     }
   }
 
-  //add registerMenu event handler
-  void _pluginMenuListener() async {
-    try {
-      //handle registerMenu event
-      //but currently doesn't do any with this event is retrieve
-      _geigerApiConnectorInstance.addMessageHandler(
-          MessageType.registerMenu, () {});
-    } catch (e) {
-      log("Failed to registerMenu MessageHandler ");
-    }
-  }
-
   //load indicator with one seconds delay
   Future<void> _loadIndicatorWithUpdateDetails() async {
     try {
@@ -485,8 +473,6 @@ class HomeController extends getX.GetxController {
       _aggDataUpdateListener();
       //ExternalPluginListener
       _scanCompleteListener();
-      // registered external plugin menuItem
-      _pluginMenuListener();
 
       //get user aggregate score from cache if scan button
       // was recently pressed.
