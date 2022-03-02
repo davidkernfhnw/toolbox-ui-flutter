@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/modules/settings/controllers/data_controller.dart';
 import 'package:geiger_toolbox/app/shared_widgets/empty_space_card.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
+import 'package:get/get.dart';
 
 import '../../controllers/data_protection_controller.dart';
 
@@ -30,7 +31,7 @@ class DataView extends StatelessWidget {
                         ? greyText(snapshot.data.toString())
                         : Center(
                             child: Text(
-                            "Allow Data Access and Process!",
+                              "allow-data-access-process".tr,
                             style: TextStyle(color: Colors.red),
                           )),
                   ));
@@ -47,7 +48,7 @@ class DataView extends StatelessWidget {
                           controller.makeJsonFile();
                         }
                       : null,
-                  child: Text("Export")),
+                  child: Text("export".tr)),
             ],
           )
         ],

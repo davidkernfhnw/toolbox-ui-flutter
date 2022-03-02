@@ -70,7 +70,7 @@ final Map<String, String> en = {
 
   /* module: settings -> widgets: data_view */
   "allow-data-access-process":          "Allow Data Access and Process!",
-  "export-btn-label":                   "Export",
+  "export":                   "Export",
 
   /* module: settings -> widgets: profile_view */
   "user-name-label":                    "User Name",
