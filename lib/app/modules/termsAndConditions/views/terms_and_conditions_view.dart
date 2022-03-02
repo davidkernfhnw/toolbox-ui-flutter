@@ -23,7 +23,7 @@ class TermsAndConditionsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Terms and Conditions"),
+        title: Text("terms-conditions".tr),
         elevation: 1,
         centerTitle: true,
       ),
@@ -41,14 +41,14 @@ class TermsAndConditionsView extends StatelessWidget {
                         _controller.ageCompliant.value = value!;
                       },
                       value: _controller.ageCompliant.value,
-                      title: boldText('I am at least 16 years old.'),
+                      title: boldText("at-least-16".tr),
                     ),
                     CheckboxListTile(
                       value: _controller.signedConsent.value,
                       onChanged: (bool? value) {
                         _controller.signedConsent.value = value!;
                       },
-                      title: Text('I have signed a consent form.'),
+                      title: Text("have-signed-consent-form".tr),
                       subtitle: GestureDetector(
                           onTap: _controller.launchConsentUrl,
                           child: Text(
@@ -62,7 +62,7 @@ class TermsAndConditionsView extends StatelessWidget {
                         _controller.agreedPrivacy.value = value!;
                       },
                       title: Text(
-                        'I have read and agree with the Privacy Policy of the GEIGER Toolbox.',
+                        "read-agree-privacy-policy".tr,
                       ),
                       subtitle: GestureDetector(
                         onTap: _controller.launchPrivacyUrl,
@@ -78,10 +78,10 @@ class TermsAndConditionsView extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(12.0),
-                          child: boldText("Your company does..."),
+                          child: boldText("your-company-does".tr),
                         ),
                         CustomLabeledRadio(
-                          label: "only consume digital products",
+                          label: "only-consume-digital-products".tr,
                           padding: EdgeInsets.symmetric(horizontal: 20.0),
                           groupValue: _controller.isRadioSelected.value,
                           value: 0,
@@ -90,7 +90,7 @@ class TermsAndConditionsView extends StatelessWidget {
                           },
                         ),
                         CustomLabeledRadio(
-                          label: "sell digital products but not develop them",
+                          label: "sell-digital-products-no-develop".tr,
                           padding: EdgeInsets.symmetric(horizontal: 20.0),
                           groupValue: _controller.isRadioSelected.value,
                           value: 1,
@@ -99,7 +99,7 @@ class TermsAndConditionsView extends StatelessWidget {
                           },
                         ),
                         CustomLabeledRadio(
-                          label: " develop and sell digital products itself",
+                          label: "develop-and-sell-digital-products".tr,
                           padding: EdgeInsets.symmetric(horizontal: 20.0),
                           groupValue: _controller.isRadioSelected.value,
                           value: 2,
@@ -113,7 +113,7 @@ class TermsAndConditionsView extends StatelessWidget {
                 ),
               ),
               Text(
-                'In order to use the toolbox all terms above have to be accepted',
+               "info-accept-terms".tr,
                 style: TextStyle(
                     color:
                         _controller.errorMsg.value ? Colors.red : Colors.grey),
@@ -123,8 +123,8 @@ class TermsAndConditionsView extends StatelessWidget {
                 onPressed: () {
                   _controller.acceptTerms();
                 },
-                child: Text("Continue"),
-              ),
+                child: Text("continue-btn-label".tr),
+              )
             ],
           ),
         );
