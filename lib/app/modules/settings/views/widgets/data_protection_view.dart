@@ -33,10 +33,9 @@ class DataProtectionView extends StatelessWidget {
                     if (_dataProtectionController.getDataAccess) {
                       Get.defaultDialog(
                         barrierDismissible: false,
-                        title: "Warning",
+                        title: "warning".tr,
                         middleText:
-                            "Are you sure you want to disable Data Access and Processing?\n"
-                            "The setting will be applied after you restart the app.",
+                            "data-access-warning-text".tr,
                         middleTextStyle: TextStyle(color: Colors.red),
                         confirm: OutlinedButton(
                             onPressed: () async {
@@ -45,22 +44,22 @@ class DataProtectionView extends StatelessWidget {
                               Get.back();
                               if (!Get.isSnackbarOpen) {
                                 result
-                                    ? Get.snackbar("Data Access",
-                                        "Consent successfully updated.",
+                                    ? Get.snackbar("data-access-title".tr,
+                                        "data-access-success-text".tr,
                                         snackPosition: SnackPosition.BOTTOM,
                                         backgroundColor: Colors.greenAccent)
-                                    : Get.snackbar("Data Access",
-                                        "Consent fail to update.",
+                                    : Get.snackbar("data-access-title".tr,
+                                        "data-access-failed-text".tr,
                                         snackPosition: SnackPosition.BOTTOM,
                                         backgroundColor: Colors.orangeAccent);
                               }
                             },
-                            child: Text("ok")),
+                            child: Text("ok".tr)),
                         cancel: TextButton(
                             onPressed: () {
                               Get.back();
                             },
-                            child: Text("Cancel")),
+                            child: Text("cancel".tr)),
                       );
                     } else {
                       bool result = await controller.updateDataAccess(value);
@@ -68,11 +67,11 @@ class DataProtectionView extends StatelessWidget {
                       if (!Get.isSnackbarOpen) {
                         result
                             ? Get.snackbar(
-                                "Data Access", "Consent successfully updated.",
+                            "data-access-title".tr, "data-access-success-text".tr,
                                 snackPosition: SnackPosition.BOTTOM,
                                 backgroundColor: Colors.greenAccent)
                             : Get.snackbar(
-                                "Data Access", "Consent fail to update.",
+                            "data-access-title".tr, "data-access-failed-text".tr,
                                 snackPosition: SnackPosition.BOTTOM,
                                 backgroundColor: Colors.orangeAccent);
                       }
@@ -80,9 +79,8 @@ class DataProtectionView extends StatelessWidget {
                   },
                   defaultValue: controller.getDataAccess,
                   permission: controller.getDataAccess,
-                  label: 'Data Access and Processing',
-                  description:
-                      'Allow the toolbox to calculate your risk score and receive protection recommendations.',
+                  label: "data-access-processing-title".tr,
+                  description: "data-access-processing-desc".tr,
                 ),
                 Divider(
                   height: 5.0,
@@ -91,21 +89,20 @@ class DataProtectionView extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    boldText("Data Sharing"),
+                    boldText("data-sharing-title".tr),
                     CustomLabeledRadio(
                       value: 0,
-                      label: 'Do not Share',
+                      label: "do-not-share".tr,
                       description:
-                          'Data will remain on this single device only.',
+                          "do-not-shar-desc".tr,
                       groupValue: controller.isRadioSelected.value,
                       onChanged: (int newValue) {
                         controller.isRadioSelected.value != newValue
                             ? Get.defaultDialog(
                                 barrierDismissible: false,
-                                title: "Warning",
+                                title: "warning".tr,
                                 middleText:
-                                    "Are you sure you want to stop your data from be replicated ?\n"
-                                    "The setting will be applied after you restart the app.",
+                                    "do-not-share-warning-dialog".tr,
                                 middleTextStyle: TextStyle(color: Colors.red),
                                 confirm: OutlinedButton(
                                     onPressed: () async {
@@ -116,12 +113,12 @@ class DataProtectionView extends StatelessWidget {
                                           .updateReplicateConsent(1);
                                       Get.back();
                                     },
-                                    child: Text("ok")),
+                                    child: Text("ok".tr)),
                                 cancel: TextButton(
                                     onPressed: () {
                                       Get.back();
                                     },
-                                    child: Text("Cancel")),
+                                    child: Text("cancel".tr)),
                               )
                             : controller.isRadioSelected.value = newValue;
                         controller.updateDoNotShare(1);
@@ -130,9 +127,8 @@ class DataProtectionView extends StatelessWidget {
                     ),
                     CustomLabeledRadio(
                       value: 1,
-                      label: 'Replicate securely between your devices.',
-                      description:
-                          "All your data will be available on all your devices.",
+                      label: "replicate-between-your-devices".tr,
+                      description: "replicate-between-your-devices-desc".tr,
                       groupValue: controller.isRadioSelected.value,
                       onChanged: _dataProtectionController.getDataAccess
                           ? (int newValue) async {
@@ -148,12 +144,12 @@ class DataProtectionView extends StatelessWidget {
                           Get.back();
                           if (!Get.isSnackbarOpen) {
                             success
-                                ? Get.snackbar("Replication",
-                                "Your data was successfully replicated.",
+                                ? Get.snackbar("replication".tr,
+                                "replication-success-text".tr,
                                 snackPosition: SnackPosition.BOTTOM,
                                 backgroundColor: Colors.greenAccent)
-                                : Get.snackbar("Replication",
-                                "Your data replication failed.",
+                                : Get.snackbar("replication".tr,
+                                "replication-failed-text".tr,
                                 snackPosition: SnackPosition.BOTTOM,
                                 backgroundColor: Colors.orangeAccent);
                           }
@@ -162,24 +158,24 @@ class DataProtectionView extends StatelessWidget {
                           : (int a) {
                               Get.defaultDialog(
                                 barrierDismissible: false,
-                                title: "Alert ",
+                                title: "alert".tr,
                                 middleText:
-                                    "Toolbox needs you to grant permission for data access and processing.",
+                                "info-alert-needs-permission".tr,
                                 middleTextStyle: TextStyle(color: Colors.red),
                                 cancel: ElevatedButton(
                                     onPressed: () {
                                       Get.back();
                                     },
-                                    child: Text("ok")),
+                                    child: Text("ok".tr)),
                               );
                             },
                       padding: EdgeInsets.symmetric(vertical: 5.0),
                     ),
                     CustomLabeledRadio(
                       value: 2,
-                      label: 'Share data with GEIGER cloud.',
+                      label: 'share-data-with-cloud'.tr,
                       description:
-                          "Your tools’ data will be used to improve GEIGER over time.",
+                          "share-data-with-cloud-desc".tr,
                       groupValue: controller.isRadioSelected.value,
                       onChanged: _dataProtectionController.getDataAccess
                           ? (int newValue) async {
@@ -190,15 +186,14 @@ class DataProtectionView extends StatelessWidget {
                           : (int a) {
                               Get.defaultDialog(
                                 barrierDismissible: false,
-                                title: "Alert ",
-                                middleText:
-                                    "Toolbox needs you to grant permission for data access and processing.",
+                                title: "alert".tr,
+                                middleText: "info-alert-needs-permission".tr,
                                 middleTextStyle: TextStyle(color: Colors.red),
                                 cancel: ElevatedButton(
                                     onPressed: () {
                                       Get.back();
                                     },
-                                    child: Text("ok")),
+                                    child: Text("ok".tr)),
                               );
                             },
                       padding: EdgeInsets.symmetric(vertical: 5.0),
@@ -212,12 +207,11 @@ class DataProtectionView extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    boldText('Tools may process  your data'),
+                    boldText("tools-may-process-data".tr),
                     Row(
                       children: [
                         Expanded(
-                          child: Text(
-                            'This setting enables or disables the tools’ ability to process your data and offer personalised services. When enabled, you can disable the setting for each tool.',
+                          child: Text("tools-may-process-data-desc".tr,
                             softWrap: true,
                             textAlign: TextAlign.justify,
                           ),
@@ -231,7 +225,7 @@ class DataProtectionView extends StatelessWidget {
                                   Get.toNamed(Routes.TOOLS_VIEW);
                                 }
                               : null,
-                          child: Text("Tools"),
+                          child: Text("tools".tr),
                         ),
                       ],
                     ),
@@ -244,9 +238,8 @@ class DataProtectionView extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    boldText('Incident reporting'),
-                    Text(
-                        'When experiencing an incident, you will have the ability to submit an incident report to your chosen cybersecurity agency (CERT). You will be asked each time whether you want to report the incident.'),
+                    boldText("incident-reporting".tr),
+                    Text("incident-reporting-desc".tr),
                   ],
                 ),
                 ElevatedButton(
@@ -257,18 +250,18 @@ class DataProtectionView extends StatelessWidget {
                         : () {
                             Get.defaultDialog(
                               barrierDismissible: false,
-                              title: "Alert ",
+                              title: "alert".tr,
                               middleText:
-                                  "Toolbox needs you to grant permission for data access and processing.",
+                                  "info-alert-needs-permission".tr,
                               middleTextStyle: TextStyle(color: Colors.red),
                               cancel: ElevatedButton(
                                   onPressed: () {
                                     Get.back();
                                   },
-                                  child: Text("ok")),
+                                  child: Text("ok".tr)),
                             );
                           },
-                    child: Text("Navigate to Scan Screen")),
+                    child: Text("navigate-to-scan-screen".tr)),
               ],
             ),
           );

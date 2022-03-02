@@ -21,7 +21,7 @@ final Map<String, String> en = {
   "info-accept-terms":                  "In order to use the toolbox all terms above have to be accepted",
   "continue-btn-label":                 "Continue",
 
-
+// TODO: Replace variables in German translation
   /* module: settings */
   "title-settings":                     "Settings",
   "profile":                            "Profile",
@@ -31,43 +31,42 @@ final Map<String, String> en = {
   /* module: settings -> widgets: data_protection_view */
   "warning":                            "Warning",
   "data-access-warning-text":           "Are you sure you want to disable Data Access and Processing? The setting will be applied after you restart the app.",
-  "snackbar-data-access-title":         "Data Access",
-  "snackbar-data-access-success-text":  "Consent successfully updated.",
-  "snackbar-data-access-failed-text":   "Consent fail to update.",
-
-  "ok-btn-label":                       "ok",
-  "cancel-btn-label":                   "cancel",
+  "data-access-title":         "Data Access",
+  "data-access-success-text":  "Consent successfully updated.",
+  "data-access-failed-text":   "Consent fail to update.",
+  "ok":                       "ok",
+  "cancel":                   "cancel",
 
   "data-access-processing-title":       "Data Access and Processing",
   "data-access-processing-desc":        "Allow the toolbox to calculate your risk score and receive protection recommendations.",
 
   "data-sharing-title":                 "Data Sharing",
 
-  "data-sharing-label1":                "Do not share",
-  "data-sharing-desc1":                 "Data will remain on this single device only.",
-  "data-sharing-dialog1":               "Are you sure you want to stop your data from be replicated. The setting will be applied after you restart the app.",
+  "do-not-share":                "Do not share",
+  "do-not-share-desc":                 "Data will remain on this single device only.",
+  "do-not-share-warning-dialog":               "Are you sure you want to stop your data from be replicated. The setting will be applied after you restart the app.",
 
-  "data-sharing-label2":                "Replicate securely between your devices.",
-  "data-sharing-desc2":                 "All your data will be available on all your devices.",
+  "replicate-between-your-devices":                "Replicate securely between your devices.",
+  "replicate-between-your-devices-desc":                 "All your data will be available on all your devices.",
 
-  "snackbar-replication-title":         "Replication",
-  "snackbar-replication-success-text":  "Your data was successfully replicated.",
-  "snackbar-replication-failed-text":   "Your data replication failed.",
+  "replication":         "Replication",
+  "replication-success-text":  "Your data was successfully replicated.",
+  "replication-failed-text":   "Your data replication failed.",
 
-  "data-sharing-label3":                "Share data with GEIGER cloud.",
-  "data-sharing-desc3":                 "Your tools’ data will be used to improve GEIGER over time.",
+  "share-data-with-cloud":                "Share data with GEIGER cloud.",
+  "share-data-with-cloud-desc":                 "Your tools’ data will be used to improve GEIGER over time.",
 
-  "data-sharing-label4":                "Tools may process  your data",
-  "data-sharing-desc4":                 "This setting enables or disables the tools’ ability to process your data and offer personalised services. When enabled, you can disable the setting for each tool.",
-  "tools-btn-label":                    "Tools",
+  "tools-may-process-data":                "Tools may process  your data",
+  "tools-may-process-data-desc":                 "This setting enables or disables the tools’ ability to process your data and offer personalised services. When enabled, you can disable the setting for each tool.",
+  "tools":                    "Tools",
 
-  "data-sharing-label5":                "Incident reporting",
-  "data-sharing-desc5":                 "When experiencing an incident, you will have the ability to submit an incident report to your chosen cybersecurity agency (CERT). You will be asked each time whether you want to report the incident.",
+  "incident-reporting":                "Incident reporting",
+  "incident-reporting-desc":                 "When experiencing an incident, you will have the ability to submit an incident report to your chosen cybersecurity agency (CERT). You will be asked each time whether you want to report the incident.",
 
   "alert":                              "Alert",
   "info-alert-needs-permission":        "Toolbox needs you to grant permission for data access and processing.",
 
-  "nav-to-scan-screen-btn-label":       "Navigate to Scan Screen",
+  "navigate-to-scan-screen":            "Navigate to Scan Screen",
 
   /* module: settings -> widgets: data_view */
   "allow-data-access-process":          "Allow Data Access and Process!",
@@ -111,10 +110,10 @@ final Map<String, String> deCh = {
   "at-least-16":                        "Ich bin mindestens 16 Jahre alt.",
   "have-signed-consent-form":           "Ich habe eine Einverständniserklärung unterschrieben.",
   "read-agree-privacy-policy":          "Ich habe die Datenschutzbestimmungen der GEIGER-Toolbox gelesen und bin damit einverstanden.",
-  "title-company-does":                 "Ihr Unternehmen...",
-  "label1-company-does":                "nutzt nur digitale Produkte",
-  "label2-company-does":                "verkauft digital Produkte, aber entwickelt selbst keine",
-  "label3-company-does":                "entwickelt und verkauft digitale Produkte",
+  "your-company-does":                  "Ihr Unternehmen...",
+  "only-consume-digital-products":      "nutzt nur digitale Produkte",
+  "sell-digital-products-no-develop":   "verkauft digital Produkte, aber entwickelt selbst keine",
+  "develop-and-sell-digital-products":  "entwickelt und verkauft digitale Produkte",
   "info-accept-terms":                  "Für die Nutzung der Toolbox, müssen alle oben genannten Bedingungen akzeptiert werden",
   "continue-btn-label":                 "Weiter",
 
