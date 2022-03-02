@@ -94,7 +94,7 @@ class DataProtectionView extends StatelessWidget {
                       value: 0,
                       label: "do-not-share".tr,
                       description:
-                          "do-not-shar-desc".tr,
+                          "do-not-share-desc".tr,
                       groupValue: controller.isRadioSelected.value,
                       onChanged: (int newValue) {
                         controller.isRadioSelected.value != newValue

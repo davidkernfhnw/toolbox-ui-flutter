@@ -11,7 +11,7 @@ import 'package:geiger_toolbox/app/model/user.dart';
 import 'package:geiger_toolbox/app/services/localStorage/local_storage_controller.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_user_service.dart';
 import 'package:geiger_toolbox/app/services/parser_helpers/implementation/geiger_utility_service.dart';
-import 'package:geiger_toolbox/app/translation/suppored_language.dart';
+import 'package:geiger_toolbox/app/translation/supported_languages.dart';
 import 'package:get/get.dart';
 
 import '../../../model/cert.dart';
@@ -127,7 +127,7 @@ class ProfileController extends GetxController {
   //username must not be empty
   String? validateUserName(String? value) {
     if (value!.isEmpty) {
-      return "Please Enter your Name";
+      return "user-name-warning".tr;
     } else {
       return null;
     }
@@ -137,7 +137,7 @@ class ProfileController extends GetxController {
   //Devicename must not be empty
   String? validateDeviceName(String? value) {
     if (value!.isEmpty) {
-      return "Please Enter Device Name";
+      return "device-name-warning".tr;
     } else {
       return null;
     }

@@ -34,24 +34,25 @@ class ProfileView extends StatelessWidget {
                   children: [
                     CustomTextField(
                       hintText: controller.currentUserName.value == ""
-                          ? "Enter User name"
-                          : controller.currentUserName.value,
-                      label: 'User Name',
+                          ? "user-name-hint".tr
+                          : "",
+                      label: 'user-name-label'.tr,
                       initialValue: controller.currentUserName.value,
                       onChanged: controller.onChangeUserName,
                       validator: controller.validateUserName,
                     ),
                     CustomTextField(
-                      hintText: controller.currentDeviceName.value,
-                      label: 'Name of this Device',
+                      hintText: controller.currentDeviceName.value == ""
+                      ? "device-name-hint".tr
+                      : "",
+                      label: 'device-name-label'.tr,
                       initialValue: controller.currentDeviceName.value,
                       onChanged: controller.onChangeDeviceName,
                       validator: controller.validateDeviceName,
                     ),
                     CustomSwitch(
-                      label: "I’m a company owner",
-                      description:
-                          "As an owner you can compare your company’s geiger score with others ",
+                      label: "company-owner".tr,
+                      description: "company-owner-desc".tr,
                       defaultValue: controller.supervisor.value,
                       onChanged: controller.onChangeOwner,
                     ),
@@ -60,7 +61,7 @@ class ProfileView extends StatelessWidget {
                     ),
                     CustomDropdownLanguage(
                       listItems: controller.languages,
-                      titleText: "Language",
+                      titleText: "language".tr,
                       onChanged: controller.onChangeLanguage,
                       defaultValue: controller.userInfo.value.language,
                       hintText: '',
@@ -71,8 +72,8 @@ class ProfileView extends StatelessWidget {
                     CustomDropDownCountry(
                       countries: controller.currentCountries,
                       onChanged: controller.onChangedCountry,
-                      hintText: 'Select Your Country',
-                      titleText: "Country",
+                      hintText: 'select-your-country'.tr,
+                      titleText: "country".tr,
                       defaultValue: controller.currentCountryId.value,
                     ),
                     SizedBox(
@@ -82,8 +83,8 @@ class ProfileView extends StatelessWidget {
                       onChanged: controller.onChangedCert,
                       certs: controller.certBaseOnCountrySelected,
                       defaultValue: controller.currentCert.value,
-                      hintText: "Select Competent CERT",
-                      titleText: "Competent CERT",
+                      hintText: "select-competent-cert".tr,
+                      titleText: "competent-cert".tr,
                       validator: controller.validateCert,
                     ),
                     SizedBox(
@@ -93,8 +94,8 @@ class ProfileView extends StatelessWidget {
                         onChanged: controller.onChangedProfAss,
                         certs: controller.profAssBaseOnCountrySelected,
                         defaultValue: controller.currentProfAss.value,
-                        hintText: "Select Profession Association",
-                        titleText: "Profession Association",
+                        hintText: "select-profession-association".tr,
+                        titleText: "profession-association".tr,
                         validator: controller.validateProfAss),
                     ElevatedButton(
                       onPressed: _dataProtectionController.getDataAccess
@@ -105,19 +106,19 @@ class ProfileView extends StatelessWidget {
                                 if (controller.isSuccess.value == true) {
                                   if (!Get.isSnackbarOpen) {
                                     Get.snackbar(
-                                        "Success", "Updated SuccessFully.",
+                                        "success".tr, "updated-successfully".tr,
                                         backgroundColor: Colors.greenAccent,
                                         snackPosition: SnackPosition.BOTTOM);
                                   }
                                 } else {
-                                  Get.snackbar("Message Alert",
-                                      "Updated Failed!!!.. contact the Developer",
+                                  Get.snackbar("message-alert".tr,
+                                      "update-failed-contact-developer".tr,
                                       backgroundColor: Colors.redAccent);
                                 }
                               }
                             }
                           : null,
-                      child: Text("update-button-label".tr),
+                      child: Text("update".tr),
                     ),
                     SizedBox(height: 10),
                   ],

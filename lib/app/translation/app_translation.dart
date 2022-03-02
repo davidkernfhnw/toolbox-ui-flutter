@@ -6,7 +6,7 @@ abstract class AppTranslation {
     "nl-nl": nlNl,
   };
 }
-
+/*----------------------------- English -----------------------------*/
 final Map<String, String> en = {
 
   /* module: termsAndConditions */
@@ -21,7 +21,6 @@ final Map<String, String> en = {
   "info-accept-terms":                  "In order to use the toolbox all terms above have to be accepted",
   "continue-btn-label":                 "Continue",
 
-// TODO: Replace variables in German translation
   /* module: settings */
   "title-settings":                     "Settings",
   "profile":                            "Profile",
@@ -31,72 +30,72 @@ final Map<String, String> en = {
   /* module: settings -> widgets: data_protection_view */
   "warning":                            "Warning",
   "data-access-warning-text":           "Are you sure you want to disable Data Access and Processing? The setting will be applied after you restart the app.",
-  "data-access-title":         "Data Access",
-  "data-access-success-text":  "Consent successfully updated.",
-  "data-access-failed-text":   "Consent fail to update.",
-  "ok":                       "ok",
-  "cancel":                   "cancel",
+  "data-access-title":                  "Data Access",
+  "data-access-success-text":           "Consent successfully updated.",
+  "data-access-failed-text":            "Consent fail to update.",
+  "ok":                                 "ok",
+  "cancel":                             "cancel",
 
   "data-access-processing-title":       "Data Access and Processing",
   "data-access-processing-desc":        "Allow the toolbox to calculate your risk score and receive protection recommendations.",
 
   "data-sharing-title":                 "Data Sharing",
 
-  "do-not-share":                "Do not share",
-  "do-not-share-desc":                 "Data will remain on this single device only.",
-  "do-not-share-warning-dialog":               "Are you sure you want to stop your data from be replicated. The setting will be applied after you restart the app.",
+  "do-not-share":                       "Do not share",
+  "do-not-share-desc":                  "Data will remain on this single device only.",
+  "do-not-share-warning-dialog":        "Are you sure you want to stop your data from be replicated. The setting will be applied after you restart the app.",
 
-  "replicate-between-your-devices":                "Replicate securely between your devices.",
-  "replicate-between-your-devices-desc":                 "All your data will be available on all your devices.",
+  "replicate-between-your-devices":     "Replicate securely between your devices.",
+  "replicate-between-your-devices-desc":"All your data will be available on all your devices.",
 
-  "replication":         "Replication",
-  "replication-success-text":  "Your data was successfully replicated.",
-  "replication-failed-text":   "Your data replication failed.",
+  "replication":                          "Replication",
+  "replication-success-text":             "Your data was successfully replicated.",
+  "replication-failed-text":              "Your data replication failed.",
 
   "share-data-with-cloud":                "Share data with GEIGER cloud.",
-  "share-data-with-cloud-desc":                 "Your tools’ data will be used to improve GEIGER over time.",
+  "share-data-with-cloud-desc":           "Your tools’ data will be used to improve GEIGER over time.",
 
-  "tools-may-process-data":                "Tools may process  your data",
-  "tools-may-process-data-desc":                 "This setting enables or disables the tools’ ability to process your data and offer personalised services. When enabled, you can disable the setting for each tool.",
-  "tools":                    "Tools",
+  "tools-may-process-data":               "Tools may process  your data",
+  "tools-may-process-data-desc":          "This setting enables or disables the tools’ ability to process your data and offer personalised services. When enabled, you can disable the setting for each tool.",
+  "tools":                                "Tools",
 
-  "incident-reporting":                "Incident reporting",
-  "incident-reporting-desc":                 "When experiencing an incident, you will have the ability to submit an incident report to your chosen cybersecurity agency (CERT). You will be asked each time whether you want to report the incident.",
+  "incident-reporting":                   "Incident reporting",
+  "incident-reporting-desc":              "When experiencing an incident, you will have the ability to submit an incident report to your chosen cybersecurity agency (CERT). You will be asked each time whether you want to report the incident.",
 
-  "alert":                              "Alert",
-  "info-alert-needs-permission":        "Toolbox needs you to grant permission for data access and processing.",
+  "alert":                                "Alert",
+  "info-alert-needs-permission":          "Toolbox needs you to grant permission for data access and processing.",
 
-  "navigate-to-scan-screen":            "Navigate to Scan Screen",
+  "navigate-to-scan-screen":              "Navigate to Scan Screen",
 
   /* module: settings -> widgets: data_view */
-  "allow-data-access-process":          "Allow Data Access and Process!",
-  "export":                   "Export",
+  "allow-data-access-process":            "Allow Data Access and Process!",
+  "export":                               "Export",
 
   /* module: settings -> widgets: profile_view */
   "user-name-label":                    "User Name",
   "user-name-hint":                     "Enter User name",
-  "user-name-warning":                  "Please Enter your Name",
+  "user-name-warning":                  "Please Enter your Name", // controller: profile_controller
   "device-name-label":                  "Name of this Device",
   "device-name-hint":                   "Enter Device name",
-  "device-name-warning":                "Please Enter your Device Name",
-  "company-owner-label":                "I’m a company owner",
+  "device-name-warning":                "Please Enter your Device Name", // controller: profile_controller
+  "company-owner":                       "I’m a company owner",
   "company-owner-desc":                 "As an owner you can compare your company’s geiger score with others.",
 
   "language":                           "Language",
   "country":                            "Country",
-  "country-hint":                       "Select Your Country",
+  "select-your-country":                "Select Your Country",
   "competent-cert":                     "Competent CERT",
-  "competent-cert-hint":                "Select Competent CERT",
+  "select-competent-cert":              "Select Competent CERT",
   "profession-association":             "Profession Association",
-  "profession-association-hint":        "Select Profession Association",
+  "select-profession-association":      "Select Profession Association",
 
-  "snackbar-update-success-title":      "Success",
-  "snackbar-update-success-desc":       "Updated Successfully.",
+  "success":                            "Success",
+  "updated-successfully":               "Updated Successfully.",
 
-  "snackbar-update-failed-title":       "Message Alert",
-  "snackbar-update-failed-desc":        "Updated Failed! Contact the Developer",
+  "message-alert":                      "Message Alert",
+  "update-failed-contact-developer":    "Update Failed! Contact the Developer",
 
-  "update-btn-label":                   "Update",
+  "update":                              "Update",
 
 
 
@@ -104,7 +103,14 @@ final Map<String, String> en = {
   "geiger-toolbox": "Geiger Toolbox",
   "no-data-found": "NO DATA FOUND",
 };
+/*----------------------------- German -----------------------------*/
 final Map<String, String> deCh = {
+  /* module: translation -> supported_languages */
+  "English":                            "Englisch",
+  "German":                             "Deutsch",
+  "Romanian":                           "Rumänisch",
+  "Dutch":                              "Niederländisch",
+
   /* module: termsAndConditions */
   "terms-conditions":                   "Allgemeine Geschäftsbedingungen",
   "at-least-16":                        "Ich bin mindestens 16 Jahre alt.",
@@ -127,72 +133,72 @@ final Map<String, String> deCh = {
   /* module: settings -> widgets: data_protection_view */
   "warning":                            "Warnung",
   "data-access-warning-text":           "Sind Sie sicher, dass Sie den Datenzugriff und die Datenverarbeitung deaktivieren möchten? Die Einstellung wird nach dem Neustart der App übernommen.",
-  "snackbar-data-access-title":         "Datenzugriff",
-  "snackbar-data-access-success-text":  "Genehmigungen erfoglreich aktualisiert.",
-  "snackbar-data-access-failed-text":   "Genehmigungen konnten nicht aktualisiert werden.",
+  "data-access-title":                  "Datenzugriff",
+  "data-access-success-text":           "Genehmigungen erfoglreich aktualisiert.",
+  "data-access-failed-text":            "Genehmigungen konnten nicht aktualisiert werden.",
 
-  "ok-btn-label":                       "Okay",
-  "cancel-btn-label":                   "Abbrechen",
+  "ok":                                 "Okay",
+  "cancel":                             "Abbrechen",
 
   "data-access-processing-title":       "Datenzugriff und -verarbeitung",
   "data-access-processing-desc":        "Erlauben Sie der Toolbox, Ihren Risiko-Score zu berechnen, sowie Sicherheitsempfehlungen zu erhalten.",
 
   "data-sharing-title":                 "Datenfreigabe",
 
-  "data-sharing-label1":                "nicht freigeben",
-  "data-sharing-desc1":                 "Die Daten verbleiben nur auf diesem Gerät.",
-  "data-sharing-dialog1":               "Sind Sie sicher, dass Sie die Abbildung Ihrer Daten unterbinden möchten. Die Einstellung wird nach dem Neustart der App übernommen.",
+  "do-not-share":                       "nicht freigeben",
+  "do-not-share-desc":                  "Die Daten verbleiben nur auf diesem Gerät.",
+  "do-not-share-warning-dialog":        "Sind Sie sicher, dass Sie die Abbildung Ihrer Daten unterbinden möchten. Die Einstellung wird nach dem Neustart der App übernommen.",
 
-  "data-sharing-label2":                "Sichere Abbildung zwischen Ihren Geräten.",
-  "data-sharing-desc2":                 "Die Daten sind auf allen Geräten verfügbar.",
+  "replicate-between-your-devices":     "Sichere Abbildung zwischen Ihren Geräten.",
+  "replicate-between-your-devices-desc":"Die Daten sind auf allen Geräten verfügbar.",
 
-  "snackbar-replication-title":         "Abbildung",
-  "snackbar-replication-success-text":  "Die Daten wurden erfolgreich abgebildet.",
-  "snackbar-replication-failed-text":   "Die Abbildung der Daten ist fehlgeschlagen.",
+  "replication":                        "Abbildung",
+  "replication-success-text":           "Die Daten wurden erfolgreich abgebildet.",
+  "replication-failed-text":            "Die Abbildung der Daten ist fehlgeschlagen.",
 
-  "data-sharing-label3":                "Daten mit der GEIGER-Cloud teilen.",
-  "data-sharing-desc3":                 "Ihre Tools Daten werden verwendet, um GEIGER im Laufe der Zeit zu verbessern.",
+  "share-data-with-cloud":              "Daten mit der GEIGER-Cloud teilen.",
+  "share-data-with-cloud-desc":         "Ihre Tools Daten werden verwendet, um GEIGER im Laufe der Zeit zu verbessern.",
 
-  "data-sharing-label4":                "Tools können Ihre Daten verarbeiten",
-  "data-sharing-desc4":                 "Diese Einstellung aktiviert oder deaktiviert die Berechtigung der Tools, Ihre Daten zu verarbeiten und personalisierte Dienste bereitzustellen. Wenn sie aktiviert ist, kann jedes Tool individuell deaktiviert werden.",
-  "tools-btn-label":                    "Werkzeuge",
+  "tools-may-process-data":             "Tools können Ihre Daten verarbeiten",
+  "tools-may-process-data-desc":        "Diese Einstellung aktiviert oder deaktiviert die Berechtigung der Tools, Ihre Daten zu verarbeiten und personalisierte Dienste bereitzustellen. Wenn sie aktiviert ist, kann jedes Tool individuell deaktiviert werden.",
+  "tools":                              "Werkzeuge",
 
-  "data-sharing-label5":                "Vorfall melden",
-  "data-sharing-desc5":                 "Bei einem Vorfall haben Sie die Möglichkeit, eine Vorfallbericht an die von Ihnen gewählte Cybersicherheitsagentur (CERT) zu senden. Sie werden jedes Mal gefragt, ob Sie den Vorfall melden möchten.",
+  "incident-reporting":                 "Vorfall melden",
+  "incident-reporting-desc":            "Bei einem Vorfall haben Sie die Möglichkeit, eine Vorfallbericht an die von Ihnen gewählte Cybersicherheitsagentur (CERT) zu senden. Sie werden jedes Mal gefragt, ob Sie den Vorfall melden möchten.",
 
   "alert":                              "Warnung",
   "info-alert-needs-permission":        "Die Toolbox benötigt Ihre Zustimmung für den Datenzugriff und die Datenverarbeitung.",
 
-  "nav-to-scan-screen-btn-label":       "Zum Scan-Bildschirm",
+  "navigate-to-scan-screen":            "Zum Scan-Bildschirm",
 
   /* module: settings -> widgets: data_view */
   "allow-data-access-process":          "Datenzugriff und Verarbeitung zulassen!",
-  "export-btn-label":                   "Exportieren",
+  "export":                             "Exportieren",
 
   /* module: settings -> widgets: profile_view */
   "user-name-label":                    "Nutzername",
   "user-name-hint":                     "Nutzername eingeben",
   "user-name-warning":                  "Bitte Nutzername eingeben",
   "device-name-label":                  "Name dieses Geräts",
-  "device-name-hint":                   "Gerätenamen eingeben",
-  "device-name-warning":                "Bitte Gerätenamen eingeben",
-  "company-owner-label":                "Ich bin ein Inhaber eines Unternehmens",
+  "device-name-hint":                   "Gerätename eingeben",
+  "device-name-warning":                "Bitte Gerätename eingeben",
+  "company-owner":                      "Ich bin Inhaber eines Unternehmens",
   "company-owner-desc":                 "Als Eigentümer können Sie den Geiger-Score Ihres Unternehmens mit andereren Unternehmen vergleichen.",
   "language":                           "Sprache",
   "country":                            "Land",
-  "country-hint":                       "Land auswählen",
+  "select-your-country":                "Land auswählen",
   "competent-cert":                     "Zuständiges CERT",
-  "competent-cert-hint":                "Zuständiges CERT auswählen",
+  "select-competent-cert":              "Zuständiges CERT auswählen",
   "profession-association":             "Berufsverband",
-  "profession-association-hint":        "Berufsverband auswählen",
+  "select-profession-association":      "Berufsverband auswählen",
 
-  "snackbar-update-success-title":      "Erfolgreich",
-  "snackbar-update-success-desc":       "erfolgreich aktualisiert.",
+  "success":                            "Erfolgreich",
+  "updated-successfully":               "erfolgreich aktualisiert.",
 
-  "snackbar-update-failed-title":       "Warnmeldung",
-  "snackbar-update-failed-desc":        "Aktualisierung fehlgeschlagen! Kontaktieren Sie den Entwickler.",
+  "message-alert":                      "Warnmeldung",
+  "update-failed-contact-developer":    "Aktualisierung fehlgeschlagen! Kontaktieren Sie den Entwickler.",
 
-  "update-btn-label":                   "Aktualisieren",
+  "update":                             "Aktualisieren",
 
 
 
@@ -201,7 +207,10 @@ final Map<String, String> deCh = {
   "no-data-found": "KEINE DATEN GEFUNDEN",
 
 };
+
+/*----------------------------- Romanian -----------------------------*/
 final Map<String, String> ro = {
+
   /*"geiger-toolbox": "Geiger Toolbox",
   "update-button-label": "Actualizați",
   "title-settings": "setări",
@@ -209,7 +218,11 @@ final Map<String, String> ro = {
   "data-protection": "Protejarea datelor",
   "data": "Date"*/
 };
+
+/*----------------------------- Dutch -----------------------------*/
 final Map<String, String> nlNl = {
+
+
   /*"geiger-toolbox": "Geiger-gereedschapskist",
   "update-button-label": "Bijwerken",
   "title-settings": "instellingen",

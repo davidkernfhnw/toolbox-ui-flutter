@@ -46,9 +46,9 @@ class HomeView extends StatelessWidget {
                         controller: controller,
                       ),
                       controller.aggThreatsScore.value.threatScores.isEmpty
-                          ? const Center(
+                          ? Center(
                               child: Text(
-                                "NO DATA FOUND",
+                                "no-data-found".tr,
                                 style: TextStyle(color: Colors.red),
                               ),
                             )
