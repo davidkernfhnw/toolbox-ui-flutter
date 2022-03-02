@@ -5,6 +5,7 @@ import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_cer
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_dropdown_country.dart';
 import 'package:geiger_toolbox/app/shared_widgets/form_field/custom_text_field.dart';
 import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
+import 'package:get/get.dart';
 
 //import 'package:get/get.dart';
 
@@ -29,8 +30,8 @@ class SecurityDefendersView extends StatelessWidget {
                       Expanded(
                         child: CustomDropDownCountry(
                           countries: [],
-                          hintText: "Select Country",
-                          titleText: "Country",
+                          hintText: "select-country".tr,
+                          titleText: "country".tr,
                         ),
                       ),
                       SizedBox(width: 10),
@@ -38,7 +39,7 @@ class SecurityDefendersView extends StatelessWidget {
                         child: CustomDropDownCert(
                           certs: [],
                           hintText: '',
-                          titleText: "Association",
+                          titleText: "association".tr,
                         ),
                       )
                     ],
@@ -48,7 +49,7 @@ class SecurityDefendersView extends StatelessWidget {
                       Expanded(
                         child: CustomTextField(
                           label: "",
-                          hintText: "Search region",
+                          hintText: "search-region".tr,
                         ),
                       ),
                       SizedBox(width: 10),

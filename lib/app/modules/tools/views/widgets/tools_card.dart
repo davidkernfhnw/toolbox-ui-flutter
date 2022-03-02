@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
+import 'package:get/get.dart';
 
 class ToolCard extends StatelessWidget {
   final String toolId;
@@ -23,7 +24,7 @@ class ToolCard extends StatelessWidget {
       title: boldText(appName),
       subtitle: greyText(companyName),
       trailing: !installed
-          ? ElevatedButton(onPressed: null, child: Text("Install"))
+          ? ElevatedButton(onPressed: null, child: Text("install".tr))
           : CircleAvatar(
               radius: 14,
               backgroundColor: Colors.grey,

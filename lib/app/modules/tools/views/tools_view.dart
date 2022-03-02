@@ -11,7 +11,7 @@ class ToolsView extends StatelessWidget {
     return Scaffold(
       drawer: SideMenu(),
       appBar: AppBar(
-        title: Text('Tools'),
+        title: Text('tools'.tr),
         centerTitle: true,
       ),
       body: Obx(() {
