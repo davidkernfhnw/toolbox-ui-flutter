@@ -7,12 +7,15 @@ import 'package:geiger_toolbox/app/shared_widgets/showCircularProgress.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
 import 'package:get/get.dart';
 
+import '../../../../services/internetConnection/internet_connection_controller.dart';
+
 class DataProtectionView extends StatelessWidget {
   DataProtectionView({Key? key}) : super(key: key);
 
   final DataProtectionController controller = DataProtectionController.instance;
-  final DataProtectionController _dataProtectionController =
-      DataProtectionController.instance;
+  final DataProtectionController _dataProtectionController = DataProtectionController.instance;
+  final InternetConnectionController _internetConnectionController = InternetConnectionController.instance;
+
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
@@ -133,25 +136,29 @@ class DataProtectionView extends StatelessWidget {
                       groupValue: controller.isRadioSelected.value,
                       onChanged: _dataProtectionController.getDataAccess
                           ? (int newValue) async {
-                              ShowCircularProgress.buildShowDialog(context);
-                              controller.isRadioSelected.value = newValue;
-                              await controller.updateReplicateConsent(0);
-                              await controller.updateDoNotShare(1);
-                              bool? success =
-                                  await controller.initReplication();
-                              Get.back();
-                              if (!Get.isSnackbarOpen) {
-                                success
-                                    ? Get.snackbar("Replication",
-                                        "Your data was successfully replicated.",
-                                        snackPosition: SnackPosition.BOTTOM,
-                                        backgroundColor: Colors.greenAccent)
-                                    : Get.snackbar("Replication",
-                                        "Your data replication failed.",
-                                        snackPosition: SnackPosition.BOTTOM,
-                                        backgroundColor: Colors.orangeAccent);
-                              }
-                            }
+                        //check internet connection
+                        if (await _internetConnectionController.isInternetConnected()) {
+                        ShowCircularProgress.buildShowDialog(context);
+                        controller.isRadioSelected.value = newValue;
+
+                        await controller.updateReplicateConsent(0);
+                          await controller.updateDoNotShare(1);
+                          bool? success =
+                          await controller.initReplication();
+                          Get.back();
+                          if (!Get.isSnackbarOpen) {
+                            success
+                                ? Get.snackbar("Replication",
+                                "Your data was successfully replicated.",
+                                snackPosition: SnackPosition.BOTTOM,
+                                backgroundColor: Colors.greenAccent)
+                                : Get.snackbar("Replication",
+                                "Your data replication failed.",
+                                snackPosition: SnackPosition.BOTTOM,
+                                backgroundColor: Colors.orangeAccent);
+                          }
+                        };
+                      }
                           : (int a) {
                               Get.defaultDialog(
                                 barrierDismissible: false,
@@ -175,7 +182,9 @@ class DataProtectionView extends StatelessWidget {
                           "Your tools’ data will be used to improve GEIGER over time.",
                       groupValue: controller.isRadioSelected.value,
                       onChanged: _dataProtectionController.getDataAccess
-                          ? (int newValue) {
+                          ? (int newValue) async {
+                              //check internet connection
+                              await _internetConnectionController.isInternetConnected();
                               controller.isRadioSelected.value = newValue;
                             }
                           : (int a) {

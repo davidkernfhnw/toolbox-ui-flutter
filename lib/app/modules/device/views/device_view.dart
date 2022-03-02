@@ -13,6 +13,7 @@ import 'package:geiger_toolbox/app/shared_widgets/side_menu.dart';
 import 'package:geiger_toolbox/app/util/style.dart';
 import 'package:get/get.dart';
 
+import '../../../services/internetConnection/internet_connection_controller.dart';
 import '../../settings/controllers/data_protection_controller.dart';
 
 class DeviceView extends StatelessWidget {
@@ -22,6 +23,7 @@ class DeviceView extends StatelessWidget {
   final DeviceController _deviceController = DeviceController.instance;
   final DataProtectionController _dataProtectionController =
       DataProtectionController.instance;
+  final InternetConnectionController _internetConnectionController = InternetConnectionController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +55,12 @@ class DeviceView extends StatelessWidget {
                           !Platform.isMacOS ||
                           !Platform.isLinux
                       ? _dataProtectionController.getDataAccess
-                          ? () {
+                          ? () async {
+                              await _internetConnectionController.isInternetConnected() ?
                               _qrController.requestCameraPermission(
                                   Routes.QrSCANNER_VIEW,
-                                  arguments: "Pair a new device");
+                                  arguments: "Pair a new device")
+                              : null;
                             }
                           : null
                       : () {

@@ -10,6 +10,7 @@ import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 import 'app/services/cloudReplication/cloud_replication_controller.dart';
 import 'app/services/indicator/geiger_indicator_controller.dart';
+import 'app/services/internetConnection/internet_connection_controller.dart';
 import 'app/services/localNotification/local_notification.dart';
 import 'app/services/localStorage/local_storage_controller.dart';
 import 'app/translation/app_translation.dart';
@@ -54,6 +55,9 @@ Future<void> _initialization() async {
 
   //Local notification
   Get.lazyPut<LocalNotificationController>(() => LocalNotificationController());
+
+  //Internet Connection
+  Get.lazyPut<InternetConnectionController>(() => InternetConnectionController());
 }
 
 class GeigerApp extends StatelessWidget {
